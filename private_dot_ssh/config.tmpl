@@ -18,3 +18,5 @@ Host *
   VisualHostKey no
   ServerAliveInterval 15
   ServerAliveCountMax 5
+  # Use xterm-256color for compatibility (most servers lack Ghostty terminfo)
+  SetEnv TERM=xterm-256color

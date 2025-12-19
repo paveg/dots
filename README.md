@@ -45,6 +45,14 @@ On first run, you'll be prompted for:
 
 These values are stored in `~/.config/chezmoi/chezmoi.yaml`.
 
+### Install Font (for Ghostty)
+
+```bash
+# macOS
+brew tap homebrew/cask-fonts
+brew install --cask font-udev-gothic-nf
+```
+
 ### Install Development Tools
 
 ```bash
@@ -105,9 +113,29 @@ dots/
 ## Features
 
 ### Terminal: Ghostty
-- Font: JetBrains Mono Nerd Font
+- Font: UDEV Gothic NF (Japanese-friendly Nerd Font)
 - Theme: Catppuccin Mocha
 - Native tabs/splits
+
+#### Font Installation
+
+The Ghostty terminal uses [UDEV Gothic NF](https://github.com/yuru7/udev-gothic), a programming font with Nerd Font icons and excellent Japanese support.
+
+**macOS (Homebrew):**
+```bash
+brew tap homebrew/cask-fonts
+brew install --cask font-udev-gothic-nf
+```
+
+**Linux (manual):**
+```bash
+# Download and install to user fonts directory
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+curl -fLO https://github.com/yuru7/udev-gothic/releases/download/v2.1.0/UDEVGothic_NF_v2.1.0.zip
+unzip UDEVGothic_NF_v2.1.0.zip
+fc-cache -fv
+```
 
 ### Shell: zsh + zinit turbo mode
 - Fast startup (~50ms)

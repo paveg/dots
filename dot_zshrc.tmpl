@@ -145,6 +145,17 @@ zinit wait"1" lucid light-mode for \
   ' \
     zdharma-continuum/null
 
+# atuin (turbo) - shell history (load after fzf to override Ctrl+R)
+zinit wait"2" lucid light-mode for \
+  atload'
+    if (( $+commands[atuin] )); then
+      _atuin_cache="${XDG_CACHE_HOME}/zsh/init/atuin.zsh"
+      [[ -f "$_atuin_cache" ]] || atuin init zsh --disable-up-arrow > "$_atuin_cache"
+      source "$_atuin_cache"
+    fi
+  ' \
+    zdharma-continuum/null
+
 # fzf (turbo)
 zinit wait"1" lucid light-mode for \
   atload'
@@ -173,8 +184,7 @@ zinit wait"1" lucid light-mode for \
       export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
       export FZF_ALT_C_OPTS="--preview '\''eza --tree --icons --level=2 --color=always {} | head -50'\''"
 
-      # History search (Ctrl+R)
-      export FZF_CTRL_R_OPTS="--preview '\''echo {}'\''"
+      # Note: Ctrl+R history search is handled by atuin
     fi
   ' \
     zdharma-continuum/null
@@ -374,6 +384,7 @@ dots() {
   ~/.config/starship.toml  Prompt
   ~/.config/lazygit/   Git TUI (conventional commits)
   ~/.config/ghostty/   Terminal (Catppuccin Mocha)
+  ~/.config/atuin/     Shell history (fuzzy search)
 
 🔧 Local Config (per-machine, not tracked)
   ~/.env.local         Environment variables
@@ -383,9 +394,9 @@ dots() {
 ⌨️  Key Bindings
   Ctrl+g       Repository navigation (ghq + fzf)
   Ctrl+t       File search with preview (fzf)
-  Ctrl+r       History search (fzf)
+  Ctrl+r       History search (atuin)
   Alt+c        Directory navigation (fzf)
-  Ctrl+u/d     Scroll preview (fzf)
+  Ctrl+u/d     Scroll preview (fzf/atuin)
   z <dir>      Smart cd (zoxide)
 
 🛠️  Commands
@@ -429,6 +440,7 @@ zsh-clear-cache() {
   rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
   rm -rf "${XDG_DATA_HOME}/zinit"
   echo "All cache cleared. Restart shell to reinstall zinit."
+  echo "Note: atuin history is preserved in ~/.local/share/atuin/"
 }
 
 zsh-update-cache() {

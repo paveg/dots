@@ -87,7 +87,7 @@ keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 -- Diagnostic keymaps
 keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
 keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
-keymap("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open diagnostic float" })
+keymap("n", "<leader>d", vim.diagnostic.open_float, { desc = "Open diagnostic float" })
 keymap("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic list" })
 
 -- =============================================================================

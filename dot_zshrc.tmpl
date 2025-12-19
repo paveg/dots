@@ -1,0 +1,443 @@
+# =============================================================================
+# Instant prompt (show prompt immediately, load rest async)
+# =============================================================================
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/starship/init.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/starship/init.zsh"
+fi
+
+# =============================================================================
+# Performance flags
+# =============================================================================
+DISABLE_MAGIC_FUNCTIONS=true
+skip_global_compinit=1
+
+{{ if .auto_tmux_linux -}}
+# =============================================================================
+# Auto tmux on Linux SSH sessions
+# =============================================================================
+auto_tmux_linux() {
+  # Skip if already in tmux
+  [[ -n "$TMUX" ]] && return 0
+  # Skip if not interactive
+  [[ ! -o interactive ]] && return 0
+  # Skip if explicitly disabled
+  [[ "${DISABLE_AUTO_TMUX:-0}" = "1" ]] && return 0
+  # Skip in CI/Docker
+  [[ -n "$CI" || -n "$CONTAINER" || -f /.dockerenv ]] && return 0
+  # Only for SSH sessions
+  if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+    if (( $+commands[tmux] )); then
+      if tmux list-sessions &>/dev/null; then
+        exec tmux attach-session
+      else
+        exec tmux new-session
+      fi
+    fi
+  fi
+}
+auto_tmux_linux
+{{ end -}}
+
+# =============================================================================
+# History
+# =============================================================================
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+
+setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE HIST_VERIFY SHARE_HISTORY INC_APPEND_HISTORY
+
+# =============================================================================
+# Options
+# =============================================================================
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS INTERACTIVE_COMMENTS NO_BEEP
+
+# =============================================================================
+# Key Bindings
+# =============================================================================
+bindkey -e
+
+# =============================================================================
+# Devbox (PATH setup - must be synchronous)
+# =============================================================================
+_devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+if [[ -f "$_devbox_cache" ]]; then
+  source "$_devbox_cache"
+elif (( $+commands[devbox] )); then
+  mkdir -p "${XDG_CACHE_HOME}/devbox"
+  devbox global shellenv > "$_devbox_cache"
+  source "$_devbox_cache"
+fi
+unset _devbox_cache
+
+# =============================================================================
+# Zinit
+# =============================================================================
+ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
+
+if [[ ! -d "$ZINIT_HOME" ]]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+source "${ZINIT_HOME}/zinit.zsh"
+
+# =============================================================================
+# Turbo-loaded plugins
+# =============================================================================
+zinit wait lucid blockf light-mode for \
+  atload"zicompinit; zicdreplay" \
+    zsh-users/zsh-completions
+
+zinit wait lucid light-mode for \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting
+
+zinit wait lucid light-mode for \
+  atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions
+
+zinit wait lucid light-mode for \
+  zsh-users/zsh-history-substring-search
+
+# =============================================================================
+# Tool initialization (turbo mode)
+# =============================================================================
+_zsh_cache="${XDG_CACHE_HOME}/zsh/init"
+[[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
+
+# Starship (immediate for prompt)
+if (( $+commands[starship] )); then
+  _starship_cache="$_zsh_cache/starship.zsh"
+  if [[ ! -f "$_starship_cache" ]]; then
+    starship init zsh --print-full-init > "$_starship_cache"
+    mkdir -p "${XDG_CACHE_HOME}/starship"
+    cp "$_starship_cache" "${XDG_CACHE_HOME}/starship/init.zsh"
+  fi
+  source "$_starship_cache"
+fi
+
+# zoxide (turbo)
+zinit wait"1" lucid light-mode for \
+  atload'
+    if (( $+commands[zoxide] )); then
+      _zoxide_cache="${XDG_CACHE_HOME}/zsh/init/zoxide.zsh"
+      [[ -f "$_zoxide_cache" ]] || zoxide init zsh > "$_zoxide_cache"
+      source "$_zoxide_cache"
+    fi
+  ' \
+    zdharma-continuum/null
+
+# fzf (turbo)
+zinit wait"1" lucid light-mode for \
+  atload'
+    if (( $+commands[fzf] )); then
+      _fzf_cache="${XDG_CACHE_HOME}/zsh/init/fzf.zsh"
+      [[ -f "$_fzf_cache" ]] || fzf --zsh > "$_fzf_cache"
+      source "$_fzf_cache"
+      export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+      export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    fi
+  ' \
+    zdharma-continuum/null
+
+# direnv (turbo)
+zinit wait"2" lucid light-mode for \
+  atload'
+    if (( $+commands[direnv] )); then
+      _direnv_cache="${XDG_CACHE_HOME}/zsh/init/direnv.zsh"
+      [[ -f "$_direnv_cache" ]] || direnv hook zsh > "$_direnv_cache"
+      source "$_direnv_cache"
+    fi
+  ' \
+    zdharma-continuum/null
+
+unset _zsh_cache
+
+# =============================================================================
+# Completion settings
+# =============================================================================
+zinit wait lucid light-mode for \
+  atload'
+    zstyle ":completion:*" menu select
+    zstyle ":completion:*" matcher-list "m:{a-z}={A-Z}"
+    zstyle ":completion:*" use-cache on
+    zstyle ":completion:*" cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
+  ' \
+    zdharma-continuum/null
+
+# =============================================================================
+# Aliases
+# =============================================================================
+alias ls='eza --icons'
+alias ll='eza -l --icons --git'
+alias la='eza -la --icons --git'
+alias lt='eza --tree --icons --level=2'
+alias cat='bat --paging=never'
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+alias g='git'
+alias lg='lazygit'
+alias k='kubectl'
+
+# Git shortcuts
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gd='git diff'
+alias gf='git fetch'
+alias gp='git pull'
+alias gs='git status'
+
+# Safe defaults
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias mkdir='mkdir -p'
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+# ghq + fzf repository navigation (from existing config)
+_fzf_cd_ghq() {
+  local root repo
+  root="$(ghq root 2>/dev/null)" || return 1
+
+  repo="$(ghq list 2>/dev/null | fzf --reverse --height=80% \
+    --preview="
+      repo_path=$root/{}
+      if [[ -f \$repo_path/README.md ]]; then
+        bat --color=always --style=header,grid --line-range :80 \$repo_path/README.md 2>/dev/null
+      elif [[ -f \$repo_path/README.rst ]]; then
+        bat --color=always --style=header,grid --line-range :80 \$repo_path/README.rst 2>/dev/null
+      elif [[ -f \$repo_path/README ]]; then
+        bat --color=always --style=header,grid --line-range :80 \$repo_path/README 2>/dev/null
+      else
+        echo Contents:
+        eza -la \$repo_path 2>/dev/null | head -15
+      fi
+    " \
+    --preview-window=right:50%)"
+
+  [[ -z "$repo" ]] && return 0
+  local dir="$root/$repo"
+  [[ -d "$dir" ]] && BUFFER="cd \"$dir\"" && zle accept-line
+}
+zle -N _fzf_cd_ghq
+bindkey '^g' _fzf_cd_ghq
+alias repos='_fzf_cd_ghq'
+
+# Remove merged branches (from existing config)
+PROTECTED_BRANCHES='main|master|develop|staging'
+rub() {
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "Error: Not in a git repository" >&2
+    return 1
+  fi
+  local merged
+  merged=$(git branch --merged | grep -Ev "\*|${PROTECTED_BRANCHES}")
+  [[ -z "$merged" ]] && echo "No merged branches to delete" && return 0
+  echo "$merged" | xargs git branch -d
+}
+
+# Profiling
+zprofiler() { ZSHRC_PROFILE=1 zsh -i -c zprof }
+zshtime() { for i in {1..10}; do time zsh -i -c exit; done }
+
+# =============================================================================
+# Local config management
+# =============================================================================
+local-env() {
+  local file="$HOME/.env.local"
+  case "$1" in
+    edit)
+      [[ ! -f "$file" ]] && echo "# Machine-specific environment variables" > "$file"
+      ${EDITOR:-nvim} "$file"
+      echo "Run 'source ~/.env.local' or restart shell to apply changes"
+      ;;
+    show)
+      if [[ -f "$file" ]]; then
+        echo "=== ~/.env.local ==="
+        cat "$file"
+      else
+        echo "~/.env.local does not exist. Run 'local-env edit' to create."
+      fi
+      ;;
+    *)
+      echo "Usage: local-env <command>"
+      echo ""
+      echo "Commands:"
+      echo "  edit    Edit ~/.env.local (environment variables)"
+      echo "  show    Show current ~/.env.local contents"
+      echo ""
+      echo "Related files:"
+      echo "  ~/.env.local     - Environment variables (export VAR=value)"
+      echo "  ~/.zshrc.local   - Shell config (aliases, functions)"
+      echo "  .envrc           - Per-directory env (direnv)"
+      ;;
+  esac
+}
+
+local-zsh() {
+  local file="$HOME/.zshrc.local"
+  case "$1" in
+    edit)
+      if [[ ! -f "$file" ]]; then
+        cat > "$file" << 'EOF'
+# Machine-specific zsh configuration
+# This file is sourced at the end of ~/.zshrc
+
+# Example:
+# alias myalias='some-command'
+# export PATH="$HOME/custom/bin:$PATH"
+EOF
+      fi
+      ${EDITOR:-nvim} "$file"
+      echo "Run 'source ~/.zshrc.local' or restart shell to apply changes"
+      ;;
+    show)
+      if [[ -f "$file" ]]; then
+        echo "=== ~/.zshrc.local ==="
+        cat "$file"
+      else
+        echo "~/.zshrc.local does not exist. Run 'local-zsh edit' to create."
+      fi
+      ;;
+    *)
+      echo "Usage: local-zsh <command>"
+      echo ""
+      echo "Commands:"
+      echo "  edit    Edit ~/.zshrc.local (shell config)"
+      echo "  show    Show current ~/.zshrc.local contents"
+      ;;
+  esac
+}
+
+# Quick aliases
+alias le='local-env edit'
+alias lz='local-zsh edit'
+
+# =============================================================================
+# Dotfiles help
+# =============================================================================
+dots() {
+  cat << 'EOF'
+╭──────────────────────────────────────────────────────────────────╮
+│                         dots - dotfiles                          │
+╰──────────────────────────────────────────────────────────────────╯
+
+📁 Config Locations
+  ~/.config/nvim/      Neovim (kickstart + Copilot)
+  ~/.config/git/       Git (delta, conditional includes)
+  ~/.config/starship.toml  Prompt
+  ~/.config/lazygit/   Git TUI (conventional commits)
+  ~/.config/ghostty/   Terminal (Catppuccin Mocha)
+
+🔧 Local Config (per-machine, not tracked)
+  ~/.env.local         Environment variables
+  ~/.zshrc.local       Shell customizations
+  .envrc               Directory-specific (direnv)
+
+⌨️  Key Bindings
+  Ctrl+g       Repository navigation (ghq + fzf)
+  Ctrl+r       History search (fzf)
+  z <dir>      Smart cd (zoxide)
+
+🛠️  Commands
+  repos        Jump to repository (ghq + fzf)
+  rub          Remove merged git branches
+  lg           lazygit
+
+  le           Edit ~/.env.local
+  lz           Edit ~/.zshrc.local
+  local-env    Manage environment variables
+  local-zsh    Manage shell config
+
+  zsh-bench    Benchmark shell startup
+  zsh-clear-cache   Clear all caches
+  zsh-update-cache  Regenerate init caches
+
+📝 Neovim (Leader = Space)
+  <leader>ff   Find files
+  <leader>fg   Live grep
+  <leader>e    File explorer
+  gd           Go to definition
+  <leader>cc   Copilot Chat
+
+🔄 Chezmoi
+  chezmoi diff       Show pending changes
+  chezmoi apply      Apply changes
+  chezmoi edit       Edit source files
+  chezmoi update     Pull & apply latest
+
+📦 Devbox
+  devbox global list   List installed tools
+  devbox global add    Install tool globally
+
+EOF
+}
+
+# Cache management
+zsh-clear-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  rm -rf "${XDG_DATA_HOME}/zinit"
+  echo "All cache cleared. Restart shell to reinstall zinit."
+}
+
+zsh-update-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  echo "Init cache cleared. Restart shell to regenerate."
+}
+
+zsh-bench() {
+  for i in {1..10}; do
+    time zsh -i -c exit
+  done
+}
+
+{{ if eq .chezmoi.os "darwin" -}}
+# =============================================================================
+# macOS specific
+# =============================================================================
+# Brewfile management
+brewbundle() {
+  local chezmoi_dir="${CHEZMOI_SOURCE_DIR:-$HOME/.local/share/chezmoi}"
+  local brewfile
+  if [[ -n "$BUSINESS_USE" ]]; then
+    brewfile="$chezmoi_dir/homebrew/Brewfile.work"
+  else
+    brewfile="$chezmoi_dir/homebrew/Brewfile"
+  fi
+  [[ ! -f "$brewfile" ]] && echo "Brewfile not found: $brewfile" && return 1
+  brew bundle dump --force --file="$brewfile"
+  echo "Updated: $brewfile"
+}
+{{ end -}}
+
+# =============================================================================
+# Local environment variables (not managed by chezmoi)
+# =============================================================================
+# Priority: .env.local -> .zshrc.local (both are gitignored)
+
+# Machine-specific environment variables
+[[ -f "$HOME/.env.local" ]] && source "$HOME/.env.local"
+
+# Machine-specific shell configuration
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+{{ if .business_use -}}
+# =============================================================================
+# Work Environment
+# =============================================================================
+# Add work-specific configurations here
+{{ end -}}

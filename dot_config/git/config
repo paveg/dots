@@ -1,0 +1,7 @@
+# Git configuration with conditional includes
+[include]
+  path = ~/.config/git/main
+
+# Work-specific config for C-FO repositories
+[includeIf "gitdir:~/repos/github.com/C-FO/"]
+  path = ~/.config/git/freee

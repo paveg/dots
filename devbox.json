@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
+  "packages": [
+    "neovim@latest",
+    "git@latest",
+    "tmux@latest",
+    "ghq@latest",
+    "fzf@latest",
+    "ripgrep@latest",
+    "fd@latest",
+    "bat@latest",
+    "eza@latest",
+    "zoxide@latest",
+    "starship@latest",
+    "lazygit@latest",
+    "direnv@latest",
+    "jq@latest",
+    "yq@latest",
+    "delta@latest",
+    "chezmoi@latest",
+    "just@latest",
+    "stylua@latest",
+    "shfmt@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'devbox environment activated'"
+    ]
+  }
+}

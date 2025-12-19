@@ -87,11 +87,15 @@ jobs:
           find dot_config/nvim -name "*.lua" -exec lua5.4 -p {} \; -print
 
   chezmoi-linux:
-    name: Chezmoi (Linux)
+    name: Chezmoi (Linux, ${{ matrix.env_name }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        business_use: ['', '1']
+        include:
+          - business_use: ''
+            env_name: personal
+          - business_use: '1'
+            env_name: business
     steps:
       - uses: actions/checkout@v4
 
@@ -124,11 +128,15 @@ jobs:
           chezmoi cat ~/.config/git/config || true
 
   chezmoi-macos:
-    name: Chezmoi (macOS)
+    name: Chezmoi (macOS, ${{ matrix.env_name }})
     runs-on: macos-latest
     strategy:
       matrix:
-        business_use: ['', '1']
+        include:
+          - business_use: ''
+            env_name: personal
+          - business_use: '1'
+            env_name: business
     steps:
       - uses: actions/checkout@v4
 

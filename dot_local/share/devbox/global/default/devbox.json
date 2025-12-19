@@ -24,7 +24,8 @@
     "just@latest",
     "stylua@latest",
     "shfmt@latest",
-    "atuin@latest"
+    "atuin@latest",
+    "keychain@latest"
   ],
   "shell": {
     "init_hook": [

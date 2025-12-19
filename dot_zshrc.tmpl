@@ -463,6 +463,22 @@ brewbundle() {
 {{ end -}}
 
 # =============================================================================
+# SSH Agent (keychain)
+# =============================================================================
+# Start ssh-agent and load keys if keychain is available
+if command -v keychain &>/dev/null; then
+  # Only load keys that exist
+  local ssh_keys=()
+  [[ -f "$HOME/.ssh/id_ed25519" ]] && ssh_keys+=("id_ed25519")
+  [[ -f "$HOME/.ssh/id_github" ]] && ssh_keys+=("id_github")
+  [[ -f "$HOME/.ssh/id_rsa" ]] && ssh_keys+=("id_rsa")
+
+  if (( ${#ssh_keys[@]} > 0 )); then
+    eval "$(keychain --eval --quiet ${ssh_keys[@]})"
+  fi
+fi
+
+# =============================================================================
 # Local environment variables (not managed by chezmoi)
 # =============================================================================
 # Priority: .env.local -> .zshrc.local (both are gitignored)

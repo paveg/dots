@@ -26,7 +26,8 @@
     "shfmt@latest",
     "atuin@latest",
     "keychain@latest",
-    "mise@latest"
+    "mise@latest",
+    "pnpm@latest"
   ],
   "shell": {
     "init_hook": [

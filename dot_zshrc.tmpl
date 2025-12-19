@@ -163,14 +163,14 @@ zinit wait"1" lucid light-mode for \
       [[ -f "$_fzf_cache" ]] || fzf --zsh > "$_fzf_cache"
       source "$_fzf_cache"
 
-      # Catppuccin Mocha colors
+      # Tokyo Night colors
       export FZF_DEFAULT_OPTS=" \
         --height 60% --layout=reverse --border=rounded \
         --margin=1 --padding=1 \
-        --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
-        --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
-        --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
-        --color=selected-bg:#45475a \
+        --color=bg+:#292e42,bg:#1a1b26,spinner:#9ece6a,hl:#7aa2f7 \
+        --color=fg:#c0caf5,header:#7aa2f7,info:#7dcfff,pointer:#f7768e \
+        --color=marker:#9ece6a,fg+:#c0caf5,prompt:#7dcfff,hl+:#7aa2f7 \
+        --color=selected-bg:#33467c \
         --preview-window=right:50%:border-left \
         --bind=ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down"
 

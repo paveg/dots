@@ -1,24 +1,26 @@
 return {
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "folke/tokyonight.nvim",
     priority = 1000,
     opts = {
-      flavour = "mocha",
-      transparent_background = false,
-      integrations = {
-        cmp = true,
-        gitsigns = true,
-        nvimtree = true,
-        treesitter = true,
-        mason = true,
-        which_key = true,
-        telescope = { enabled = true },
+      style = "night", -- night, storm, day, moon
+      transparent = false,
+      terminal_colors = true,
+      styles = {
+        comments = { italic = true },
+        keywords = { italic = true },
+        sidebars = "dark",
+        floats = "dark",
       },
+      sidebars = { "qf", "help", "NvimTree", "terminal" },
+      on_highlights = function(hl, c)
+        -- Customize highlights if needed
+        hl.CursorLineNr = { fg = c.orange, bold = true }
+      end,
     },
     config = function(_, opts)
-      require("catppuccin").setup(opts)
-      vim.cmd.colorscheme("catppuccin")
+      require("tokyonight").setup(opts)
+      vim.cmd.colorscheme("tokyonight")
     end,
   },
 }

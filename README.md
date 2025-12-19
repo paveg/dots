@@ -123,6 +123,8 @@ dots/
 | stylua | Lua formatter |
 | shfmt | Shell formatter |
 | atuin | Shell history sync |
+| keychain | SSH agent manager |
+| mise | Runtime version manager |
 
 ## Features
 

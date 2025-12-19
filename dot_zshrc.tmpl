@@ -488,6 +488,14 @@ fi
 {{- end }}
 
 # =============================================================================
+# mise (runtime version manager)
+# =============================================================================
+# Activate mise if available (manages Node, Ruby, Python versions per project)
+if command -v mise &>/dev/null; then
+  eval "$(mise activate zsh)"
+fi
+
+# =============================================================================
 # Local environment variables (not managed by chezmoi)
 # =============================================================================
 # Priority: .env.local -> .zshrc.local (both are gitignored)

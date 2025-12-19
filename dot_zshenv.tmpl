@@ -1,0 +1,54 @@
+# =============================================================================
+# Zsh Environment (sourced for all shells)
+# =============================================================================
+
+# XDG Base Directory
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+# Zsh config location
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+
+# Locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Editor
+export EDITOR=nvim
+export VISUAL=nvim
+
+# Pager
+export PAGER=less
+export MANPAGER="less -R"
+
+{{- if eq .chezmoi.os "darwin" }}
+# =============================================================================
+# macOS specific
+# =============================================================================
+export HOMEBREW_PREFIX="{{ .homebrew_prefix }}"
+export HOMEBREW_CELLAR="{{ .homebrew_prefix }}/Cellar"
+export HOMEBREW_REPOSITORY="{{ .homebrew_prefix }}"
+export PATH="{{ .homebrew_prefix }}/bin:{{ .homebrew_prefix }}/sbin:$PATH"
+export MANPATH="{{ .homebrew_prefix }}/share/man:$MANPATH"
+export INFOPATH="{{ .homebrew_prefix }}/share/info:$INFOPATH"
+export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+{{- end }}
+
+# =============================================================================
+# Path
+# =============================================================================
+# Local binaries
+export PATH="$HOME/.local/bin:$PATH"
+
+# ghq root
+export GHQ_ROOT="$HOME/repos"
+
+{{- if .business_use }}
+# =============================================================================
+# Business Environment
+# =============================================================================
+export BUSINESS_USE=1
+{{- end }}

@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.*
+.envrc
+!.env.example
+
+# Local configs
+*.local
+*.local.*
+local.*
+
+# Runtime managers
+.mise.toml
+.tool-versions
+.node-version
+.ruby-version
+.python-version
+
+# Cache
+.cache/
+*.zwc
+
+# Claude
+**/.claude/settings.local.json

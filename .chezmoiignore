@@ -1,0 +1,33 @@
+README.md
+LICENSE
+devbox.json
+devbox.lock
+
+# macOS specific
+{{ if ne .chezmoi.os "darwin" }}
+.config/karabiner/
+Library/
+homebrew/
+{{ end }}
+
+# Linux specific (servers don't need GUI terminal config)
+{{ if ne .chezmoi.os "linux" }}
+.config/i3/
+.config/sway/
+{{ end }}
+
+# SSH/Server environment - skip GUI apps
+{{ if and (eq .chezmoi.os "linux") (env "SSH_CLIENT") }}
+.config/ghostty/
+{{ end }}
+
+# Work-specific files on personal machines
+{{ if not .business_use }}
+.config/git/freee
+homebrew/Brewfile.work
+{{ end }}
+
+# Local files (never managed by chezmoi)
+.zshrc.local
+.config/zsh/local.zsh
+.env.local

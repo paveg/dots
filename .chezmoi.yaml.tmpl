@@ -1,0 +1,44 @@
+{{- $osID := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- $businessUse := env "BUSINESS_USE" | not | not -}}
+
+{{- $name := promptStringOnce . "name" "Your name" -}}
+{{- $email := promptStringOnce . "email" "Your email (personal)" -}}
+{{- $workEmail := "" -}}
+{{- if $businessUse -}}
+{{-   $workEmail = promptStringOnce . "work_email" "Your work email" -}}
+{{- end -}}
+
+data:
+  osid: {{ $osID | quote }}
+  business_use: {{ $businessUse }}
+
+  # User info (prompted on first run)
+  name: {{ $name | quote }}
+  email: {{ $email | quote }}
+  work_email: {{ $workEmail | quote }}
+
+  # Auto tmux on Linux SSH sessions
+  auto_tmux_linux: {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
+
+  # XDG directories
+  xdg_config_home: "{{ .chezmoi.homeDir }}/.config"
+  xdg_data_home: "{{ .chezmoi.homeDir }}/.local/share"
+  xdg_cache_home: "{{ .chezmoi.homeDir }}/.cache"
+  xdg_state_home: "{{ .chezmoi.homeDir }}/.local/state"
+
+  # Homebrew prefix (arm64 vs x86_64)
+  homebrew_prefix: {{ if eq .chezmoi.arch "arm64" }}"/opt/homebrew"{{ else }}"/usr/local"{{ end }}
+
+  # Font directory
+  font_dir: {{ if eq .chezmoi.os "darwin" }}"{{ .chezmoi.homeDir }}/Library/Fonts"{{ else }}"{{ .chezmoi.homeDir }}/.local/share/fonts"{{ end }}
+
+edit:
+  command: "nvim"
+
+merge:
+  command: "nvim"
+  args: ["-d"]

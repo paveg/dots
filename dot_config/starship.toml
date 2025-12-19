@@ -1,0 +1,80 @@
+# Starship Configuration
+# https://starship.rs/config/
+
+add_newline = false
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[➜](bold red)'
+vimcmd_symbol = '[❮](bold green)'
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+truncation_symbol = "…/"
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold red"
+
+[cmd_duration]
+min_time = 2_000
+format = "[$duration]($style) "
+style = "yellow"
+
+[hostname]
+ssh_only = true
+format = "[$hostname](bold red) "
+
+[custom.arch]
+command = "uname -m"
+when = """ test $(uname -m) = "x86_64" """
+style = "bold yellow"
+format = "[$output ]($style)"
+
+[aws]
+symbol = "  "
+format = '[$symbol($profile )(\($region\) )]($style)'
+style = "bold yellow"
+
+[aws.region_aliases]
+ap-northeast-1 = "Tokyo"
+ap-northeast-3 = "Osaka"
+us-east-1 = "Virginia"
+us-west-2 = "Oregon"
+
+[golang]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[nodejs]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[python]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[rust]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[ruby]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[docker_context]
+symbol = " "
+format = "[$symbol$context]($style) "
+only_with_files = true
+
+[kubernetes]
+disabled = false
+symbol = "☸ "
+format = '[$symbol$context( \($namespace\))]($style) '
+style = "bold blue"

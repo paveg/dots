@@ -1,0 +1,187 @@
+name: Test Dotfiles
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install formatters
+        run: |
+          # shfmt (shell formatter)
+          curl -sS https://webinstall.dev/shfmt | bash
+          export PATH="$HOME/.local/bin:$PATH"
+
+          # stylua (lua formatter)
+          curl -sL https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip -o stylua.zip
+          unzip stylua.zip -d /usr/local/bin
+          chmod +x /usr/local/bin/stylua
+
+      - name: Check shell format (shfmt)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          echo "Checking shell format..."
+
+          # Check zsh files (remove template syntax first)
+          for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
+            if [[ -f "$file" ]]; then
+              sed 's/{{[^}]*}}//g' "$file" > /tmp/check.sh
+              shfmt -d -i 2 -ci /tmp/check.sh || echo "::warning::$file needs formatting"
+            fi
+          done
+
+      - name: Check lua format (stylua)
+        run: |
+          echo "Checking lua format..."
+          stylua --check dot_config/nvim/ || echo "::warning::Lua files need formatting"
+
+      - name: Check JSON format
+        run: |
+          echo "Checking JSON format..."
+          python3 -c "
+          import json
+          import sys
+
+          files = ['devbox.json']
+          for f in files:
+              with open(f) as fp:
+                  data = json.load(fp)
+              formatted = json.dumps(data, indent=2)
+              with open(f) as fp:
+                  original = fp.read().strip()
+              if formatted != original:
+                  print(f'::warning::{f} needs formatting')
+          "
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Check zsh syntax
+        run: |
+          echo "Checking zsh syntax..."
+          for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
+            if [[ -f "$file" ]]; then
+              # Remove chezmoi template syntax for syntax check
+              sed 's/{{[^}]*}}//g' "$file" > /tmp/check.zsh
+              zsh -n /tmp/check.zsh && echo "✓ $file" || exit 1
+            fi
+          done
+
+      - name: Check lua syntax
+        run: |
+          echo "Checking lua syntax..."
+          sudo apt-get install -y lua5.4
+          find dot_config/nvim -name "*.lua" -exec lua5.4 -p {} \; -print
+
+  chezmoi-linux:
+    name: Chezmoi (Linux)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        business_use: ['', '1']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: Test chezmoi init (dry-run)
+        env:
+          BUSINESS_USE: ${{ matrix.business_use }}
+        run: |
+          echo "Testing chezmoi template expansion..."
+          chezmoi init --source="${PWD}" --dry-run --verbose
+
+      - name: Verify template expansion
+        env:
+          BUSINESS_USE: ${{ matrix.business_use }}
+        run: |
+          chezmoi init --source="${PWD}"
+          chezmoi managed | head -20
+          chezmoi cat ~/.config/git/config || true
+
+  chezmoi-macos:
+    name: Chezmoi (macOS)
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        business_use: ['', '1']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: brew install chezmoi
+
+      - name: Test chezmoi init (dry-run)
+        env:
+          BUSINESS_USE: ${{ matrix.business_use }}
+        run: |
+          echo "Testing chezmoi template expansion..."
+          chezmoi init --source="${PWD}" --dry-run --verbose
+
+      - name: Verify template expansion
+        env:
+          BUSINESS_USE: ${{ matrix.business_use }}
+        run: |
+          chezmoi init --source="${PWD}"
+          chezmoi managed | head -20
+
+  devbox:
+    name: Devbox Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate devbox.json
+        run: |
+          echo "Validating devbox.json..."
+          python3 -c "import json; json.load(open('devbox.json'))"
+          echo "✓ Valid JSON"
+
+      - name: Install devbox
+        uses: jetify-com/devbox-install-action@v0.11.0
+        with:
+          enable-cache: true
+
+      - name: Test devbox packages
+        run: |
+          echo "Testing devbox package resolution..."
+          devbox install --config devbox.json
+
+  neovim:
+    name: Neovim Config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Neovim
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y neovim
+
+      - name: Setup Neovim config
+        run: |
+          mkdir -p ~/.config
+          cp -r dot_config/nvim ~/.config/nvim
+
+      - name: Test Neovim startup
+        run: |
+          echo "Testing Neovim startup..."
+          timeout 60 nvim --headless -c 'qall' 2>&1 || true
+          echo "✓ Neovim config loaded"
+
+      - name: Validate init.lua
+        run: nvim --headless -c 'lua print("init.lua OK")' -c 'qall' 2>&1

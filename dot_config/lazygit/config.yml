@@ -1,0 +1,65 @@
+gui:
+  showIcons: true
+  theme:
+    lightTheme: false
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+
+customCommands:
+  - key: "C"
+    context: "files"
+    description: "Commit with conventional commit format"
+    prompts:
+      - type: "menu"
+        title: "Commit type"
+        key: "Type"
+        options:
+          - name: "feat"
+            description: "A new feature"
+            value: "feat"
+          - name: "fix"
+            description: "A bug fix"
+            value: "fix"
+          - name: "docs"
+            description: "Documentation only changes"
+            value: "docs"
+          - name: "style"
+            description: "Code style changes (formatting, etc)"
+            value: "style"
+          - name: "refactor"
+            description: "Code refactoring"
+            value: "refactor"
+          - name: "perf"
+            description: "Performance improvements"
+            value: "perf"
+          - name: "test"
+            description: "Adding or updating tests"
+            value: "test"
+          - name: "build"
+            description: "Build system or dependencies"
+            value: "build"
+          - name: "ci"
+            description: "CI configuration changes"
+            value: "ci"
+          - name: "chore"
+            description: "Other changes"
+            value: "chore"
+          - name: "revert"
+            description: "Revert a commit"
+            value: "revert"
+      - type: "input"
+        title: "Scope (optional)"
+        key: "Scope"
+        initialValue: ""
+      - type: "input"
+        title: "Description"
+        key: "Description"
+        initialValue: ""
+      - type: "confirm"
+        title: "Commit"
+        body: "Commit with message: '{{.Form.Type}}{{if .Form.Scope}}({{.Form.Scope}}){{end}}: {{.Form.Description}}'"
+    command: "git commit -m '{{.Form.Type}}{{if .Form.Scope}}({{.Form.Scope}}){{end}}: {{.Form.Description}}'"
+    loadingText: "Committing..."

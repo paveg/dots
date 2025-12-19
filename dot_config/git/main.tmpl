@@ -1,0 +1,75 @@
+[user]
+  name = {{ .name }}
+  email = {{ .email }}
+
+[core]
+  editor = nvim
+  pager = delta
+  quotepath = false
+  autocrlf = input
+
+[init]
+  defaultBranch = main
+
+[pull]
+  rebase = false
+
+[push]
+  default = current
+  autoSetupRemote = true
+
+[fetch]
+  prune = true
+
+[rebase]
+  autoStash = true
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  dark = true
+  line-numbers = true
+  side-by-side = true
+
+[color]
+  ui = auto
+
+[alias]
+  a = add
+  aa = add --all
+  b = branch
+  c = commit
+  cm = commit -m
+  co = checkout
+  cob = checkout -b
+  d = diff
+  ds = diff --staged
+  f = fetch
+  l = log --oneline -20
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  p = push
+  pl = pull
+  s = status -sb
+  st = status
+  sw = switch
+  swc = switch -c
+  unstage = reset HEAD --
+
+[ghq]
+  root = ~/repos
+
+{{- if eq .chezmoi.os "darwin" }}
+[credential]
+  helper = osxkeychain
+{{- else }}
+[credential]
+  helper = store
+{{- end }}

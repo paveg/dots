@@ -27,6 +27,8 @@ local.*
 .node-version
 .ruby-version
 .python-version
+devbox.json
+devbox.lock
 
 # Cache
 .cache/

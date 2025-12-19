@@ -1,0 +1,3 @@
+# Override global gitignore to track devbox files in this repo
+!devbox.json
+!devbox.lock

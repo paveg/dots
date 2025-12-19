@@ -7,6 +7,14 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 # =============================================================================
+# Terminal compatibility (Ghostty fallback)
+# =============================================================================
+# Fall back to xterm-256color if terminfo is missing (e.g., SSH to older servers)
+if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
+  export TERM=xterm-256color
+fi
+
+# =============================================================================
 # Instant prompt (show prompt immediately, load rest async)
 # =============================================================================
 if [[ -r "${XDG_CACHE_HOME}/starship/init.zsh" ]]; then

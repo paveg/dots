@@ -6,14 +6,30 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) and [devbox](h
 
 ## Quick Start
 
-### New Machine Setup
+### New Machine Setup (One-liner)
+
+```bash
+# Personal
+curl -fsSL https://raw.githubusercontent.com/paveg/dots/main/install.sh | bash
+
+# Work environment
+curl -fsSL https://raw.githubusercontent.com/paveg/dots/main/install.sh | BUSINESS_USE=1 bash
+```
+
+### Manual Setup
 
 ```bash
 # Install devbox
 curl -fsSL https://get.jetify.com/devbox | bash
 
+# Load devbox into current shell (required before using devbox commands)
+eval "$(devbox global shellenv)"
+
 # Install chezmoi via devbox
 devbox global add chezmoi
+
+# Reload to get chezmoi in PATH
+eval "$(devbox global shellenv)"
 
 # Apply dotfiles (you'll be prompted for name and email)
 chezmoi init --apply paveg/dots
@@ -198,11 +214,12 @@ direnv allow
 ### SSH/Remote Server Setup
 
 ```bash
-# On remote server
-curl -fsSL https://get.jetify.com/devbox | bash
-devbox global add chezmoi neovim tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv delta
+# One-liner
+curl -fsSL https://raw.githubusercontent.com/paveg/dots/main/install.sh | bash
 
-chezmoi init --apply paveg/dots
+# Then install tools
+eval "$(devbox global shellenv)"
+devbox global add neovim tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv delta
 ```
 
 **Note:** Ghostty config is automatically skipped on SSH sessions (detected via `$SSH_CLIENT`).

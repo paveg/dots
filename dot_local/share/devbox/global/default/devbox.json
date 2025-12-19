@@ -23,7 +23,8 @@
     "chezmoi@latest",
     "just@latest",
     "stylua@latest",
-    "shfmt@latest"
+    "shfmt@latest",
+    "atuin@latest"
   ],
   "shell": {
     "init_hook": [

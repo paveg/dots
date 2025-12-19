@@ -463,11 +463,15 @@ brewbundle() {
 {{ end -}}
 
 # =============================================================================
-# SSH Agent (keychain)
+# SSH Agent
 # =============================================================================
-# Start ssh-agent and load keys if keychain is available
+{{- if eq .chezmoi.os "darwin" }}
+# macOS: Use system SSH agent with Keychain integration
+# launchd starts ssh-agent automatically, just load keys from Keychain
+ssh-add -l &>/dev/null || ssh-add --apple-load-keychain 2>/dev/null
+{{- else }}
+# Linux: Use keychain for SSH agent management
 if command -v keychain &>/dev/null; then
-  # Only load keys that exist
   local ssh_keys=()
   [[ -f "$HOME/.ssh/id_ed25519" ]] && ssh_keys+=("id_ed25519")
   [[ -f "$HOME/.ssh/id_github" ]] && ssh_keys+=("id_github")
@@ -477,6 +481,7 @@ if command -v keychain &>/dev/null; then
     eval "$(keychain --eval --quiet ${ssh_keys[@]})"
   fi
 fi
+{{- end }}
 
 # =============================================================================
 # Local environment variables (not managed by chezmoi)

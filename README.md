@@ -57,7 +57,7 @@ brew install --cask font-udev-gothic-nf
 
 ```bash
 # Install all CLI tools via devbox global
-devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv jq yq delta
+devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv jq yq delta just stylua shfmt
 ```
 
 ## Structure
@@ -111,7 +111,12 @@ dots/
 | starship | Cross-shell prompt |
 | lazygit | Git TUI |
 | direnv | Per-directory env vars |
+| jq | JSON processor |
+| yq | YAML processor |
 | delta | Better git diff |
+| just | Task runner |
+| stylua | Lua formatter |
+| shfmt | Shell formatter |
 
 ## Features
 
@@ -250,7 +255,7 @@ curl -fsSL https://raw.githubusercontent.com/paveg/dots/main/install.sh | bash
 
 # Then install tools
 eval "$(devbox global shellenv)"
-devbox global add go nodejs python neovim tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv delta
+devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv jq yq delta just stylua shfmt
 ```
 
 **Note:** Ghostty config is automatically skipped on SSH sessions (detected via `$SSH_CLIENT`).

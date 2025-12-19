@@ -68,11 +68,9 @@ return {
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-      -- Setup servers
-      local lspconfig = require("lspconfig")
-
+      -- Setup servers using vim.lsp.config (Neovim 0.11+)
       -- Lua
-      lspconfig.lua_ls.setup({
+      vim.lsp.config.lua_ls = {
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -89,15 +87,15 @@ return {
             },
           },
         },
-      })
+      }
 
       -- TypeScript
-      lspconfig.ts_ls.setup({
+      vim.lsp.config.ts_ls = {
         capabilities = capabilities,
-      })
+      }
 
       -- Go
-      lspconfig.gopls.setup({
+      vim.lsp.config.gopls = {
         capabilities = capabilities,
         settings = {
           gopls = {
@@ -108,17 +106,20 @@ return {
             gofumpt = true,
           },
         },
-      })
+      }
 
       -- Rust
-      lspconfig.rust_analyzer.setup({
+      vim.lsp.config.rust_analyzer = {
         capabilities = capabilities,
-      })
+      }
 
       -- Python
-      lspconfig.pyright.setup({
+      vim.lsp.config.pyright = {
         capabilities = capabilities,
-      })
+      }
+
+      -- Enable all configured servers
+      vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "rust_analyzer", "pyright" })
     end,
   },
 

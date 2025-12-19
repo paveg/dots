@@ -75,19 +75,6 @@ setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS INTERACTIVE_COMMENTS NO_BEEP
 bindkey -e
 
 # =============================================================================
-# Devbox (PATH setup - must be synchronous)
-# =============================================================================
-_devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
-if [[ -f "$_devbox_cache" ]]; then
-  source "$_devbox_cache"
-elif (( $+commands[devbox] )); then
-  mkdir -p "${XDG_CACHE_HOME}/devbox"
-  devbox global shellenv > "$_devbox_cache"
-  source "$_devbox_cache"
-fi
-unset _devbox_cache
-
-# =============================================================================
 # Zinit
 # =============================================================================
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"

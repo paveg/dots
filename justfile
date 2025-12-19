@@ -10,7 +10,7 @@ fmt:
     @echo "Formatting Lua files..."
     @stylua dot_config/nvim/
     @echo "Formatting JSON files..."
-    @python3 -c "import json; f='devbox.json'; d=json.load(open(f)); open(f,'w').write(json.dumps(d,indent=2)+'\n')"
+    @python3 -c "import json; f='dot_local/share/devbox/global/default/devbox.json'; d=json.load(open(f)); open(f,'w').write(json.dumps(d,indent=2)+'\n')"
     @echo "✓ Done!"
 
 # Check formatting without changes
@@ -18,7 +18,7 @@ fmt-check:
     @echo "Checking Lua format..."
     @stylua --check dot_config/nvim/
     @echo "Checking JSON format..."
-    @python3 -c "import json; f='devbox.json'; d=json.load(open(f)); expected=json.dumps(d,indent=2)+'\n'; actual=open(f).read(); exit(0 if expected==actual else 1)"
+    @python3 -c "import json; f='dot_local/share/devbox/global/default/devbox.json'; d=json.load(open(f)); expected=json.dumps(d,indent=2)+'\n'; actual=open(f).read(); exit(0 if expected==actual else 1)"
     @echo "✓ All files formatted correctly!"
 
 # Run linters

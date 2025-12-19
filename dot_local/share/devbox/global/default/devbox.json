@@ -28,7 +28,7 @@
   ],
   "shell": {
     "init_hook": [
-      "echo 'devbox environment activated'"
+      "[[ -f \"$HOME/.env.local\" ]] && source \"$HOME/.env.local\""
     ]
   }
 }

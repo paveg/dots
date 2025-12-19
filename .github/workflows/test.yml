@@ -98,6 +98,16 @@ jobs:
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
+      - name: Setup test config (provide prompted values)
+        run: |
+          mkdir -p ~/.config/chezmoi
+          cat > ~/.config/chezmoi/chezmoi.yaml << 'EOF'
+          data:
+            name: "Test User"
+            email: "test@example.com"
+            work_email: "test@work.example.com"
+          EOF
+
       - name: Test chezmoi init (dry-run)
         env:
           BUSINESS_USE: ${{ matrix.business_use }}
@@ -124,6 +134,16 @@ jobs:
 
       - name: Install chezmoi
         run: brew install chezmoi
+
+      - name: Setup test config (provide prompted values)
+        run: |
+          mkdir -p ~/.config/chezmoi
+          cat > ~/.config/chezmoi/chezmoi.yaml << 'EOF'
+          data:
+            name: "Test User"
+            email: "test@example.com"
+            work_email: "test@work.example.com"
+          EOF
 
       - name: Test chezmoi init (dry-run)
         env:

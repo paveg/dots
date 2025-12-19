@@ -35,8 +35,11 @@
       "if [ -z \"$SSH_AUTH_SOCK\" ] && command -v keychain >/dev/null 2>&1; then",
       "  for key in id_ed25519 id_github id_rsa; do [ -f \"$HOME/.ssh/$key\" ] && eval \"$(keychain --eval --quiet \"$key\")\"; done",
       "fi",
-      "# Activate mise for runtime version management",
-      "if command -v mise >/dev/null 2>&1; then eval \"$(mise activate bash)\"; fi"
+      "# Activate mise for runtime version management (only in supported shells)",
+      "if command -v mise >/dev/null 2>&1; then",
+      "  if [ -n \"$ZSH_VERSION\" ]; then eval \"$(mise activate zsh)\";",
+      "  elif [ -n \"$BASH_VERSION\" ]; then eval \"$(mise activate bash)\"; fi",
+      "fi"
     ]
   }
 }

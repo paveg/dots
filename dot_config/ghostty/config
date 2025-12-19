@@ -4,6 +4,10 @@
 # Font
 font-family = "UDEV Gothic NF"
 font-size = 14
+font-thicken = true
+
+# Fix Japanese character rendering
+freetype-load-flags = no-hinting
 
 # Window
 window-padding-x = 4

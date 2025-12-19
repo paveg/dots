@@ -467,8 +467,12 @@ brewbundle() {
 # =============================================================================
 {{- if eq .chezmoi.os "darwin" }}
 # macOS: Use system SSH agent with Keychain integration
-# launchd starts ssh-agent automatically, just load keys from Keychain
-ssh-add -l &>/dev/null || ssh-add --apple-load-keychain 2>/dev/null
+# Find the correct launchd socket (path changes on reboot)
+if ! ssh-add -l &>/dev/null; then
+  local sock=$(ls /private/tmp/com.apple.launchd.*/Listeners 2>/dev/null | head -1)
+  [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
+  ssh-add --apple-load-keychain 2>/dev/null
+fi
 {{- else }}
 # Linux: Use keychain for SSH agent management
 if command -v keychain &>/dev/null; then

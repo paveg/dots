@@ -1,0 +1,92 @@
+# Atuin configuration
+# https://docs.atuin.sh/configuration/config/
+
+# =============================================================================
+# Search behavior
+# =============================================================================
+# Search mode: prefix, fulltext, fuzzy, skim
+search_mode = "fuzzy"
+
+# Filter mode: global, host, session, directory
+filter_mode = "global"
+
+# Filter mode for shell up arrow
+filter_mode_shell_up_arrow = "session"
+
+# Enable ctrl+d to exit
+exit_mode = "return-query"
+
+# =============================================================================
+# UI settings (matching fzf style)
+# =============================================================================
+# Style: auto, full, compact
+style = "compact"
+
+# Inline height (number of lines, ~60% of typical terminal)
+inline_height = 30
+
+# Show help row at bottom
+show_help = true
+
+# Show preview of full command
+show_preview = true
+
+# Show tabs for filter modes
+show_tabs = true
+
+# Invert the UI (search at top like fzf --reverse)
+invert = true
+
+# Border around UI
+border = true
+
+# Rounded border style (matching fzf)
+border_style = "rounded"
+
+# History format
+history_format = "{time} {command}"
+
+# Cursor style: default, underscore, line, beam
+cursor_style = "line"
+
+# Maximum preview height
+max_preview_height = 4
+
+# =============================================================================
+# Sync settings
+# =============================================================================
+# Local history only (no sync)
+auto_sync = false
+
+# Uncomment to enable cloud sync:
+# auto_sync = true
+# sync_frequency = "5m"
+# sync_address = "https://api.atuin.sh"
+
+# =============================================================================
+# Catppuccin Mocha colors (matching fzf/ghostty theme)
+# =============================================================================
+[colors]
+# Base colors
+normal = "#cdd6f4"           # Text
+selected = "#f5e0dc"         # Rosewater (highlighted item)
+selected_background = "#45475a"  # Surface1 (selection bg)
+
+# UI elements
+prompt = "#cba6f7"           # Mauve
+border = "#313244"           # Surface0
+guide = "#45475a"            # Surface1
+info = "#cba6f7"             # Mauve
+preview_border = "#313244"   # Surface0
+preview_label = "#cdd6f4"    # Text
+
+# Syntax highlighting
+keyword = "#f38ba8"          # Red
+hostname = "#89b4fa"         # Blue
+directory = "#a6e3a1"        # Green
+duration = "#f9e2af"         # Yellow
+time = "#6c7086"             # Overlay0
+
+# Highlights
+title = "#f38ba8"            # Red
+cursor = "#f5e0dc"           # Rosewater

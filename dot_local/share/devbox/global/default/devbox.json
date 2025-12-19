@@ -29,7 +29,11 @@
   ],
   "shell": {
     "init_hook": [
-      "[[ -f \"$HOME/.env.local\" ]] && source \"$HOME/.env.local\""
+      "[[ -f \"$HOME/.env.local\" ]] && source \"$HOME/.env.local\"",
+      "# SSH agent: use forwarded agent or start keychain on Linux",
+      "if [[ -z \"$SSH_AUTH_SOCK\" ]] && command -v keychain &>/dev/null; then",
+      "  for key in id_ed25519 id_github id_rsa; do [[ -f \"$HOME/.ssh/$key\" ]] && eval \"$(keychain --eval --quiet $key)\"; done",
+      "fi"
     ]
   }
 }

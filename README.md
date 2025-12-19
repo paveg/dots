@@ -56,8 +56,11 @@ brew install --cask font-udev-gothic-nf
 ### Install Development Tools
 
 ```bash
+# Apply dotfiles (includes devbox global config)
+chezmoi apply
+
 # Install all CLI tools via devbox global
-devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv jq yq delta just stylua shfmt
+devbox global install
 ```
 
 ## Structure
@@ -66,9 +69,11 @@ devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zo
 dots/
 ├── .chezmoi.yaml.tmpl      # chezmoi config (OS, BUSINESS_USE detection)
 ├── .chezmoiignore          # OS-specific ignores
-├── devbox.json             # Global CLI tools
 ├── dot_zshenv.tmpl         # -> ~/.zshenv
 ├── dot_zshrc.tmpl          # -> ~/.zshrc
+├── dot_local/
+│   └── share/devbox/global/default/
+│       └── devbox.json     # -> ~/.local/share/devbox/global/default/devbox.json
 └── dot_config/
     ├── git/
     │   ├── config          # -> ~/.config/git/config (conditional includes)
@@ -117,6 +122,7 @@ dots/
 | just | Task runner |
 | stylua | Lua formatter |
 | shfmt | Shell formatter |
+| atuin | Shell history sync |
 
 ## Features
 
@@ -253,9 +259,9 @@ direnv allow
 # One-liner
 curl -fsSL https://raw.githubusercontent.com/paveg/dots/main/install.sh | bash
 
-# Then install tools
+# Then install tools (devbox global config is already applied by chezmoi)
 eval "$(devbox global shellenv)"
-devbox global add go nodejs python neovim git tmux ghq fzf ripgrep fd bat eza zoxide starship lazygit direnv jq yq delta just stylua shfmt
+devbox global install
 ```
 
 **Note:** Ghostty config is automatically skipped on SSH sessions (detected via `$SSH_CLIENT`).

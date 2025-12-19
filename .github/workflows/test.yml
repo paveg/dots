@@ -49,7 +49,7 @@ jobs:
           import json
           import sys
 
-          files = ['devbox.json']
+          files = ['dot_local/share/devbox/global/default/devbox.json']
           for f in files:
               with open(f) as fp:
                   data = json.load(fp)
@@ -176,18 +176,19 @@ jobs:
       - name: Validate devbox.json
         run: |
           echo "Validating devbox.json..."
-          python3 -c "import json; json.load(open('devbox.json'))"
+          python3 -c "import json; json.load(open('dot_local/share/devbox/global/default/devbox.json'))"
           echo "✓ Valid JSON"
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.11.0
         with:
           enable-cache: true
+          project-path: dot_local/share/devbox/global/default
 
       - name: Test devbox packages
         run: |
           echo "Testing devbox package resolution..."
-          devbox install --config devbox.json
+          devbox install --config dot_local/share/devbox/global/default/devbox.json
 
   neovim:
     name: Neovim Config

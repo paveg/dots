@@ -64,6 +64,8 @@ dots/
     ├── starship.toml       # -> ~/.config/starship.toml
     ├── lazygit/config.yml  # -> ~/.config/lazygit/config.yml
     └── ghostty/config      # -> ~/.config/ghostty/config
+├── .ssh/
+│   └── config              # -> ~/.ssh/config (common settings only)
 ```
 
 ## Tools (via devbox)
@@ -208,6 +210,21 @@ chezmoi init --apply paveg/dots
 **Auto tmux:** On Linux SSH sessions, tmux starts automatically. Disable with:
 ```bash
 export DISABLE_AUTO_TMUX=1
+```
+
+### SSH Config
+
+Common SSH settings are managed, host-specific configs should be in `~/.ssh/config.local`:
+
+```bash
+# ~/.ssh/config.local (not tracked, create manually)
+Host github.com
+  IdentityFile ~/.ssh/id_github
+
+Host myserver
+  HostName 192.168.1.100
+  User myuser
+  IdentityFile ~/.ssh/id_ed25519
 ```
 
 ## Development

@@ -27,6 +27,14 @@ fi
 DISABLE_MAGIC_FUNCTIONS=true
 skip_global_compinit=1
 
+# =============================================================================
+# mise (runtime version manager) - early activation for tmux
+# =============================================================================
+# Must be activated before auto_tmux to ensure tmux is in PATH
+if command -v mise &>/dev/null; then
+  eval "$(mise activate zsh)"
+fi
+
 {{ if .auto_tmux_linux -}}
 # =============================================================================
 # Auto tmux on Linux SSH sessions
@@ -43,8 +51,12 @@ auto_tmux_linux() {
   # Only for SSH sessions
   if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
     if (( $+commands[tmux] )); then
-      if tmux list-sessions &>/dev/null; then
-        exec tmux attach-session
+      # Prefer detached sessions, otherwise create new
+      local detached
+      detached=$(tmux list-sessions -F '#{session_name}:#{session_attached}' 2>/dev/null \
+        | grep ':0$' | head -1 | cut -d: -f1)
+      if [[ -n "$detached" ]]; then
+        exec tmux attach-session -t "$detached"
       else
         exec tmux new-session
       fi
@@ -486,14 +498,6 @@ if command -v keychain &>/dev/null; then
   fi
 fi
 {{- end }}
-
-# =============================================================================
-# mise (runtime version manager)
-# =============================================================================
-# Activate mise if available (manages Node, Ruby, Python versions per project)
-if command -v mise &>/dev/null; then
-  eval "$(mise activate zsh)"
-fi
 
 # =============================================================================
 # Local environment variables (not managed by chezmoi)

@@ -1,8 +1,16 @@
 # =============================================================================
+# XDG Base Directory (fallback if .zshenv not sourced)
+# =============================================================================
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+# =============================================================================
 # Instant prompt (show prompt immediately, load rest async)
 # =============================================================================
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/starship/init.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/starship/init.zsh"
+if [[ -r "${XDG_CACHE_HOME}/starship/init.zsh" ]]; then
+  source "${XDG_CACHE_HOME}/starship/init.zsh"
 fi
 
 # =============================================================================

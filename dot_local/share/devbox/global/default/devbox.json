@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
   "packages": [
-    "go@latest",
+    "go@1.25",
     "nodejs@24",
-    "python@latest",
-    "neovim@latest",
+    "python@3.13",
+    "neovim@0.11",
     "git@latest",
     "tmux@latest",
     "ghq@latest",

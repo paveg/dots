@@ -52,7 +52,8 @@ if [[ -f "$_devbox_cache" ]]; then
   source "$_devbox_cache"
 elif command -v devbox &>/dev/null; then
   mkdir -p "${XDG_CACHE_HOME}/devbox"
-  devbox global shellenv > "$_devbox_cache"
+  # Filter out TMUX/session-specific vars to avoid breaking tmux auto-start
+  devbox global shellenv | grep -Ev '^export (TMUX|TMUX_PANE|TERM_PROGRAM|TERM_PROGRAM_VERSION)=' > "$_devbox_cache"
   source "$_devbox_cache"
 fi
 unset _devbox_cache

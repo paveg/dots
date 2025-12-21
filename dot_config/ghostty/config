@@ -3,7 +3,7 @@
 
 # Font
 font-family = "UDEV Gothic NF"
-font-size = 14
+font-size = 16
 font-thicken = true
 
 # Fix Japanese character rendering
@@ -14,9 +14,13 @@ window-padding-x = 4
 window-padding-y = 4
 window-decoration = true
 background-opacity = 0.95
+maximize = true
+macos-titlebar-style = tabs
 
 # Shell
 command = zsh -l
+shell-integration = detect
+window-inherit-working-directory = true
 
 # Scrollback
 scrollback-limit = 10000

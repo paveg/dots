@@ -14,6 +14,9 @@ palette = "tokyo_night"
 
 # Custom format for performance (only show what's needed)
 format = """
+$username\
+$hostname\
+$localip\
 $directory\
 $git_branch\
 $git_status\
@@ -96,8 +99,14 @@ show_notifications = false
 # =============================================================================
 [hostname]
 ssh_only = true
-format = "[@$hostname]($style) "
+format = "[@$hostname]($style)"
 style = "bold red"
+
+[localip]
+ssh_only = true
+format = "[($localipv4)]($style) "
+style = "bold yellow"
+disabled = false
 
 [username]
 show_always = false

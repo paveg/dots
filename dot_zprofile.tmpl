@@ -1,0 +1,13 @@
+# =============================================================================
+# Zsh Profile - Login shell configuration
+# =============================================================================
+# This runs for login shells BEFORE .zshrc
+# Use for environment setup that must happen early (e.g., TERM fixes)
+
+# =============================================================================
+# Terminal compatibility (Ghostty fallback)
+# =============================================================================
+# Must be set early for tmux and other terminal apps
+if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
+  export TERM=xterm-256color
+fi

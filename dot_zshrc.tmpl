@@ -382,8 +382,9 @@ dots() {
   ~/.config/git/       Git (delta, conditional includes)
   ~/.config/starship.toml  Prompt
   ~/.config/lazygit/   Git TUI (conventional commits)
-  ~/.config/ghostty/   Terminal (Catppuccin Mocha)
+  ~/.config/ghostty/   Terminal (Catppuccin Mocha, OSC 52)
   ~/.config/atuin/     Shell history (fuzzy search)
+  ~/.tmux.conf         Tmux (Catppuccin, vim keys, OSC 52)
 
 🔧 Local Config (per-machine, not tracked)
   ~/.env.local         Environment variables
@@ -397,6 +398,15 @@ dots() {
   Alt+c        Directory navigation (fzf)
   Ctrl+u/d     Scroll preview (fzf/atuin)
   z <dir>      Smart cd (zoxide)
+
+🖥️  Tmux (Prefix = Ctrl+a)
+  prefix + |   Split horizontal
+  prefix + -   Split vertical
+  prefix + h/j/k/l   Navigate panes
+  prefix + r   Reload config
+  v            Begin selection (copy mode)
+  y            Copy to clipboard (OSC 52)
+  Shift+drag   Copy via terminal (bypass tmux)
 
 🛠️  Commands
   repos        Jump to repository (ghq + fzf)

@@ -18,7 +18,7 @@ _fzf_cd_ghq() {
         bat --color=always --style=header,grid --line-range :80 $repo_path/README 2>/dev/null
       else
         echo Contents:
-        eza -la $repo_path 2>/dev/null | head -15
+        eza -la $repo_path 2>/dev/null | head -n 15
       fi
     "
     --preview-window=right:50%)"
@@ -34,7 +34,7 @@ alias repos='_fzf_cd_ghq'
 # Remove merged branches (from existing config)
 PROTECTED_BRANCHES='main|master|develop|staging'
 rub() {
-  if ! git rev-parse --git-dir >/dev/null 2>&1;
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
     echo "Error: Not in a git repository" >&2
     return 1
   fi
@@ -214,7 +214,6 @@ zsh-bench() {
   done
 }
 
-{{ if eq .chezmoi.os "darwin" -}}
 # =============================================================================
 # macOS specific
 # =============================================================================
@@ -231,4 +230,3 @@ brewbundle() {
   brew bundle dump --force --file="$brewfile"
   echo "Updated: $brewfile"
 }
-{{ end -}}

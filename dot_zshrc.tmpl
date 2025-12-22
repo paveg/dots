@@ -489,12 +489,21 @@ brewbundle() {
 # =============================================================================
 {{- if eq .chezmoi.os "darwin" }}
 # macOS: Use system SSH agent with Keychain integration
-# Find the correct launchd socket (path changes on reboot)
-if ! ssh-add -l &>/dev/null; then
-  local sock=$(ls /private/tmp/com.apple.launchd.*/Listeners 2>/dev/null | head -1)
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  # Try to get from launchctl first
+  local sock
+  sock=$(launchctl getenv SSH_AUTH_SOCK)
+  
+  # Fallback: Find listener socket safely (restricted to current user)
+  if [[ ! -S "$sock" ]]; then
+    sock=$(find /private/tmp/com.apple.launchd.* -name Listeners -user "$USER" -type s 2>/dev/null | head -1)
+  fi
+
   [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
-  ssh-add --apple-load-keychain 2>/dev/null
 fi
+
+# Load keys into agent
+ssh-add --apple-load-keychain 2>/dev/null
 {{- else }}
 # Linux: Use keychain for SSH agent management
 if command -v keychain &>/dev/null; then

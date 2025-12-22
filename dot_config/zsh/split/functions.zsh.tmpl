@@ -1,0 +1,234 @@
+# =============================================================================
+# Functions
+# =============================================================================
+
+# ghq + fzf repository navigation (from existing config)
+_fzf_cd_ghq() {
+  local root repo
+  root="$(ghq root 2>/dev/null)" || return 1
+
+  repo="$(ghq list 2>/dev/null | fzf --reverse --height=80%
+    --preview="
+      repo_path=$root/{}
+      if [[ -f $repo_path/README.md ]]; then
+        bat --color=always --style=header,grid --line-range :80 $repo_path/README.md 2>/dev/null
+      elif [[ -f $repo_path/README.rst ]]; then
+        bat --color=always --style=header,grid --line-range :80 $repo_path/README.rst 2>/dev/null
+      elif [[ -f $repo_path/README ]]; then
+        bat --color=always --style=header,grid --line-range :80 $repo_path/README 2>/dev/null
+      else
+        echo Contents:
+        eza -la $repo_path 2>/dev/null | head -15
+      fi
+    "
+    --preview-window=right:50%)"
+
+  [[ -z "$repo" ]] && return 0
+  local dir="$root/$repo"
+  [[ -d "$dir" ]] && BUFFER="cd \"$dir\"" && zle accept-line
+}
+zle -N _fzf_cd_ghq
+bindkey '^g' _fzf_cd_ghq
+alias repos='_fzf_cd_ghq'
+
+# Remove merged branches (from existing config)
+PROTECTED_BRANCHES='main|master|develop|staging'
+rub() {
+  if ! git rev-parse --git-dir >/dev/null 2>&1;
+    echo "Error: Not in a git repository" >&2
+    return 1
+  fi
+  local merged
+  merged=$(git branch --merged | grep -Ev "*|${PROTECTED_BRANCHES}")
+  [[ -z "$merged" ]] && echo "No merged branches to delete" && return 0
+  echo "$merged" | xargs git branch -d
+}
+
+# Profiling
+zprofiler() { ZSHRC_PROFILE=1 zsh -i -c zprof }
+zshtime() { for i in {1..10}; do time zsh -i -c exit; done }
+
+# =============================================================================
+# Local config management
+# =============================================================================
+local-env() {
+  local file="$HOME/.env.local"
+  case "$1" in
+    edit)
+      [[ ! -f "$file" ]] && echo "# Machine-specific environment variables" > "$file"
+      ${EDITOR:-nvim} "$file"
+      echo "Run 'source ~/.env.local' or restart shell to apply changes"
+      ;; 
+    show)
+      if [[ -f "$file" ]]; then
+        echo "=== ~/.env.local ==="
+        cat "$file"
+      else
+        echo "~/.env.local does not exist. Run 'local-env edit' to create."
+      fi
+      ;; 
+    *)
+      echo "Usage: local-env <command>"
+      echo ""
+      echo "Commands:"
+      echo "  edit    Edit ~/.env.local (environment variables)"
+      echo "  show    Show current ~/.env.local contents"
+      echo ""
+      echo "Related files:"
+      echo "  ~/.env.local     - Environment variables (export VAR=value)"
+      echo "  ~/.zshrc.local   - Shell config (aliases, functions)"
+      echo "  .envrc           - Per-directory env (direnv)"
+      ;; 
+  esac
+}
+
+local-zsh() {
+  local file="$HOME/.zshrc.local"
+  case "$1" in
+    edit)
+      if [[ ! -f "$file" ]]; then
+        cat > "$file" << 'EOF'
+# Machine-specific zsh configuration
+# This file is sourced at the end of ~/.zshrc
+
+# Example:
+# alias myalias='some-command'
+# export PATH="$HOME/custom/bin:$PATH"
+EOF
+      fi
+      ${EDITOR:-nvim} "$file"
+      echo "Run 'source ~/.zshrc.local' or restart shell to apply changes"
+      ;; 
+    show)
+      if [[ -f "$file" ]]; then
+        echo "=== ~/.zshrc.local ==="
+        cat "$file"
+      else
+        echo "~/.zshrc.local does not exist. Run 'local-zsh edit' to create."
+      fi
+      ;; 
+    *)
+      echo "Usage: local-zsh <command>"
+      echo ""
+      echo "Commands:"
+      echo "  edit    Edit ~/.zshrc.local (shell config)"
+      echo "  show    Show current ~/.zshrc.local contents"
+      ;; 
+  esac
+}
+
+# =============================================================================
+# Dotfiles help
+# =============================================================================
+dots() {
+  cat << 'EOF'
+╭──────────────────────────────────────────────────────────────────╮
+│                         dots - dotfiles                          │
+╰──────────────────────────────────────────────────────────────────╯
+
+📁 Config Locations
+  ~/.config/nvim/      Neovim (kickstart + Copilot)
+  ~/.config/git/       Git (delta, conditional includes)
+  ~/.config/starship.toml  Prompt
+  ~/.config/lazygit/   Git TUI (conventional commits)
+  ~/.config/ghostty/   Terminal (Catppuccin Mocha, OSC 52)
+  ~/.config/atuin/     Shell history (fuzzy search)
+  ~/.tmux.conf         Tmux (Catppuccin, vim keys, OSC 52)
+
+🔧 Local Config (per-machine, not tracked)
+  ~/.env.local         Environment variables
+  ~/.zshrc.local       Shell customizations
+  .envrc               Directory-specific (direnv)
+
+⌨️  Key Bindings
+  Ctrl+g       Repository navigation (ghq + fzf)
+  Ctrl+t       File search with preview (fzf)
+  Ctrl+r       History search (atuin)
+  Alt+c        Directory navigation (fzf)
+  Ctrl+u/d     Scroll preview (fzf/atuin)
+  z <dir>      Smart cd (zoxide)
+
+🖥️  Tmux (Prefix = Ctrl+a)
+  prefix + |   Split horizontal
+  prefix + -   Split vertical
+  prefix + h/j/k/l   Navigate panes
+  prefix + r   Reload config
+  v            Begin selection (copy mode)
+  y            Copy to clipboard (OSC 52)
+  Shift+drag   Copy via terminal (bypass tmux)
+
+🛠️  Commands
+  repos        Jump to repository (ghq + fzf)
+  rub          Remove merged git branches
+  lg           lazygit
+
+  le           Edit ~/.env.local
+  lz           Edit ~/.zshrc.local
+  local-env    Manage environment variables
+  local-zsh    Manage shell config
+
+  zsh-bench    Benchmark shell startup
+  zsh-clear-cache   Clear all caches
+  zsh-update-cache  Regenerate init caches
+
+📝 Neovim (Leader = Space)
+  <leader>ff   Find files
+  <leader>fg   Live grep
+  <leader>e    File explorer
+  gd           Go to definition
+  <leader>cc   Copilot Chat
+
+🔄 Chezmoi
+  chezmoi diff       Show pending changes
+  chezmoi apply      Apply changes
+  chezmoi edit       Edit source files
+  chezmoi update     Pull & apply latest
+
+📦 Devbox
+  devbox global list   List installed tools
+  devbox global add    Install tool globally
+
+EOF
+}
+
+# Cache management
+zsh-clear-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  rm -rf "${XDG_DATA_HOME}/zinit"
+  echo "All cache cleared. Restart shell to reinstall zinit."
+  echo "Note: atuin history is preserved in ~/.local/share/atuin/"
+}
+
+zsh-update-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  echo "Init cache cleared. Restart shell to regenerate."
+}
+
+zsh-bench() {
+  for i in {1..10}; do
+    time zsh -i -c exit
+  done
+}
+
+{{ if eq .chezmoi.os "darwin" -}}
+# =============================================================================
+# macOS specific
+# =============================================================================
+# Brewfile management
+brewbundle() {
+  local chezmoi_dir="${CHEZMOI_SOURCE_DIR:-$HOME/.local/share/chezmoi}"
+  local brewfile
+  if [[ -n "$BUSINESS_USE" ]]; then
+    brewfile="$chezmoi_dir/homebrew/Brewfile.work"
+  else
+    brewfile="$chezmoi_dir/homebrew/Brewfile"
+  fi
+  [[ ! -f "$brewfile" ]] && echo "Brewfile not found: $brewfile" && return 1
+  brew bundle dump --force --file="$brewfile"
+  echo "Updated: $brewfile"
+}
+{{ end -}}

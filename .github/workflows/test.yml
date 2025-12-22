@@ -80,6 +80,18 @@ jobs:
             fi
           done
 
+      - name: ShellCheck
+        run: |
+          echo "Running ShellCheck..."
+          # Install shellcheck if not present (ubuntu-latest usually has it)
+          if ! command -v shellcheck &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          fi
+          
+          # Check install.sh and scripts in .chezmoiscripts
+          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" \) -print0 | xargs -0 shellcheck
+
+
       - name: Check lua syntax
         run: |
           echo "Checking lua syntax..."

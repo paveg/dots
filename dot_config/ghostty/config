@@ -29,6 +29,10 @@ scrollback-limit = 10000
 mouse-hide-while-typing = true
 copy-on-select = clipboard
 
+# Clipboard (OSC 52)
+clipboard-write = allow
+clipboard-read = allow
+
 # Cursor
 cursor-style = block
 cursor-style-blink = true

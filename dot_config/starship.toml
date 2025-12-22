@@ -106,7 +106,7 @@ style = "bold red"
 ssh_only = true
 format = "[($localipv4)]($style) "
 style = "bold yellow"
-disabled = false
+disabled = true
 
 [username]
 show_always = false

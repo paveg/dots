@@ -1,7 +1,21 @@
+# Repository files (not dotfiles)
 README.md
+CLAUDE.md
 LICENSE
+justfile
+install.sh
 devbox.json
 devbox.lock
+
+# Editor/tooling configs for this repo
+.editorconfig
+.stylua.toml
+.gitignore
+.gitkeep
+
+# CI/IDE directories
+.github/
+.claude/
 
 # macOS specific
 {{ if ne .chezmoi.os "darwin" }}

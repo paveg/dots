@@ -1,0 +1,25 @@
+# =============================================================================
+# direnv standard library extensions
+# =============================================================================
+
+# dotenv_if_exists: Load .env file if it exists
+# Usage in .envrc: dotenv_if_exists
+dotenv_if_exists() {
+  local env_file="${1:-.env}"
+  if [[ -f "$env_file" ]]; then
+    dotenv "$env_file"
+  fi
+}
+
+# dotenv_if_exists_up: Search for .env up the directory tree
+dotenv_if_exists_up() {
+  local env_file="${1:-.env}"
+  local dir="$PWD"
+  while [[ "$dir" != "/" ]]; do
+    if [[ -f "$dir/$env_file" ]]; then
+      dotenv "$dir/$env_file"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+}

@@ -7,10 +7,11 @@
   path = ~/.config/git/freee
 
 # GitHub credential helper (gh auth)
+# Use env to find gh in PATH (works with devbox, homebrew, etc.)
 [credential "https://github.com"]
   helper =
-  helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/bin/env gh auth git-credential
 
 [credential "https://gist.github.com"]
   helper =
-  helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/bin/env gh auth git-credential

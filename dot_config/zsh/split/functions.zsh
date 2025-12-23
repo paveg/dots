@@ -2,30 +2,65 @@
 # Functions
 # =============================================================================
 
-# ghq + fzf repository navigation (from existing config)
+# ghq + fzf repository navigation (cached for speed)
+_GHQ_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/ghq_list"
+
+# Refresh ghq cache in background
+ghq-refresh() {
+  ghq list > "$_GHQ_CACHE" 2>/dev/null
+  echo "ghq cache refreshed ($(wc -l < "$_GHQ_CACHE" | tr -d ' ') repos)"
+}
+
 _fzf_cd_ghq() {
   local root repo
   root="$(ghq root 2>/dev/null)" || return 1
 
-  repo="$(ghq list 2>/dev/null | fzf --reverse --height=80%
-    --preview="
-      repo_path=$root/{}
-      if [[ -f $repo_path/README.md ]]; then
-        bat --color=always --style=header,grid --line-range :80 $repo_path/README.md 2>/dev/null
-      elif [[ -f $repo_path/README.rst ]]; then
-        bat --color=always --style=header,grid --line-range :80 $repo_path/README.rst 2>/dev/null
-      elif [[ -f $repo_path/README ]]; then
-        bat --color=always --style=header,grid --line-range :80 $repo_path/README 2>/dev/null
-      else
-        echo Contents:
-        eza -la $repo_path 2>/dev/null | head -n 15
-      fi
-    "
-    --preview-window=right:50%)"
+  # Use cache if available, refresh in background if stale (>1 hour)
+  if [[ -f "$_GHQ_CACHE" ]]; then
+    local cache_age=$(($(date +%s) - $(stat -f%m "$_GHQ_CACHE" 2>/dev/null || echo 0)))
+    if (( cache_age > 3600 )); then
+      ghq list > "$_GHQ_CACHE" 2>/dev/null &!
+    fi
+  else
+    mkdir -p "$(dirname "$_GHQ_CACHE")"
+    ghq list > "$_GHQ_CACHE" 2>/dev/null
+  fi
 
-  [[ -z "$repo" ]] && return 0
+  local preview_cmd='
+    repo_path='"$root"'/{}
+    if [[ -f $repo_path/README.md ]]; then
+      bat --color=always --style=header,grid --line-range :80 $repo_path/README.md 2>/dev/null
+    elif [[ -f $repo_path/README.rst ]]; then
+      bat --color=always --style=header,grid --line-range :80 $repo_path/README.rst 2>/dev/null
+    elif [[ -f $repo_path/README ]]; then
+      bat --color=always --style=header,grid --line-range :80 $repo_path/README 2>/dev/null
+    else
+      echo Contents:
+      eza -la $repo_path 2>/dev/null | head -n 15
+    fi
+  '
+
+  repo="$(cat "$_GHQ_CACHE" 2>/dev/null | \
+    fzf --reverse --height=80% \
+        --header='Ctrl+R: refresh cache' \
+        --bind="ctrl-r:reload(ghq list | tee $_GHQ_CACHE)" \
+        --preview="$preview_cmd" \
+        --preview-window=right:50%)"
+
+  # Handle ESC or empty selection
+  if [[ -z "$repo" ]]; then
+    zle reset-prompt
+    return 0
+  fi
+
   local dir="$root/$repo"
-  [[ -d "$dir" ]] && BUFFER="cd \"$dir\"" && zle accept-line
+  if [[ -d "$dir" ]]; then
+    BUFFER="cd \"$dir\""
+    zle accept-line
+  else
+    zle -M "Directory not found: $dir"
+    zle reset-prompt
+  fi
 }
 zle -N _fzf_cd_ghq
 bindkey '^g' _fzf_cd_ghq

@@ -5,3 +5,12 @@
 # Work-specific config for C-FO repositories
 [includeIf "gitdir:~/repos/github.com/C-FO/"]
   path = ~/.config/git/freee
+
+# GitHub credential helper (gh auth)
+[credential "https://github.com"]
+  helper =
+  helper = !/usr/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+  helper =
+  helper = !/usr/bin/gh auth git-credential

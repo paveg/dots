@@ -106,6 +106,15 @@ fi
 {{- end }}
 
 # =============================================================================
+# pnpm setup
+# =============================================================================
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# =============================================================================
 # Local environment variables (not managed by chezmoi)
 # =============================================================================
 # Priority: .env.local -> .zshrc.local (both are gitignored)

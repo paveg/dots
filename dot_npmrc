@@ -1,0 +1,40 @@
+# pnpm configuration
+auto-install-peers=true
+strict-peer-dependencies=false
+shamefully-hoist=true
+shell-emulator=true
+use-lockfile-v9=true
+
+# Supply chain security
+# Wait 3 days (72 hours) before installing new packages
+# This helps protect against supply chain attacks
+minimum-release-age=3 days
+
+# Performance optimizations
+prefer-frozen-lockfile=true
+side-effects-cache=true
+resolution-mode=highest
+node-linker=isolated
+
+# Storage
+store-dir=~/.local/share/pnpm/store
+global-dir=~/.local/share/pnpm/global
+state-dir=~/.local/share/pnpm/state
+cache-dir=~/.local/share/pnpm/cache
+modules-cache-max-age=10080
+
+# Network
+fetch-retries=3
+fetch-retry-factor=2
+fetch-retry-mintimeout=10000
+fetch-retry-maxtimeout=60000
+fetch-timeout=60000
+
+# Output
+loglevel=info
+color=always
+
+# Security
+engine-strict=true
+save-exact=true
+

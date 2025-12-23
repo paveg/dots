@@ -5,26 +5,39 @@
 # ghq + fzf repository navigation (cached for speed)
 _GHQ_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/ghq_list"
 
-# Refresh ghq cache in background
-ghq-refresh() {
-  ghq list > "$_GHQ_CACHE" 2>/dev/null
-  echo "ghq cache refreshed ($(wc -l < "$_GHQ_CACHE" | tr -d ' ') repos)"
+# Update ghq cache in background
+_ghq_cache_update() {
+  command ghq list > "$_GHQ_CACHE" 2>/dev/null
+}
+
+# Initialize cache on shell startup (background, non-blocking)
+if [[ ! -f "$_GHQ_CACHE" ]]; then
+  mkdir -p "$(dirname "$_GHQ_CACHE")"
+  _ghq_cache_update &!
+fi
+
+# ghq wrapper: auto-update cache when repos change
+ghq() {
+  local subcmd="$1"
+  command ghq "$@"
+  local ret=$?
+
+  # Update cache after repo-modifying commands
+  case "$subcmd" in
+    get|create|rm)
+      _ghq_cache_update &!
+      ;;
+  esac
+
+  return $ret
 }
 
 _fzf_cd_ghq() {
   local root repo
-  root="$(ghq root 2>/dev/null)" || return 1
+  root="$(command ghq root 2>/dev/null)" || return 1
 
-  # Use cache if available, refresh in background if stale (>1 hour)
-  if [[ -f "$_GHQ_CACHE" ]]; then
-    local cache_age=$(($(date +%s) - $(stat -f%m "$_GHQ_CACHE" 2>/dev/null || echo 0)))
-    if (( cache_age > 3600 )); then
-      ghq list > "$_GHQ_CACHE" 2>/dev/null &!
-    fi
-  else
-    mkdir -p "$(dirname "$_GHQ_CACHE")"
-    ghq list > "$_GHQ_CACHE" 2>/dev/null
-  fi
+  # Ensure cache exists
+  [[ ! -f "$_GHQ_CACHE" ]] && _ghq_cache_update
 
   local preview_cmd='
     repo_path='"$root"'/{}
@@ -43,7 +56,7 @@ _fzf_cd_ghq() {
   repo="$(cat "$_GHQ_CACHE" 2>/dev/null | \
     fzf --reverse --height=80% \
         --header='Ctrl+R: refresh cache' \
-        --bind="ctrl-r:reload(ghq list | tee $_GHQ_CACHE)" \
+        --bind="ctrl-r:reload(command ghq list | tee $_GHQ_CACHE)" \
         --preview="$preview_cmd" \
         --preview-window=right:50%)"
 

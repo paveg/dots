@@ -28,7 +28,8 @@
     "atuin@latest",
     "keychain@latest",
     "mise@latest",
-    "pnpm@latest"
+    "pnpm@latest",
+    "kubectl@latest"
   ],
   "shell": {
     "init_hook": [

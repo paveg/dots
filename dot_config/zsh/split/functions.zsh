@@ -210,6 +210,9 @@ dots() {
   repos        Jump to repository (ghq + fzf)
   rub          Remove merged git branches
   lg           lazygit
+  kctx         Switch kube context (fzf)
+  kns          Switch namespace (fzf)
+  kinfo        Show current context/namespace
 
   le           Edit ~/.env.local
   lz           Edit ~/.zshrc.local
@@ -291,6 +294,65 @@ _auto_dotenv() {
 
 autoload -Uz add-zsh-hook
 add-zsh-hook chpwd _auto_dotenv
+
+# =============================================================================
+# Kubernetes context/namespace switching
+# =============================================================================
+# Switch kube context with fzf
+kctx() {
+  local context
+  context=$( (echo "(none)"; kubectl config get-contexts -o name 2>/dev/null) | \
+    fzf --reverse --height=40% \
+        --header='Select Kubernetes context (none = unset)' \
+        --preview='[[ {} == "(none)" ]] && echo "Unset current context" || kubectl config view --minify --context={} 2>/dev/null | head -20')
+
+  [[ -z "$context" ]] && return 0
+  if [[ "$context" == "(none)" ]]; then
+    kubectl config unset current-context
+    echo "Context unset"
+  else
+    kubectl config use-context "$context"
+  fi
+}
+
+# Switch namespace with fzf
+kns() {
+  local ns
+  ns=$(kubectl get namespaces -o jsonpath='{.items[*].metadata.name}' 2>/dev/null | \
+    tr ' ' '\n' | \
+    fzf --reverse --height=40% \
+        --header='Select namespace' \
+        --preview='kubectl get pods -n {} --no-headers 2>/dev/null | head -20')
+
+  [[ -z "$ns" ]] && return 0
+  kubectl config set-context --current --namespace="$ns"
+  echo "Switched to namespace: $ns"
+}
+
+# Show current context and namespace
+kinfo() {
+  echo "Context:   $(kubectl config current-context 2>/dev/null || echo 'none')"
+  echo "Namespace: $(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null || echo 'default')"
+}
+
+# =============================================================================
+# Devbox wrapper - auto re-add to chezmoi after global changes
+# =============================================================================
+devbox() {
+  command devbox "$@"
+  local ret=$?
+
+  # Re-add devbox global config to chezmoi after modifying commands
+  if [[ "$1" == "global" ]] && [[ "$2" =~ ^(add|rm|install|remove|update)$ ]]; then
+    local devbox_global="${HOME}/.local/share/devbox/global/default"
+    if [[ -f "${devbox_global}/devbox.json" ]]; then
+      chezmoi re-add "${devbox_global}/devbox.json" "${devbox_global}/devbox.lock" 2>/dev/null
+      echo "📦 chezmoi re-add: devbox.json, devbox.lock"
+    fi
+  fi
+
+  return $ret
+}
 
 # =============================================================================
 # macOS specific

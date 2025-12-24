@@ -336,6 +336,25 @@ kinfo() {
 }
 
 # =============================================================================
+# Devbox wrapper - auto re-add to chezmoi after global changes
+# =============================================================================
+devbox() {
+  command devbox "$@"
+  local ret=$?
+
+  # Re-add devbox global config to chezmoi after modifying commands
+  if [[ "$1" == "global" ]] && [[ "$2" =~ ^(add|rm|install|remove|update)$ ]]; then
+    local devbox_global="${HOME}/.local/share/devbox/global/default"
+    if [[ -f "${devbox_global}/devbox.json" ]]; then
+      chezmoi re-add "${devbox_global}/devbox.json" "${devbox_global}/devbox.lock" 2>/dev/null
+      echo "📦 chezmoi re-add: devbox.json, devbox.lock"
+    fi
+  fi
+
+  return $ret
+}
+
+# =============================================================================
 # macOS specific
 # =============================================================================
 # Brewfile management

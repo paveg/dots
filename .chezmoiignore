@@ -45,3 +45,6 @@ homebrew/Brewfile.work
 .zshrc.local
 .config/zsh/local.zsh
 .env.local
+
+# Prevent accidental addition of literal ~ paths
+~

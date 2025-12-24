@@ -29,10 +29,10 @@
     "keychain@latest",
     "mise@latest",
     "pnpm@latest",
-    "kubectl@latest"
+    "kubectl@latest",
+    "git-secrets@latest"
   ],
   "shell": {
-    "init_hook": [
-    ]
+    "init_hook": []
   }
 }

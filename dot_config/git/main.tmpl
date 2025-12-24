@@ -43,24 +43,8 @@
   ui = auto
 
 [alias]
-  a = add
-  aa = add --all
-  b = branch
-  c = commit
-  cm = commit -m
-  co = checkout
-  cob = checkout -b
-  d = diff
-  ds = diff --staged
-  f = fetch
-  l = log --oneline -20
+  # Only aliases for complex commands (simple ones use shell aliases with completion)
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-  p = push
-  pl = pull
-  s = status -sb
-  st = status
-  sw = switch
-  swc = switch -c
   unstage = reset HEAD --
 
 [ghq]

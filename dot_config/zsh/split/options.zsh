@@ -33,5 +33,25 @@ zinit wait lucid light-mode for \
     zstyle ":completion:*" matcher-list "m:{a-z}={A-Z}"
     zstyle ":completion:*" use-cache on
     zstyle ":completion:*" cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
+
+    # Git alias completion
+    compdef g=git
+    compdef _git ga=git-add
+    compdef _git gaa=git-add
+    compdef _git gb=git-branch
+    compdef _git gc=git-commit
+    compdef _git gcm=git-commit
+    compdef _git gco=git-checkout
+    compdef _git gcb=git-checkout
+    compdef _git gd=git-diff
+    compdef _git gds=git-diff
+    compdef _git gf=git-fetch
+    compdef _git gl=git-log
+    compdef _git gp=git-push
+    compdef _git gpl=git-pull
+    compdef _git gs=git-status
+    compdef _git gst=git-status
+    compdef _git gsw=git-switch
+    compdef _git gswc=git-switch
   ' \
     zdharma-continuum/null

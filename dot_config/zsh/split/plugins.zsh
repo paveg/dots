@@ -162,6 +162,14 @@ _zinit_setup_completions() {
     [[ -f "$_pnpm_comp" ]] || pnpm completion zsh > "$_pnpm_comp"
     source "$_pnpm_comp"
   fi
+
+  # kubectl
+  if (( $+commands[kubectl] )); then
+    local _kubectl_comp="$cache_dir/_kubectl"
+    [[ -f "$_kubectl_comp" ]] || kubectl completion zsh > "$_kubectl_comp"
+    source "$_kubectl_comp"
+    compdef k=kubectl
+  fi
 }
 
 zinit wait"1" lucid light-mode for \

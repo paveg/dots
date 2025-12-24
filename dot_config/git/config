@@ -4,7 +4,7 @@
 
 # Work-specific config for C-FO repositories
 [includeIf "gitdir:~/repos/github.com/C-FO/"]
-  path = ~/.config/git/freee
+  path = ~/.config/git/work
 
 # GitHub credential helper (gh auth)
 # Use env to find gh in PATH (works with devbox, homebrew, etc.)
@@ -15,3 +15,17 @@
 [credential "https://gist.github.com"]
   helper =
   helper = !/usr/bin/env gh auth git-credential
+
+# git-secrets: Prevent committing AWS credentials
+# Install hooks per-repo: git secrets --install
+[secrets]
+  providers = git secrets --aws-provider
+  # AWS Access Key ID patterns
+  patterns = (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}
+  # AWS Secret Access Key patterns
+  patterns = (\"|')?(AWS|aws|Aws)?_?(SECRET|secret|Secret)?_?(ACCESS|access|Access)?_?(KEY|key|Key)(\"|')?\\s*(:|=>|=)\\s*(\"|')?[A-Za-z0-9/\\+=]{40}(\"|')?
+  # AWS Account ID patterns
+  patterns = (\"|')?(AWS|aws|Aws)?_?(ACCOUNT|account|Account)_?(ID|id|Id)?(\"|')?\\s*(:|=>|=)\\s*(\"|')?[0-9]{4}\\-?[0-9]{4}\\-?[0-9]{4}(\"|')?
+  # AWS documentation example keys (false positive exclusions)
+  allowed = AKIAIOSFODNN7EXAMPLE
+  allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY

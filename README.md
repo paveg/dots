@@ -76,10 +76,10 @@ dots/
 │       └── devbox.json     # -> ~/.local/share/devbox/global/default/devbox.json
 └── dot_config/
     ├── git/
-    │   ├── config          # -> ~/.config/git/config (conditional includes)
+    │   ├── config          # -> ~/.config/git/config (conditional includes, git-secrets)
     │   ├── main.tmpl       # -> ~/.config/git/main
     │   ├── ignore          # -> ~/.config/git/ignore
-    │   └── freee.tmpl      # -> ~/.config/git/freee (work only)
+    │   └── work.tmpl       # -> ~/.config/git/work (work repos only)
     ├── nvim/               # -> ~/.config/nvim/
     │   ├── init.lua
     │   └── lua/plugins/
@@ -90,6 +90,9 @@ dots/
     │       ├── lsp.lua
     │       ├── completion.lua
     │       └── copilot.lua
+    ├── direnv/
+    │   ├── direnv.toml.tmpl  # -> ~/.config/direnv/direnv.toml (whitelist)
+    │   └── direnvrc        # -> ~/.config/direnv/direnvrc
     ├── starship.toml       # -> ~/.config/starship.toml
     ├── lazygit/config.yml  # -> ~/.config/lazygit/config.yml
     └── ghostty/config      # -> ~/.config/ghostty/config
@@ -122,9 +125,13 @@ dots/
 | just | Task runner |
 | stylua | Lua formatter |
 | shfmt | Shell formatter |
+| shellcheck | Shell script linter |
 | atuin | Shell history sync |
 | keychain | SSH agent manager |
 | mise | Runtime version manager |
+| pnpm | Fast Node.js package manager |
+| kubectl | Kubernetes CLI |
+| git-secrets | Prevent committing secrets |
 
 ## Features
 
@@ -164,6 +171,19 @@ fc-cache -fv
 - GitHub Copilot
 - Telescope fuzzy finder
 - Treesitter
+
+### Security: git-secrets
+Prevents committing AWS credentials and other secrets.
+
+```bash
+# Install hooks in a repository
+git secrets --install
+
+# Scan for secrets
+git secrets --scan
+```
+
+AWS credential patterns are pre-configured globally.
 
 ## Keybindings
 
@@ -242,6 +262,9 @@ direnv allow
 | `dots` | **Show all dotfiles commands and keybindings** |
 | `repos` | ghq + fzf repository navigation |
 | `rub` | Remove merged git branches |
+| `kctx` | Switch Kubernetes context (fzf) |
+| `kns` | Switch Kubernetes namespace (fzf) |
+| `kinfo` | Show current context/namespace |
 | `zsh-bench` | Benchmark shell startup |
 | `zsh-clear-cache` | Clear all zsh caches |
 | `zsh-update-cache` | Regenerate init caches |

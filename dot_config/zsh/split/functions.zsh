@@ -243,6 +243,7 @@ EOF
 # Cache management
 zsh-clear-cache() {
   rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/zsh/completions"
   rm -rf "${XDG_CACHE_HOME}/starship"
   rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
   rm -rf "${XDG_DATA_HOME}/zinit"
@@ -252,6 +253,7 @@ zsh-clear-cache() {
 
 zsh-update-cache() {
   rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/zsh/completions"
   rm -rf "${XDG_CACHE_HOME}/starship"
   rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
   echo "Init cache cleared. Restart shell to regenerate."

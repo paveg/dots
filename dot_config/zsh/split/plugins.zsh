@@ -119,4 +119,53 @@ zinit wait"2" lucid light-mode for \
   atload"_zinit_setup_direnv" \
     zdharma-continuum/null
 
-unset _zsh_cache
+# =============================================================================
+# Tool completions (cached, turbo mode)
+# =============================================================================
+_completions_cache="${XDG_CACHE_HOME}/zsh/completions"
+[[ -d "$_completions_cache" ]] || mkdir -p "$_completions_cache"
+
+_zinit_setup_completions() {
+  local cache_dir="${XDG_CACHE_HOME}/zsh/completions"
+
+  # gh (GitHub CLI)
+  if (( $+commands[gh] )); then
+    local _gh_comp="$cache_dir/_gh"
+    [[ -f "$_gh_comp" ]] || gh completion -s zsh > "$_gh_comp"
+    source "$_gh_comp"
+  fi
+
+  # chezmoi
+  if (( $+commands[chezmoi] )); then
+    local _chezmoi_comp="$cache_dir/_chezmoi"
+    [[ -f "$_chezmoi_comp" ]] || chezmoi completion zsh > "$_chezmoi_comp"
+    source "$_chezmoi_comp"
+  fi
+
+  # just
+  if (( $+commands[just] )); then
+    local _just_comp="$cache_dir/_just"
+    [[ -f "$_just_comp" ]] || just --completions zsh > "$_just_comp"
+    source "$_just_comp"
+  fi
+
+  # mise
+  if (( $+commands[mise] )); then
+    local _mise_comp="$cache_dir/_mise"
+    [[ -f "$_mise_comp" ]] || mise completion zsh > "$_mise_comp"
+    source "$_mise_comp"
+  fi
+
+  # pnpm
+  if (( $+commands[pnpm] )); then
+    local _pnpm_comp="$cache_dir/_pnpm"
+    [[ -f "$_pnpm_comp" ]] || pnpm completion zsh > "$_pnpm_comp"
+    source "$_pnpm_comp"
+  fi
+}
+
+zinit wait"1" lucid light-mode for \
+  atload"_zinit_setup_completions" \
+    zdharma-continuum/null
+
+unset _zsh_cache _completions_cache

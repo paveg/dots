@@ -93,6 +93,8 @@ dots/
     ├── direnv/
     │   ├── direnv.toml.tmpl  # -> ~/.config/direnv/direnv.toml (whitelist)
     │   └── direnvrc        # -> ~/.config/direnv/direnvrc
+    ├── gitleaks/
+    │   └── config.toml     # -> ~/.config/gitleaks/config.toml (global)
     ├── starship.toml       # -> ~/.config/starship.toml
     ├── lazygit/config.yml  # -> ~/.config/lazygit/config.yml
     └── ghostty/config      # -> ~/.config/ghostty/config
@@ -186,7 +188,10 @@ gitleaks protect --staged --verbose
 gitleaks detect --source . --verbose --log-opts="--all"
 ```
 
-800+ built-in detection patterns. Configure with `.gitleaks.toml` per-repo.
+**Configuration:**
+- Global config: `~/.config/gitleaks/config.toml` (auto-loaded via `$GITLEAKS_CONFIG`)
+- Per-repo override: `.gitleaks.toml` in project root
+- 800+ built-in patterns with common false-positive exclusions
 
 ## Keybindings
 

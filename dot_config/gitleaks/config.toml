@@ -1,0 +1,56 @@
+# =============================================================================
+# gitleaks global configuration
+# https://github.com/gitleaks/gitleaks
+# =============================================================================
+title = "Global gitleaks config"
+
+[extend]
+# Use all default rules (800+ patterns)
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for common false positives"
+
+# Paths to ignore (regex patterns)
+paths = [
+  # Test files often contain fake credentials
+  '''.*_test\.go$''',
+  '''.*\.test\.(js|ts|jsx|tsx)$''',
+  '''.*\.spec\.(js|ts|jsx|tsx)$''',
+  '''__tests__/.*''',
+  '''test/.*''',
+  '''tests/.*''',
+
+  # Example/sample files
+  '''\.env\.example$''',
+  '''\.env\.sample$''',
+  '''\.env\.template$''',
+
+  # Documentation
+  '''docs/.*''',
+  '''\.md$''',
+
+  # Lock files (contain hashes, not secrets)
+  '''package-lock\.json$''',
+  '''yarn\.lock$''',
+  '''pnpm-lock\.yaml$''',
+  '''Gemfile\.lock$''',
+  '''poetry\.lock$''',
+  '''go\.sum$''',
+
+  # Vendor/dependencies
+  '''vendor/.*''',
+  '''node_modules/.*''',
+]
+
+# Regex patterns to ignore in content
+regexes = [
+  # AWS example keys from documentation
+  '''AKIAIOSFODNN7EXAMPLE''',
+  '''wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY''',
+
+  # Placeholder patterns
+  '''(your|my|example|test|fake|dummy|placeholder)[-_]?(api[-_]?)?key''',
+  '''<[A-Z_]+>''',
+  '''\$\{[A-Z_]+\}''',
+]

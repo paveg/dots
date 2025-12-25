@@ -131,7 +131,7 @@ dots/
 | mise | Runtime version manager |
 | pnpm | Fast Node.js package manager |
 | kubectl | Kubernetes CLI |
-| git-secrets | Prevent committing secrets |
+| gitleaks | Secret detection (800+ patterns) |
 
 ## Features
 
@@ -172,18 +172,21 @@ fc-cache -fv
 - Telescope fuzzy finder
 - Treesitter
 
-### Security: git-secrets
-Prevents committing AWS credentials and other secrets.
+### Security: gitleaks
+Prevents committing secrets (API keys, tokens, passwords, etc).
 
 ```bash
-# Install hooks in a repository
-git secrets --install
+# Scan repository for secrets
+gitleaks detect --source . --verbose
 
-# Scan for secrets
-git secrets --scan
+# Check staged files before commit
+gitleaks protect --staged --verbose
+
+# Scan git history
+gitleaks detect --source . --verbose --log-opts="--all"
 ```
 
-AWS credential patterns are pre-configured globally.
+800+ built-in detection patterns. Configure with `.gitleaks.toml` per-repo.
 
 ## Keybindings
 

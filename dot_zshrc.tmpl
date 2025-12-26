@@ -51,14 +51,33 @@ auto_tmux_linux() {
   # Only for SSH sessions
   if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
     if (( $+commands[tmux] )); then
-      # Prefer detached sessions, otherwise create new
-      local detached
-      detached=$(tmux list-sessions -F '#{session_name}:#{session_attached}' 2>/dev/null \
-        | grep ':0$' | head -1 | cut -d: -f1)
-      if [[ -n "$detached" ]]; then
-        exec tmux attach-session -t "$detached"
-      else
+      # Get detached sessions
+      local sessions
+      sessions=(${(f)"$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"})
+
+      if (( ${#sessions[@]} == 0 )); then
+        # No sessions: create new
         exec tmux new-session
+      elif (( ${#sessions[@]} == 1 )); then
+        # Single session: attach directly
+        exec tmux attach-session -t "${sessions[1]}"
+      else
+        # Multiple sessions: select with fzf or fallback
+        local selected
+        if (( $+commands[fzf] )); then
+          selected=$(tmux list-sessions -F '#{session_name}: #{session_windows} windows (#{session_created_string})' 2>/dev/null \
+            | fzf --height=40% --reverse --header="Select tmux session (ESC for new)" \
+            | cut -d: -f1)
+        else
+          # Fallback: attach to first session if fzf unavailable
+          selected="${sessions[1]}"
+        fi
+
+        if [[ -n "$selected" ]]; then
+          exec tmux attach-session -t "$selected"
+        else
+          exec tmux new-session
+        fi
       fi
     fi
   fi

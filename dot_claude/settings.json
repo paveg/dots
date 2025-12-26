@@ -60,9 +60,6 @@
     "javascript-typescript@claude-code-workflows": true,
     "backend-development@claude-code-workflows": true,
     "frontend-mobile-development@claude-code-workflows": true,
-    "feature-dev@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
     "example-skills@anthropic-agent-skills": true
   },
   "alwaysThinkingEnabled": true

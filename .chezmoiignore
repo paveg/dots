@@ -15,7 +15,6 @@ devbox.lock
 
 # CI/IDE directories
 .github/
-.claude/
 
 # macOS specific
 {{ if ne .chezmoi.os "darwin" }}
@@ -45,6 +44,26 @@ homebrew/Brewfile.work
 .zshrc.local
 .config/zsh/local.zsh
 .env.local
+
+# Claude Code - runtime/sensitive data (never add these)
+.claude/.anthropic/
+.claude/.claude.json
+.claude/debug/
+.claude/downloads/
+.claude/file-history/
+.claude/history.jsonl
+.claude/ide/
+.claude/image-cache/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/security_warnings_state_*.json
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/stats-cache.json
+.claude/statsig/
+.claude/telemetry/
+.claude/todos/
 
 # Prevent accidental addition of literal ~ paths
 ~

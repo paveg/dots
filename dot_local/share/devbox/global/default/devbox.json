@@ -30,7 +30,8 @@
     "mise@latest",
     "pnpm@latest",
     "kubectl@latest",
-    "gitleaks@latest"
+    "gitleaks@latest",
+    "glow@latest"
   ],
   "shell": {
     "init_hook": []

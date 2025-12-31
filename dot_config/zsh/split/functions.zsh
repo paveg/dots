@@ -36,6 +36,10 @@ _fzf_cd_ghq() {
   local root repo
   root="$(command ghq root 2>/dev/null)" || return 1
 
+  # Save original buffer state for restoration on cancel
+  local orig_buffer="$BUFFER"
+  local orig_cursor="$CURSOR"
+
   # Ensure cache exists
   [[ ! -f "$_GHQ_CACHE" ]] && _ghq_cache_update
 
@@ -60,17 +64,23 @@ _fzf_cd_ghq() {
         --preview="$preview_cmd" \
         --preview-window=right:50%)"
 
-  # Handle ESC or empty selection
+  # Handle ESC or empty selection - restore original buffer
   if [[ -z "$repo" ]]; then
+    BUFFER="$orig_buffer"
+    CURSOR="$orig_cursor"
     zle reset-prompt
     return 0
   fi
 
   local dir="$root/$repo"
   if [[ -d "$dir" ]]; then
+    # Clear buffer completely before setting new command
+    BUFFER=""
     BUFFER="cd \"$dir\""
     zle accept-line
   else
+    BUFFER="$orig_buffer"
+    CURSOR="$orig_cursor"
     zle -M "Directory not found: $dir"
     zle reset-prompt
   fi

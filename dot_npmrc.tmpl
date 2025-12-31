@@ -17,10 +17,10 @@ resolution-mode=highest
 node-linker=isolated
 
 # Storage
-store-dir=~/.local/share/pnpm/store
-global-dir=~/.local/share/pnpm/global
-state-dir=~/.local/share/pnpm/state
-cache-dir=~/.local/share/pnpm/cache
+store-dir={{ .chezmoi.homeDir }}/.local/share/pnpm/store
+global-dir={{ .chezmoi.homeDir }}/.local/share/pnpm/global
+state-dir={{ .chezmoi.homeDir }}/.local/share/pnpm/state
+cache-dir={{ .chezmoi.homeDir }}/.local/share/pnpm/cache
 modules-cache-max-age=10080
 
 # Network

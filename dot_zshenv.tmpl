@@ -46,6 +46,10 @@ export PATH="$HOME/.local/bin:$PATH"
 # Go binaries (default GOPATH is ~/go)
 export PATH="${PATH}:${HOME}/go/bin"
 
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # Devbox global (must be in zshenv for non-interactive shells like Claude Code)
 _devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
 if [[ -f "$_devbox_cache" ]]; then

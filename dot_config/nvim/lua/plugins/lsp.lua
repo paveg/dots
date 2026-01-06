@@ -28,6 +28,7 @@ return {
           "gopls",
           "rust_analyzer",
           "pyright",
+          "ruby_lsp",
         },
         automatic_installation = true,
       })
@@ -118,8 +119,13 @@ return {
         capabilities = capabilities,
       }
 
+      -- Ruby
+      vim.lsp.config.ruby_lsp = {
+        capabilities = capabilities,
+      }
+
       -- Enable all configured servers
-      vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "rust_analyzer", "pyright" })
+      vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "rust_analyzer", "pyright", "ruby_lsp" })
     end,
   },
 
@@ -150,6 +156,7 @@ return {
         go = { "gofumpt", "goimports" },
         python = { "black" },
         rust = { "rustfmt" },
+        ruby = { "rubocop" },
       },
       format_on_save = {
         timeout_ms = 500,

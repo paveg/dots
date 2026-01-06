@@ -5,6 +5,14 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- =============================================================================
+-- Disable unused providers
+-- =============================================================================
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- =============================================================================
 -- Options
 -- =============================================================================
 local opt = vim.opt
@@ -112,5 +120,8 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", {
   change_detection = {
     notify = false,
+  },
+  rocks = {
+    enabled = false,
   },
 })

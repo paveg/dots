@@ -39,6 +39,12 @@ return {
     opts = {},
   },
 
+  -- Icons (used by which-key and other plugins)
+  {
+    "echasnovski/mini.icons",
+    opts = {},
+  },
+
   -- Which-key (keybinding hints)
   {
     "folke/which-key.nvim",
@@ -55,13 +61,18 @@ return {
     },
   },
 
+  -- Notifications
+  {
+    "rcarriga/nvim-notify",
+    opts = {},
+  },
+
   -- Noice (better UI for messages, cmdline, popupmenu)
   {
     "folke/noice.nvim",
     event = "VeryLazy",
     dependencies = {
       "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
     },
     opts = {
       lsp = {

@@ -31,7 +31,8 @@
     "pnpm@latest",
     "kubectl@latest",
     "gitleaks@latest",
-    "glow@latest"
+    "glow@latest",
+    "tree-sitter@latest"
   ],
   "shell": {
     "init_hook": []

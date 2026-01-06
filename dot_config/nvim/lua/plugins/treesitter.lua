@@ -1,57 +1,14 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false, -- treesitter does not support lazy-loading
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
     config = function()
-      local ensure_installed = {
-        "bash",
-        "c",
-        "css",
-        "diff",
-        "dockerfile",
-        "go",
-        "gomod",
-        "gosum",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "luadoc",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "ruby",
-        "rust",
-        "toml",
-        "tsx",
-        "typescript",
-        "vim",
-        "vimdoc",
-        "yaml",
-      }
-
-      -- Auto-install parsers
+      -- Enable treesitter highlighting on FileType
       vim.api.nvim_create_autocmd("FileType", {
-        callback = function()
-          local ft = vim.bo.filetype
-          local lang = vim.treesitter.language.get_lang(ft) or ft
-          if vim.tbl_contains(ensure_installed, lang) then
-            pcall(function()
-              if not pcall(vim.treesitter.language.inspect, lang) then
-                vim.cmd("TSInstall " .. lang)
-              end
-            end)
-          end
-        end,
-      })
-
-      -- Enable treesitter highlighting
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function()
-          pcall(vim.treesitter.start)
+        group = vim.api.nvim_create_augroup("treesitter_setup", { clear = true }),
+        callback = function(event)
+          pcall(vim.treesitter.start, event.buf)
         end,
       })
     end,

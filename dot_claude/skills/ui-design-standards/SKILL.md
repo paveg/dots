@@ -24,13 +24,18 @@ Match design specifications exactly:
 
 ### 2. Component Architecture
 
-Build with clean, reusable components:
+Apply OOP principles to UI development:
+
+- **Single Responsibility**: Each component does one thing well
+- **Open/Closed**: Extend via props/composition, not modification
+- **Encapsulation**: Internal state hidden, clean public interface
+- **Composition over Inheritance**: Compose small components
 
 ```
-// Good: Reusable, props-driven
+// Good: Reusable, props-driven, single responsibility
 <Button variant="primary" size="lg">Submit</Button>
 
-// Bad: One-off, hardcoded
+// Bad: One-off, hardcoded, mixed concerns
 <button style="background: #3b82f6; padding: 12px 24px;">Submit</button>
 ```
 

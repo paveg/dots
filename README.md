@@ -71,6 +71,7 @@ dots/
 ├── .chezmoiignore          # OS-specific ignores
 ├── dot_zshenv.tmpl         # -> ~/.zshenv
 ├── dot_zshrc.tmpl          # -> ~/.zshrc
+├── dot_p10k.zsh            # -> ~/.p10k.zsh (powerlevel10k config)
 ├── dot_local/
 │   └── share/devbox/global/default/
 │       └── devbox.json     # -> ~/.local/share/devbox/global/default/devbox.json
@@ -162,10 +163,16 @@ fc-cache -fv
 ```
 
 ### Shell: zsh + zinit turbo mode
-- Fast startup (~50ms)
+- Fast startup (~50ms) with powerlevel10k instant prompt
+- Powerlevel10k prompt (Nerd Font icons, git status)
 - Syntax highlighting
 - Autosuggestions
 - Auto tmux on Linux SSH
+
+**Prompt customization:**
+```bash
+p10k configure  # Run the configuration wizard
+```
 
 ### Editor: Neovim (kickstart-based)
 - LSP support (Mason)

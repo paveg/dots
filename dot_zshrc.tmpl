@@ -116,8 +116,8 @@ if [[ -z "$SSH_AUTH_SOCK" ]]; then
   [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
 fi
 
-# Load keys into agent
-ssh-add --apple-load-keychain 2>/dev/null
+# Load keys into agent (only if agent is available)
+[[ -S "$SSH_AUTH_SOCK" ]] && ssh-add --apple-load-keychain &>/dev/null
 {{- else }}
 # Linux: Use keychain for SSH agent management
 if command -v keychain &>/dev/null; then

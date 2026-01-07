@@ -95,7 +95,7 @@ dots/
     │   └── direnvrc        # -> ~/.config/direnv/direnvrc
     ├── gitleaks/
     │   └── config.toml     # -> ~/.config/gitleaks/config.toml (global)
-    ├── starship.toml       # -> ~/.config/starship.toml
+    ├── zsh/split/          # -> included in ~/.zshrc (plugins, options, etc.)
     ├── lazygit/config.yml  # -> ~/.config/lazygit/config.yml
     └── ghostty/config      # -> ~/.config/ghostty/config
 ├── .ssh/
@@ -118,7 +118,6 @@ dots/
 | bat | Better cat |
 | eza | Better ls |
 | zoxide | Smart cd |
-| starship | Cross-shell prompt |
 | lazygit | Git TUI |
 | direnv | Per-directory env vars |
 | jq | JSON processor |

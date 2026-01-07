@@ -200,7 +200,7 @@ dots() {
 📁 Config Locations
   ~/.config/nvim/      Neovim (kickstart + Copilot)
   ~/.config/git/       Git (delta, conditional includes)
-  ~/.config/starship.toml  Prompt
+  ~/.p10k.zsh              Prompt (powerlevel10k)
   ~/.config/lazygit/   Git TUI (conventional commits)
   ~/.config/ghostty/   Terminal (Catppuccin Mocha, OSC 52)
   ~/.config/atuin/     Shell history (fuzzy search)
@@ -270,7 +270,8 @@ EOF
 zsh-clear-cache() {
   rm -rf "${XDG_CACHE_HOME}/zsh/init"
   rm -rf "${XDG_CACHE_HOME}/zsh/completions"
-  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -rf "${XDG_CACHE_HOME}/p10k"*
+  rm -rf "${XDG_CACHE_HOME}/gitstatus"
   rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
   rm -rf "${XDG_DATA_HOME}/zinit"
   echo "All cache cleared. Restart shell to reinstall zinit."
@@ -280,7 +281,8 @@ zsh-clear-cache() {
 zsh-update-cache() {
   rm -rf "${XDG_CACHE_HOME}/zsh/init"
   rm -rf "${XDG_CACHE_HOME}/zsh/completions"
-  rm -rf "${XDG_CACHE_HOME}/starship"
+  rm -rf "${XDG_CACHE_HOME}/p10k"*
+  rm -rf "${XDG_CACHE_HOME}/gitstatus"
   rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
   echo "Init cache cleared. Restart shell to regenerate."
 }

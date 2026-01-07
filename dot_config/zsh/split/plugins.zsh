@@ -31,7 +31,9 @@ zinit wait lucid light-mode for \
 # =============================================================================
 # Powerlevel10k prompt
 # =============================================================================
-zinit ice depth=1
+# depth=1: shallow clone for speed
+# nocompile: p10k handles its own compilation, avoid zinit hook conflict
+zinit ice depth=1 nocompile
 zinit light romkatv/powerlevel10k
 
 # =============================================================================

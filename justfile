@@ -67,6 +67,6 @@ update:
 # Clean all caches
 clean:
     @rm -rf ~/.cache/zsh/init
-    @rm -rf ~/.cache/starship
+    @rm -rf ~/.cache/p10k*
     @rm -f ~/.cache/devbox/shellenv.zsh
     @echo "✓ Cache cleared. Restart shell."

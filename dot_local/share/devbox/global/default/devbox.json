@@ -14,7 +14,6 @@
     "bat@latest",
     "eza@latest",
     "zoxide@latest",
-    "starship@latest",
     "lazygit@latest",
     "direnv@latest",
     "jq@latest",

@@ -20,10 +20,13 @@ if [[ -n "$TMUX" ]] && [[ "$TERM" != "screen-256color" ]]; then
 fi
 
 # =============================================================================
-# Instant prompt (show prompt immediately, load rest async)
+# Powerlevel10k instant prompt
 # =============================================================================
-if [[ -r "${XDG_CACHE_HOME}/starship/init.zsh" ]]; then
-  source "${XDG_CACHE_HOME}/starship/init.zsh"
+# Enable instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # =============================================================================
@@ -113,8 +116,8 @@ if [[ -z "$SSH_AUTH_SOCK" ]]; then
   [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
 fi
 
-# Load keys into agent
-ssh-add --apple-load-keychain 2>/dev/null
+# Load keys into agent (only if agent is available)
+[[ -S "$SSH_AUTH_SOCK" ]] && ssh-add --apple-load-keychain &>/dev/null
 {{- else }}
 # Linux: Use keychain for SSH agent management
 if command -v keychain &>/dev/null; then
@@ -160,3 +163,9 @@ esac
 # =============================================================================
 # Add work-specific configurations here
 {{ end }}
+
+# =============================================================================
+# Powerlevel10k configuration
+# =============================================================================
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

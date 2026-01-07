@@ -29,21 +29,18 @@ zinit wait lucid light-mode for \
   zsh-users/zsh-history-substring-search
 
 # =============================================================================
+# Powerlevel10k prompt
+# =============================================================================
+# depth=1: shallow clone for speed
+# nocompile: p10k handles its own compilation, avoid zinit hook conflict
+zinit ice depth=1 nocompile
+zinit light romkatv/powerlevel10k
+
+# =============================================================================
 # Tool initialization (turbo mode)
 # =============================================================================
 _zsh_cache="${XDG_CACHE_HOME}/zsh/init"
 [[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
-
-# Starship cache regeneration (already sourced at startup via instant prompt)
-# See lines 20-22 for instant prompt loading from ${XDG_CACHE_HOME}/starship/init.zsh
-if (( $+commands[starship] )); then
-  _starship_cache="${XDG_CACHE_HOME}/starship/init.zsh"
-  if [[ ! -f "$_starship_cache" ]]; then
-    mkdir -p "${XDG_CACHE_HOME}/starship"
-    starship init zsh --print-full-init > "$_starship_cache"
-    source "$_starship_cache"  # Only source if cache was just created
-  fi
-fi
 
 # zoxide (turbo)
 _zinit_setup_zoxide() {

@@ -7,6 +7,15 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 # =============================================================================
+# Homebrew safety
+# =============================================================================
+# Prevent accidental installation of tools managed by other package managers
+# - node/npm/pnpm/yarn: use devbox or mise
+# - python/pip: use uv
+# - claude: use npm -g
+export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude"
+
+# =============================================================================
 # Terminal compatibility
 # =============================================================================
 # Fall back to xterm-256color if terminfo is missing (e.g., SSH to older servers)

@@ -1,0 +1,5 @@
+# uv configuration
+# https://docs.astral.sh/uv/reference/settings/
+
+# Use only uv-managed Python installations (never use system Python)
+python-preference = "only-managed"

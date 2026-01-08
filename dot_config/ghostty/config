@@ -5,6 +5,7 @@
 font-family = "UDEV Gothic NF"
 font-size = 16
 font-thicken = true
+font-feature = -dlig
 
 # Fix Japanese character rendering
 freetype-load-flags = no-hinting

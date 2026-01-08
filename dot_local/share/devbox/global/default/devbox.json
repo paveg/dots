@@ -3,7 +3,6 @@
   "packages": [
     "go@1.25",
     "nodejs@24",
-    "python@3.13",
     "neovim@0.11",
     "git@latest",
     "tmux@latest",
@@ -31,7 +30,8 @@
     "kubectl@latest",
     "gitleaks@latest",
     "glow@latest",
-    "tree-sitter@latest"
+    "tree-sitter@latest",
+    "uv@latest"
   ],
   "shell": {
     "init_hook": []

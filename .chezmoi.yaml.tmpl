@@ -21,8 +21,8 @@ data:
   email: {{ $email | quote }}
   work_email: {{ $workEmail | quote }}
 
-  # Auto tmux on Linux SSH sessions
-  auto_tmux_linux: {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
+  # Auto tmux on SSH sessions (all platforms)
+  auto_tmux_ssh: true
 
   # XDG directories
   xdg_config_home: "{{ .chezmoi.homeDir }}/.config"

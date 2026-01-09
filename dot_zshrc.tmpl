@@ -52,11 +52,11 @@ if command -v mise &>/dev/null; then
   eval "$(mise activate zsh)"
 fi
 
-{{ if .auto_tmux_linux -}}
+{{ if .auto_tmux_ssh -}}
 # =============================================================================
-# Auto tmux on Linux SSH sessions
+# Auto tmux on SSH sessions
 # =============================================================================
-auto_tmux_linux() {
+auto_tmux_ssh() {
   # Skip if already in tmux
   [[ -n "$TMUX" ]] && return 0
   # Skip if not interactive
@@ -99,7 +99,7 @@ auto_tmux_linux() {
     fi
   fi
 }
-auto_tmux_linux
+auto_tmux_ssh
 {{ end -}}
 
 {{ include "dot_config/zsh/split/plugins.zsh" }}

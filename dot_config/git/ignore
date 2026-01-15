@@ -36,3 +36,5 @@ devbox.lock
 
 # Claude
 **/.claude/settings.local.json
+
+sourcemaps

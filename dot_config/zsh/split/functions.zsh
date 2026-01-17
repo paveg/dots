@@ -74,10 +74,10 @@ _fzf_cd_ghq() {
 
   local dir="$root/$repo"
   if [[ -d "$dir" ]]; then
-    # Clear buffer completely before setting new command
-    BUFFER=""
-    BUFFER="cd \"$dir\""
-    zle accept-line
+    # Execute cd directly instead of through BUFFER
+    # This avoids issues with stray input being left in the zle buffer
+    cd "$dir"
+    zle reset-prompt
   else
     BUFFER="$orig_buffer"
     CURSOR="$orig_cursor"

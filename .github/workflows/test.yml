@@ -6,9 +6,52 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      shell: ${{ steps.filter.outputs.shell }}
+      lua: ${{ steps.filter.outputs.lua }}
+      nvim: ${{ steps.filter.outputs.nvim }}
+      devbox: ${{ steps.filter.outputs.devbox }}
+      chezmoi: ${{ steps.filter.outputs.chezmoi }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shell:
+              - 'dot_zshrc.tmpl'
+              - 'dot_zshenv.tmpl'
+              - 'install.sh'
+              - '.chezmoiscripts/**'
+              - '.github/workflows/**'
+            lua:
+              - 'dot_config/nvim/**/*.lua'
+              - '.github/workflows/**'
+            nvim:
+              - 'dot_config/nvim/**'
+              - '.github/workflows/**'
+            devbox:
+              - 'dot_local/share/devbox/global/default/devbox.json'
+              - '.github/workflows/**'
+            chezmoi:
+              - '**/*.tmpl'
+              - '.chezmoi*'
+              - 'dot_config/**'
+              - 'private_dot_ssh/**'
+              - '.github/workflows/**'
+
   format:
     name: Format Check
+    needs: changes
+    if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true' || needs.changes.outputs.devbox == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +105,8 @@ jobs:
 
   lint:
     name: Lint
+    needs: changes
+    if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -100,6 +145,8 @@ jobs:
 
   chezmoi-linux:
     name: Chezmoi (Linux, ${{ matrix.env_name }})
+    needs: changes
+    if: needs.changes.outputs.chezmoi == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -141,6 +188,8 @@ jobs:
 
   chezmoi-macos:
     name: Chezmoi (macOS, ${{ matrix.env_name }})
+    needs: changes
+    if: needs.changes.outputs.chezmoi == 'true'
     runs-on: macos-latest
     strategy:
       matrix:
@@ -181,6 +230,8 @@ jobs:
 
   devbox:
     name: Devbox Validation
+    needs: changes
+    if: needs.changes.outputs.devbox == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -204,6 +255,8 @@ jobs:
 
   neovim:
     name: Neovim Config
+    needs: changes
+    if: needs.changes.outputs.nvim == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

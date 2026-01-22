@@ -279,3 +279,26 @@ jobs:
 
       - name: Validate init.lua
         run: nvim --headless -c 'lua print("init.lua OK")' -c 'qall' 2>&1
+
+  # Aggregator job for branch protection
+  # This job always runs and reports success only if all required jobs passed or were skipped
+  ci-complete:
+    name: CI Complete
+    needs: [format, lint, chezmoi-linux, chezmoi-macos, devbox, neovim]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+
+          for result in $RESULTS; do
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "❌ CI failed: found $result"
+              exit 1
+            fi
+          done
+
+          echo "✅ CI complete: all jobs passed or were skipped"

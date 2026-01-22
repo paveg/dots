@@ -7,6 +7,8 @@ description: Create viral X/Twitter posts based on the official X algorithm (Pho
 
 Create high-engagement X/Twitter posts based on insights from X's public algorithm (Phoenix/Grok scoring system).
 
+> **Reference**: This skill is based on insights from [x-algorithm](https://github.com/xai-org/x-algorithm) - X's open-source recommendation algorithm.
+
 ## Algorithm Fundamentals
 
 ### Scoring Signals (by importance)

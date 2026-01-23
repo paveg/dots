@@ -4,6 +4,15 @@
 # This runs for login shells BEFORE .zshrc
 # Use for environment setup that must happen early (e.g., TERM fixes)
 
+{{- if .business_use }}
+# =============================================================================
+# Homebrew (business use)
+# =============================================================================
+if [[ -x "{{ .homebrew_prefix }}/bin/brew" ]]; then
+  eval "$({{ .homebrew_prefix }}/bin/brew shellenv)"
+fi
+{{- end }}
+
 # =============================================================================
 # Terminal compatibility (Ghostty fallback)
 # =============================================================================

@@ -39,6 +39,11 @@
       "mcp__supabase__execute_sql"
     ]
   },
+{{- if .business_use }}
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.inhouse-flugel.freee.co.jp/proxy/anthropic_pass_through"
+  },
+{{- end }}
   "statusLine": {
     "type": "command",
     "command": "pnpx ccusage statusline",

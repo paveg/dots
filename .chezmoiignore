@@ -38,6 +38,7 @@ homebrew/
 {{ if not .business_use }}
 .config/git/freee
 homebrew/Brewfile.work
+.claude/rules/pr-size.md
 {{ end }}
 
 # Local files (never managed by chezmoi)

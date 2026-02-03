@@ -39,6 +39,7 @@ homebrew/
 .config/git/freee
 homebrew/Brewfile.work
 .claude/rules/pr-size.md
+.claude/skills/acli/
 {{ end }}
 
 # Local files (never managed by chezmoi)

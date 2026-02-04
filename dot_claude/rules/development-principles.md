@@ -27,6 +27,12 @@ alwaysApply: true
 - Do not speculate on specifications — ask or investigate
 - Admit uncertainty rather than guessing
 
+## Configuration Changes
+
+- Before modifying allow/deny patterns or access controls, state the intended behavior explicitly
+- Deny rules should be narrow and specific — block only the dangerous cases
+- Verify the change doesn't break normal usage (dry-run or test examples)
+
 ## Comments
 
 - Write "why", not "what"

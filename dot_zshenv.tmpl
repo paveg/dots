@@ -50,6 +50,9 @@ export PATH="${PATH}:${HOME}/go/bin"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# MoonBit
+export PATH="$HOME/.moon/bin:$PATH"
+
 # Devbox global (must be in zshenv for non-interactive shells like Claude Code)
 _devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
 if [[ -f "$_devbox_cache" ]]; then

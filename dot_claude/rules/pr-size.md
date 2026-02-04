@@ -2,33 +2,33 @@
 alwaysApply: true
 ---
 
-# PR/コミットサイズガイドライン
+# PR/Commit Size Guidelines
 
-## 基本原則
+## Principles
 
-- PRは**動作確認可能な最小単位**で作成
-- レビュアーが1回で理解できる量に収める
+- Create PRs in the **smallest shippable unit**
+- Keep changes reviewable in a single sitting
 
-## サイズ目安
+## Size Targets
 
-| 言語 | 警告 | 分割検討 |
-|------|------|----------|
-| Ruby/TS | 400行 | 600行 |
-| Go/Java | 600行 | 1000行 |
+| Language | Warning | Consider Splitting |
+|----------|---------|-------------------|
+| Ruby/TS  | 400 LOC | 600 LOC           |
+| Go/Java  | 600 LOC | 1000 LOC          |
 
-**実質ロジック**（生成コード・テストデータ除く）は**300行以下**を目安。
+**Effective logic** (excluding generated code and test data) should stay **under 300 LOC**.
 
-## 分割判断
+## When to Split
 
-- 複数の独立した機能変更が含まれる
-- レビューに1時間以上かかりそう
+- Multiple independent functional changes in one PR
+- Review would take over an hour
 
-## コミット粒度
+## Commit Granularity
 
-1コミット = 1つの論理的変更（100-200行目安）
+1 commit = 1 logical change (target 100-200 LOC)
 
-## PRが大きくなる場合
+## When a PR Is Unavoidably Large
 
-PR説明に記載：
-- 総変更行数 / 実質ロジック行数
-- 核心部分（要注意）と機械的変更（軽く見てOK）を明示
+Include in the PR description:
+- Total LOC changed / effective logic LOC
+- Which parts are core changes (need careful review) vs mechanical changes (skim OK)

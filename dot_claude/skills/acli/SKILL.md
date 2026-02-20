@@ -26,18 +26,30 @@ AskUserQuestion examples:
 **Important**: Always verify the parent ticket exists before creating sub-tasks:
 
 ```bash
-acli jira workitem view --key PROJ-100
+acli jira workitem view PROJ-100
 ```
 
 ## Quick Reference
 
 | Operation | Command |
 |-----------|---------|
-| View | `acli jira workitem view --key KEY-123` |
+| View | `acli jira workitem view KEY-123` (positional arg, NOT `--key`) |
+| View (JSON) | `acli jira workitem view KEY-123 --json` |
+| View (fields) | `acli jira workitem view KEY-123 --fields summary,description` |
 | Create | `acli jira workitem create --from-json file.json` |
-| Edit | `acli jira workitem edit --from-json file.json --yes` |
+| Create (inline) | `acli jira workitem create --project PROJ --type Task --summary "Title"` |
+| Edit | `acli jira workitem edit --key "KEY-123" --summary "New title" --yes` |
+| Edit (JSON) | `acli jira workitem edit --from-json file.json --yes` |
 | Search | `acli jira workitem search --jql "project = PROJ"` |
-| Delete | `acli jira workitem delete --key KEY-123` (requires confirmation) |
+| Search (count) | `acli jira workitem search --jql "project = PROJ" --count` |
+| Delete | `acli jira workitem delete --key KEY-123 --yes` |
+| Transition | `acli jira workitem transition --key KEY-123 --status "Done" --yes` |
+
+### Syntax Differences (important!)
+
+- **`view`**: Uses **positional argument** — `view KEY-123` (no `--key` flag)
+- **`edit`/`delete`/`transition`**: Uses **`--key` flag** — `edit --key KEY-123`
+- **`create`**: Uses **`--project`/`--type`/`--summary`** or `--from-json`
 
 ## Ticket Templates
 
@@ -45,7 +57,7 @@ When creating tickets, ask user for reference tickets to match existing style:
 
 ```bash
 # Check existing ticket format
-acli jira workitem view --key PROJ-50
+acli jira workitem view PROJ-50
 ```
 
 ### Standard Ticket Structure
@@ -185,9 +197,13 @@ acli jira workitem edit --from-json /tmp/edit.json --yes
 
 **Important flags:**
 - `--yes`: Skip confirmation prompt (required for automation)
-- `--from-json`: Use JSON file with `issues` array
+- `--key`: Specify target issues inline (e.g., `--key "KEY-1,KEY-2"`)
+- `--from-json`: Use JSON file with `issues` array for complex edits (ADF descriptions)
 
-**Common mistake:** `--key` and `--from-json` cannot be used together. Use `issues` array inside JSON instead.
+**Common mistakes:**
+- `--key` and `--from-json` cannot be used together — use `issues` array inside JSON instead
+- For simple field edits (summary, assignee), prefer inline: `edit --key KEY-123 --summary "New" --yes`
+- For description edits (ADF), use `--from-json` with `issues` array in JSON
 
 ## Linking Issues
 
@@ -233,14 +249,14 @@ Include all keys in `issues` array:
 ### Create Task Under Epic
 
 1. Ask user for project key and parent Epic
-2. Verify parent Epic exists: `acli jira workitem view --key EPIC-KEY`
+2. Verify parent Epic exists: `acli jira workitem view EPIC-KEY`
 3. Ask if there are reference tickets for format
 4. Generate JSON with `parentIssueId`
 5. Create with `--from-json`
 
 ### Update Ticket Description
 
-1. View current ticket: `acli jira workitem view --key PROJ-123`
+1. View current ticket: `acli jira workitem view PROJ-123`
 2. Generate edit JSON with `issues` array
 3. Include new ADF description
 4. Run with `--yes` flag
@@ -255,8 +271,9 @@ Include all keys in `issues` array:
 
 | Error | Cause | Solution |
 |-------|-------|----------|
+| `unknown flag: --key` on `view` | `view` takes positional arg | Use `view KEY-123` not `view --key KEY-123` |
 | `INVALID_INPUT` | Bad ADF format | Validate JSON structure |
-| `flags cannot be used together` | `--key` with `--from-json` | Use `issues` array in JSON |
+| `flags cannot be used together` | `--key` with `--from-json` on `edit` | Use `issues` array in JSON |
 | Markdown not rendering | Plain text description | Use ADF format |
 | Confirmation prompt blocking | Missing `--yes` | Add `--yes` flag |
 | `Issue does not exist` | Wrong key or no permission | Verify key with `view` first |

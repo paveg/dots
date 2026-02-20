@@ -49,7 +49,9 @@ acli jira workitem view PROJ-100
 
 - **`view`**: Uses **positional argument** — `view KEY-123` (no `--key` flag)
 - **`edit`/`delete`/`transition`**: Uses **`--key` flag** — `edit --key KEY-123`
+- **`search`**: Uses **`--jql` flag** — `search --jql "project = PROJ"` (NOT positional)
 - **`create`**: Uses **`--project`/`--type`/`--summary`** or `--from-json`
+- **`edit` with JSON**: Uses **`--from-json`** (NOT `--file`)
 
 ## Ticket Templates
 
@@ -272,11 +274,14 @@ Include all keys in `issues` array:
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `unknown flag: --key` on `view` | `view` takes positional arg | Use `view KEY-123` not `view --key KEY-123` |
+| JQL passed as positional arg to `search` | `search` requires `--jql` flag | Use `search --jql "..."` not `search "..."` |
+| `unknown flag: --file` on `edit` | Flag does not exist | Use `--from-json` not `--file` |
 | `INVALID_INPUT` | Bad ADF format | Validate JSON structure |
 | `flags cannot be used together` | `--key` with `--from-json` on `edit` | Use `issues` array in JSON |
 | Markdown not rendering | Plain text description | Use ADF format |
-| Confirmation prompt blocking | Missing `--yes` | Add `--yes` flag |
+| Confirmation prompt blocking | Missing `--yes` | Add `--yes` flag for non-interactive environments |
 | `Issue does not exist` | Wrong key or no permission | Verify key with `view` first |
+| JQL `!=` operator errors | Operator or quoting issue | Use `NOT IN (Done, Canceled)` instead of `!= Done` |
 
 ## References
 

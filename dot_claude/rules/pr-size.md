@@ -2,33 +2,21 @@
 alwaysApply: true
 ---
 
-# PR/Commit Size Guidelines
+# PR Size
 
-## Principles
+## The One Rule
 
-- Create PRs in the **smallest shippable unit**
-- Keep changes reviewable in a single sitting
+Effective logic (excluding generated code, tests, data) per PR: **≤ 300 LOC**.
 
-## Size Targets
+## Before Creating a PR, Ask:
 
-| Language | Warning | Consider Splitting |
-|----------|---------|-------------------|
-| Ruby/TS  | 400 LOC | 600 LOC           |
-| Go/Java  | 600 LOC | 1000 LOC          |
-
-**Effective logic** (excluding generated code and test data) should stay **under 300 LOC**.
-
-## When to Split
-
-- Multiple independent functional changes in one PR
-- Review would take over an hour
+1. Is effective logic ≤ 300 LOC?
+   - YES → proceed
+   - NO → split independent changes into separate PRs
+2. Does this PR serve a single "why"? (1 PR = 1 purpose)
+   - Multiple purposes → split
+3. Unavoidably large → label core changes vs mechanical changes in the PR description
 
 ## Commit Granularity
 
-1 commit = 1 logical change (target 100-200 LOC)
-
-## When a PR Is Unavoidably Large
-
-Include in the PR description:
-- Total LOC changed / effective logic LOC
-- Which parts are core changes (need careful review) vs mechanical changes (skim OK)
+1 commit = 1 logical change (100-200 LOC)

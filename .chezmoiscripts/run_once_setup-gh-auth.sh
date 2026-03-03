@@ -22,6 +22,6 @@ if gh auth status &>/dev/null; then
 fi
 
 echo "Setting up gh authentication via 1Password..."
-op read "op://GH Token/token" | gh auth login --with-token
+op read "op://Dotfiles/GH Token/token" | gh auth login --with-token
 
 echo "gh authentication complete"

@@ -38,6 +38,9 @@ color=always
 engine-strict=true
 save-exact=true
 
-# Auth (token from environment variable)
-//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+{{- if ne .npm_token "" }}
+
+# Auth (from 1Password)
+//registry.npmjs.org/:_authToken={{ .npm_token }}
+{{- end }}
 

@@ -70,7 +70,9 @@
     "example-skills@anthropic-agent-skills": true,
     "code-simplifier@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": false
+    "swift-lsp@claude-plugins-official": false{{- if .business_use }},
+    "code-flow@freee-ccplugins-marketplace": true
+{{- end }}
   },
   "alwaysThinkingEnabled": true,
   "language": "Follow the user's input language. Prioritize accuracy. Think step-by-step. Do not guess—ask or investigate when uncertain."

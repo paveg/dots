@@ -4,22 +4,35 @@
 {{- end -}}
 
 {{- $businessUse := env "BUSINESS_USE" | not | not -}}
+{{- $hasOp := lookPath "op" | not | not -}}
 
-{{- $name := promptStringOnce . "name" "Your name" -}}
-{{- $email := promptStringOnce . "email" "Your email (personal)" -}}
+{{- $name := "" -}}
+{{- $email := "" -}}
 {{- $workEmail := "" -}}
-{{- if $businessUse -}}
-{{-   $workEmail = promptStringOnce . "work_email" "Your work email" -}}
+{{- $npmToken := "" -}}
+
+{{- if and (not $businessUse) $hasOp -}}
+{{-   $name = onepasswordRead "op://Dotfiles/Git/name" -}}
+{{-   $email = onepasswordRead "op://Dotfiles/Git/email" -}}
+{{-   $npmToken = onepasswordRead "op://Dotfiles/NPM/credential" -}}
+{{- else -}}
+{{-   $name = promptStringOnce . "name" "Your name" -}}
+{{-   $email = promptStringOnce . "email" "Your email (personal)" -}}
+{{-   if $businessUse -}}
+{{-     $workEmail = promptStringOnce . "work_email" "Your work email" -}}
+{{-   end -}}
 {{- end -}}
 
 data:
   osid: {{ $osID | quote }}
   business_use: {{ $businessUse }}
+  has_op: {{ $hasOp }}
 
-  # User info (prompted on first run)
+  # User info (prompted on first run, or read from 1Password)
   name: {{ $name | quote }}
   email: {{ $email | quote }}
   work_email: {{ $workEmail | quote }}
+  npm_token: {{ $npmToken | quote }}
 
   # Auto tmux on terminal startup
   auto_tmux: true

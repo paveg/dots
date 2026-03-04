@@ -1,6 +1,25 @@
 [user]
   name = {{ .name }}
   email = {{ .email }}
+{{- if .signing_key }}
+  signingkey = {{ .signing_key }}
+{{- else }}
+  signingkey = ~/.ssh/id_github.pub
+{{- end }}
+
+[commit]
+  gpgsign = true
+
+[tag]
+  gpgsign = true
+
+[gpg]
+  format = ssh
+{{- if eq .chezmoi.os "darwin" }}
+
+[gpg "ssh"]
+  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+{{- end }}
 
 [core]
   editor = nvim

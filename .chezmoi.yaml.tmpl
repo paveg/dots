@@ -10,6 +10,7 @@
 {{- $email := "" -}}
 {{- $workEmail := "" -}}
 {{- $npmToken := "" -}}
+{{- $signingKey := "" -}}
 
 {{- if and (not $businessUse) $hasOp -}}
 {{-   $name = onepasswordRead "op://Dotfiles/Git/name" -}}
@@ -23,6 +24,10 @@
 {{-   end -}}
 {{- end -}}
 
+{{- if $hasOp -}}
+{{-   $signingKey = onepasswordRead "op://Dotfiles/Git/signing_key" -}}
+{{- end -}}
+
 data:
   osid: {{ $osID | quote }}
   business_use: {{ $businessUse }}
@@ -33,6 +38,7 @@ data:
   email: {{ $email | quote }}
   work_email: {{ $workEmail | quote }}
   npm_token: {{ $npmToken | quote }}
+  signing_key: {{ $signingKey | quote }}
 
   # Auto tmux on terminal startup
   auto_tmux: true

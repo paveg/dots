@@ -24,7 +24,7 @@
 {{-   end -}}
 {{- end -}}
 
-{{- if $hasOp -}}
+{{- if and $hasOp (eq .chezmoi.os "darwin") -}}
 {{-   $signingKey = onepasswordRead "op://Dotfiles/Git/signing_key" -}}
 {{- end -}}
 

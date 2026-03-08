@@ -154,6 +154,27 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
+{{- if not .business_use }}
+{{- if and (ne .grafana_instance_id "") (ne .grafana_api_token "") }}
+# =============================================================================
+# Claude Code Telemetry → Grafana Cloud (personal only)
+# =============================================================================
+export CLAUDE_CODE_ENABLE_TELEMETRY=1
+export OTEL_SERVICE_NAME="claude-code"
+export OTEL_RESOURCE_ATTRIBUTES="service.namespace=LLMs"
+export OTEL_METRICS_EXPORTER=otlp
+export OTEL_TRACES_EXPORTER=otlp
+export OTEL_LOGS_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
+export OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(printf '%s' '{{ .grafana_instance_id }}:{{ .grafana_api_token }}' | base64)"
+# Trace/log detail flags
+export OTEL_LOG_TOOL_CONTENT=true
+export OTEL_LOG_TOOL_DETAILS=true
+export OTEL_LOG_USER_PROMPTS=true
+{{- end }}
+{{- end }}
+
 # =============================================================================
 # Local environment variables (not managed by chezmoi)
 # =============================================================================

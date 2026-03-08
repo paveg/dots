@@ -11,11 +11,15 @@
 {{- $workEmail := "" -}}
 {{- $npmToken := "" -}}
 {{- $signingKey := "" -}}
+{{- $grafanaInstanceId := "" -}}
+{{- $grafanaApiToken := "" -}}
 
 {{- if and (not $businessUse) $hasOp -}}
 {{-   $name = onepasswordRead "op://Dotfiles/Git/name" -}}
 {{-   $email = onepasswordRead "op://Dotfiles/Git/email" -}}
 {{-   $npmToken = onepasswordRead "op://Dotfiles/NPM/credential" -}}
+{{-   $grafanaInstanceId = onepasswordRead "op://Dotfiles/GrafanaCloud/instance_id" -}}
+{{-   $grafanaApiToken = onepasswordRead "op://Dotfiles/GrafanaCloud/api_token" -}}
 {{- else -}}
 {{-   $name = promptStringOnce . "name" "Your name" -}}
 {{-   $email = promptStringOnce . "email" "Your email (personal)" -}}
@@ -39,6 +43,8 @@ data:
   work_email: {{ $workEmail | quote }}
   npm_token: {{ $npmToken | quote }}
   signing_key: {{ $signingKey | quote }}
+  grafana_instance_id: {{ $grafanaInstanceId | quote }}
+  grafana_api_token: {{ $grafanaApiToken | quote }}
 
   # Auto tmux on terminal startup
   auto_tmux: true

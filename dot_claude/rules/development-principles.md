@@ -14,6 +14,8 @@ alwaysApply: true
 - Less code is better code
 - Do not add lines without explicit user request
 - Avoid over-engineering and premature abstraction
+- Find root causes — no temporary fixes. Senior developer standards
+- Changes should only touch what's necessary. Avoid introducing bugs
 
 ## Modern Practices
 
@@ -26,12 +28,6 @@ alwaysApply: true
 - Do not answer questions with actions
 - Do not speculate on specifications — ask or investigate
 - Admit uncertainty rather than guessing
-
-## Configuration Changes
-
-- Before modifying allow/deny patterns or access controls, state the intended behavior explicitly
-- Deny rules should be narrow and specific — block only the dangerous cases
-- Verify the change doesn't break normal usage (dry-run or test examples)
 
 ## Comments
 

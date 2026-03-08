@@ -31,7 +31,8 @@
     "gitleaks@latest",
     "glow@latest",
     "tree-sitter@latest",
-    "uv@latest"
+    "uv@latest",
+    "deno@latest"
   ],
   "shell": {
     "init_hook": []

@@ -64,6 +64,22 @@ edit file:
 update:
     @chezmoi update
 
+# Push Grafana dashboard via API
+grr-push:
+    #!/usr/bin/env zsh
+    source ~/.zshrc 2>/dev/null
+    if [[ -z "${GRAFANA_SA_TOKEN:-}" ]]; then
+      echo "✗ GRAFANA_SA_TOKEN is not set. Run: source ~/.zshrc" >&2
+      exit 1
+    fi
+    echo "Deploying Claude Code dashboard to Grafana Cloud..."
+    curl -sf -X POST "https://paveg.grafana.net/api/dashboards/db" \
+      -H "Authorization: Bearer $GRAFANA_SA_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d @"$HOME/.config/grafana/dashboards/claude-code-cost.json" \
+      && echo "✓ Dashboard deployed!" \
+      || { echo "✗ Deploy failed." >&2; exit 1; }
+
 # Clean all caches
 clean:
     @rm -rf ~/.cache/zsh/init

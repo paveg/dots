@@ -172,6 +172,11 @@ export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(printf '%s' '{{ .grafan
 export OTEL_LOG_TOOL_CONTENT=true
 export OTEL_LOG_TOOL_DETAILS=true
 export OTEL_LOG_USER_PROMPTS=true
+# Enable session/version dimensions for future metrics aggregation
+export OTEL_METRICS_INCLUDE_SESSION_ID=true
+export OTEL_METRICS_INCLUDE_VERSION=true
+# Grafana SA token for dashboard provisioning (just grr-push)
+export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"
 {{- end }}
 {{- end }}
 

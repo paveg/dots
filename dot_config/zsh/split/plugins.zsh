@@ -54,7 +54,7 @@ _zinit_setup_abbr() {
   abbr -S -qq gl='git log --oneline -20'
   abbr -S -qq gp='git push'
   abbr -S -qq gpl='git pull'
-  abbr -S -qq gs='git status -sb'
+
   abbr -S -qq gst='git status'
   abbr -S -qq gsw='git switch'
   abbr -S -qq gswc='git switch -c'

@@ -243,7 +243,7 @@ jobs:
           echo "✓ Valid JSON"
 
       - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.11.0
+        uses: jetify-com/devbox-install-action@v0.14.0
         with:
           enable-cache: true
           project-path: dot_local/share/devbox/global/default

@@ -28,6 +28,46 @@ zinit wait lucid light-mode for \
 zinit wait lucid light-mode for \
   zsh-users/zsh-history-substring-search
 
+_zinit_setup_abbr() {
+  # Session abbreviations: expand on Enter, full command saved in history
+  # Editor
+  abbr -S -qq v='nvim'
+  abbr -S -qq vi='nvim'
+  abbr -S -qq vim='nvim'
+
+  # Tools
+  abbr -S -qq lg='lazygit'
+  abbr -S -qq k='kubectl'
+
+  # Git
+  abbr -S -qq g='git'
+  abbr -S -qq ga='git add'
+  abbr -S -qq gaa='git add --all'
+  abbr -S -qq gb='git branch'
+  abbr -S -qq gc='git commit'
+  abbr -S -qq gcm='git commit -m'
+  abbr -S -qq gco='git checkout'
+  abbr -S -qq gcb='git checkout -b'
+  abbr -S -qq gd='git diff'
+  abbr -S -qq gds='git diff --staged'
+  abbr -S -qq gf='git fetch'
+  abbr -S -qq gl='git log --oneline -20'
+  abbr -S -qq gp='git push'
+  abbr -S -qq gpl='git pull'
+  abbr -S -qq gs='git status -sb'
+  abbr -S -qq gst='git status'
+  abbr -S -qq gsw='git switch'
+  abbr -S -qq gswc='git switch -c'
+
+  # Quick access for local config
+  abbr -S -qq le='local-env edit'
+  abbr -S -qq lz='local-zsh edit'
+}
+
+zinit wait lucid light-mode for \
+  atload"_zinit_setup_abbr" \
+    olets/zsh-abbr
+
 # =============================================================================
 # Powerlevel10k prompt
 # =============================================================================

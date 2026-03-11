@@ -32,7 +32,8 @@
     "glow@latest",
     "tree-sitter@latest",
     "uv@latest",
-    "deno@latest"
+    "deno@latest",
+    "rustup@latest"
   ],
   "shell": {
     "init_hook": []

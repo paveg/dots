@@ -54,7 +54,7 @@
 {{- end }}
   "statusLine": {
     "type": "command",
-    "command": "pnpx ccusage statusline",
+    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh",
     "padding": 0
   },
   "enabledPlugins": {

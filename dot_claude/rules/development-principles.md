@@ -6,8 +6,7 @@ alwaysApply: true
 
 ## Test-Driven Development
 
-- Write tests first, then implementation
-- Red → Green → Refactor cycle
+- See `tdd.md` for detailed TDD rules
 
 ## Simplicity
 

@@ -84,7 +84,7 @@
         },
         "targets": [
           {
-            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__range]))",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__auto]))",
             "refId": "A"
           }
         ],
@@ -115,7 +115,7 @@
         "options": {
           "reduceOptions": {
             "calcs": [
-              "lastNotNull"
+              "sum"
             ]
           },
           "colorMode": "value",
@@ -139,7 +139,7 @@
         },
         "targets": [
           {
-            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__range])) / sum(count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__range]))",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__auto])) / sum(count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__auto]))",
             "refId": "A"
           }
         ],
@@ -238,7 +238,7 @@
         },
         "targets": [
           {
-            "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__range]))",
+            "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__auto]))",
             "legendFormat": "{{model}}",
             "refId": "A"
           }
@@ -252,7 +252,7 @@
         "options": {
           "reduceOptions": {
             "calcs": [
-              "lastNotNull"
+              "sum"
             ]
           },
           "pieType": "donut",
@@ -282,7 +282,7 @@
         },
         "targets": [
           {
-            "expr": "sum(count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__range]))",
+            "expr": "sum(count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__auto]))",
             "refId": "A"
           }
         ],
@@ -305,7 +305,7 @@
         "options": {
           "reduceOptions": {
             "calcs": [
-              "lastNotNull"
+              "sum"
             ]
           },
           "colorMode": "value",
@@ -329,7 +329,7 @@
         },
         "targets": [
           {
-            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap input_tokens | __error__=\"\" [$__range])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__range]))",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap input_tokens | __error__=\"\" [$__auto])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__auto]))",
             "refId": "A"
           }
         ],
@@ -352,7 +352,7 @@
         "options": {
           "reduceOptions": {
             "calcs": [
-              "lastNotNull"
+              "sum"
             ]
           },
           "colorMode": "value",
@@ -469,7 +469,7 @@
         },
         "targets": [
           {
-            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_read_tokens | __error__=\"\" [$__range])) / (sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap input_tokens | __error__=\"\" [$__range])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_read_tokens | __error__=\"\" [$__range])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_creation_tokens | __error__=\"\" [$__range]))) * 100",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_read_tokens | __error__=\"\" [$__auto])) / (sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap input_tokens | __error__=\"\" [$__auto])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_read_tokens | __error__=\"\" [$__auto])) + sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_creation_tokens | __error__=\"\" [$__auto]))) * 100",
             "refId": "A"
           }
         ],
@@ -575,22 +575,26 @@
           {
             "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap input_tokens | __error__=\"\" [$__range]))",
             "legendFormat": "{{model}}",
-            "refId": "input"
+            "refId": "input",
+            "queryType": "instant"
           },
           {
             "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__range]))",
             "legendFormat": "{{model}}",
-            "refId": "output"
+            "refId": "output",
+            "queryType": "instant"
           },
           {
             "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_creation_tokens | __error__=\"\" [$__range]))",
             "legendFormat": "{{model}}",
-            "refId": "cache_create"
+            "refId": "cache_create",
+            "queryType": "instant"
           },
           {
             "expr": "sum by (model) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cache_read_tokens | __error__=\"\" [$__range]))",
             "legendFormat": "{{model}}",
-            "refId": "cache_read"
+            "refId": "cache_read",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
@@ -604,7 +608,7 @@
           "showHeader": true,
           "sortBy": [
             {
-              "displayName": "input",
+              "displayName": "Input Tokens",
               "desc": true
             }
           ]
@@ -617,11 +621,14 @@
           {
             "id": "organize",
             "options": {
+              "excludeByName": {
+                "Time": true
+              },
               "renameByName": {
-                "input": "Input Tokens",
-                "output": "Output Tokens",
-                "cache_create": "Cache Create",
-                "cache_read": "Cache Read"
+                "Value #input": "Input Tokens",
+                "Value #output": "Output Tokens",
+                "Value #cache_create": "Cache Create",
+                "Value #cache_read": "Cache Read"
               }
             }
           }
@@ -642,7 +649,7 @@
       {
         "id": 11,
         "title": "Tool Frequency",
-        "type": "barchart",
+        "type": "bargauge",
         "gridPos": {
           "x": 0,
           "y": 19,
@@ -657,30 +664,42 @@
           {
             "expr": "sum by (tool_name) (count_over_time({service_name=\"claude-code\"} | event_name=\"tool_result\" [$__range]))",
             "legendFormat": "{{tool_name}}",
-            "refId": "A"
+            "refId": "A",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
           "defaults": {
             "unit": "none",
-            "decimals": 0
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                }
+              ]
+            }
           },
           "overrides": []
         },
         "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          },
           "orientation": "horizontal",
-          "xTickLabelRotation": 0,
-          "showValue": "auto",
-          "barWidth": 0.8,
-          "legend": {
-            "displayMode": "hidden"
-          }
+          "displayMode": "gradient",
+          "showUnfilled": true,
+          "valueMode": "text"
         }
       },
       {
         "id": 12,
         "title": "Tool Success Rate",
-        "type": "barchart",
+        "type": "bargauge",
         "gridPos": {
           "x": 8,
           "y": 19,
@@ -693,60 +712,48 @@
         },
         "targets": [
           {
-            "expr": "sum by (tool_name) (count_over_time({service_name=\"claude-code\"} | event_name=\"tool_result\" | success=\"true\" [$__range]))",
-            "legendFormat": "{{tool_name}} success",
-            "refId": "success"
-          },
-          {
-            "expr": "sum by (tool_name) (count_over_time({service_name=\"claude-code\"} | event_name=\"tool_result\" | success=\"false\" [$__range]))",
-            "legendFormat": "{{tool_name}} failure",
-            "refId": "failure"
+            "expr": "sum by (tool_name) (count_over_time({service_name=\"claude-code\"} | event_name=\"tool_result\" | success=\"true\" [$__range])) / sum by (tool_name) (count_over_time({service_name=\"claude-code\"} | event_name=\"tool_result\" [$__range])) * 100",
+            "legendFormat": "{{tool_name}}",
+            "refId": "A",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
           "defaults": {
-            "unit": "none"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byRegexp",
-                "options": ".*success.*"
-              },
-              "properties": [
+            "unit": "percent",
+            "decimals": 1,
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
                 {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "green",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byRegexp",
-                "options": ".*failure.*"
-              },
-              "properties": [
+                  "color": "red",
+                  "value": null
+                },
                 {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "red",
-                    "mode": "fixed"
-                  }
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "green",
+                  "value": 95
                 }
               ]
             }
-          ]
+          },
+          "overrides": []
         },
         "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          },
           "orientation": "horizontal",
-          "stacking": "percent",
-          "showValue": "auto",
-          "legend": {
-            "displayMode": "hidden"
-          }
+          "displayMode": "gradient",
+          "showUnfilled": true,
+          "valueMode": "text"
         }
       },
       {
@@ -765,14 +772,16 @@
         },
         "targets": [
           {
-            "expr": "quantile_over_time(0.5, {service_name=\"claude-code\"} | event_name=\"tool_result\" | unwrap duration_ms | __error__=\"\" [$__range]) by (tool_name)",
+            "expr": "max by (tool_name) (quantile_over_time(0.5, {service_name=\"claude-code\"} | event_name=\"tool_result\" | unwrap duration_ms | __error__=\"\" [$__range]))",
             "legendFormat": "{{tool_name}}",
-            "refId": "p50"
+            "refId": "p50",
+            "queryType": "instant"
           },
           {
-            "expr": "quantile_over_time(0.95, {service_name=\"claude-code\"} | event_name=\"tool_result\" | unwrap duration_ms | __error__=\"\" [$__range]) by (tool_name)",
+            "expr": "max by (tool_name) (quantile_over_time(0.95, {service_name=\"claude-code\"} | event_name=\"tool_result\" | unwrap duration_ms | __error__=\"\" [$__range]))",
             "legendFormat": "{{tool_name}}",
-            "refId": "p95"
+            "refId": "p95",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
@@ -799,9 +808,12 @@
           {
             "id": "organize",
             "options": {
+              "excludeByName": {
+                "Time": true
+              },
               "renameByName": {
-                "p50": "P50 (ms)",
-                "p95": "P95 (ms)"
+                "Value #p50": "P50 (ms)",
+                "Value #p95": "P95 (ms)"
               }
             }
           }
@@ -837,7 +849,7 @@
         "options": {
           "reduceOptions": {
             "calcs": [
-              "lastNotNull"
+              "sum"
             ]
           },
           "pieType": "donut",
@@ -881,7 +893,8 @@
           {
             "expr": "sum by (session_id) (count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__range]))",
             "legendFormat": "{{session_id}}",
-            "refId": "A"
+            "refId": "A",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
@@ -898,8 +911,24 @@
               "displayName": "Value",
               "desc": true
             }
-          ]
-        }
+          ],
+          "footer": {
+            "enablePagination": true
+          }
+        },
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              },
+              "renameByName": {
+                "Value #A": "API Calls"
+              }
+            }
+          }
+        ]
       },
       {
         "id": 16,
@@ -919,17 +948,20 @@
           {
             "expr": "sum by (session_id) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap cost_usd | __error__=\"\" [$__range]))",
             "legendFormat": "{{session_id}}",
-            "refId": "cost"
+            "refId": "cost",
+            "queryType": "instant"
           },
           {
             "expr": "sum by (session_id) (sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__range]))",
             "legendFormat": "{{session_id}}",
-            "refId": "output_tokens"
+            "refId": "output_tokens",
+            "queryType": "instant"
           },
           {
             "expr": "sum by (session_id) (count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__range]))",
             "legendFormat": "{{session_id}}",
-            "refId": "api_calls"
+            "refId": "api_calls",
+            "queryType": "instant"
           }
         ],
         "fieldConfig": {
@@ -987,10 +1019,13 @@
           "showHeader": true,
           "sortBy": [
             {
-              "displayName": "cost",
+              "displayName": "Cost (USD)",
               "desc": true
             }
-          ]
+          ],
+          "footer": {
+            "enablePagination": true
+          }
         },
         "transformations": [
           {
@@ -1000,10 +1035,13 @@
           {
             "id": "organize",
             "options": {
+              "excludeByName": {
+                "Time": true
+              },
               "renameByName": {
-                "cost": "Cost (USD)",
-                "output_tokens": "Output Tokens",
-                "api_calls": "API Calls"
+                "Value #cost": "Cost (USD)",
+                "Value #output_tokens": "Output Tokens",
+                "Value #api_calls": "API Calls"
               }
             }
           }
@@ -1013,6 +1051,7 @@
         "id": 17,
         "title": "Activity Over Time",
         "type": "timeseries",
+        "interval": "1h",
         "gridPos": {
           "x": 16,
           "y": 28,
@@ -1037,6 +1076,7 @@
               "drawStyle": "bars",
               "fillOpacity": 40,
               "lineWidth": 1,
+              "barWidthFactor": 0.9,
               "stacking": {
                 "mode": "none"
               }
@@ -1085,12 +1125,12 @@
         },
         "targets": [
           {
-            "expr": "avg_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__auto])",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__auto])) / sum(count_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" [$__auto]))",
             "legendFormat": "avg",
             "refId": "avg"
           },
           {
-            "expr": "quantile_over_time(0.95, {service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__auto])",
+            "expr": "max(quantile_over_time(0.95, {service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__auto]))",
             "legendFormat": "p95",
             "refId": "p95"
           }
@@ -1209,7 +1249,7 @@
         },
         "targets": [
           {
-            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__range])) / sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__range])) * 1000",
+            "expr": "sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap output_tokens | __error__=\"\" [$__auto])) / sum(sum_over_time({service_name=\"claude-code\"} | event_name=\"api_request\" | model=~\"$model\" | unwrap duration_ms | __error__=\"\" [$__auto])) * 1000",
             "legendFormat": "tokens/sec",
             "refId": "A"
           }

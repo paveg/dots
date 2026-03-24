@@ -200,6 +200,13 @@ _zinit_setup_completions() {
     source "$_pnpm_comp"
   fi
 
+  # moon (MoonBit)
+  if (( $+commands[moon] )); then
+    local _moon_comp="$cache_dir/_moon"
+    [[ -f "$_moon_comp" ]] || moon shell-completion --shell zsh > "$_moon_comp"
+    source "$_moon_comp"
+  fi
+
   # kubectl
   if (( $+commands[kubectl] )); then
     local _kubectl_comp="$cache_dir/_kubectl"

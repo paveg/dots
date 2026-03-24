@@ -40,23 +40,9 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # =============================================================================
 # Path
 # =============================================================================
-# Local binaries
-export PATH="$HOME/.local/bin:$PATH"
+typeset -U path PATH
 
-# Go binaries (default GOPATH is ~/go)
-export PATH="${PATH}:${HOME}/go/bin"
-
-# Rust (rustup toolchain)
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# MoonBit
-export PATH="$HOME/.moon/bin:$PATH"
-
-# Devbox global (must be in zshenv for non-interactive shells like Claude Code)
+# Devbox global (rebuilds PATH from its own stack — must come before user tools)
 _devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
 if [[ -f "$_devbox_cache" ]]; then
   source "$_devbox_cache"
@@ -67,6 +53,10 @@ elif command -v devbox &>/dev/null; then
   source "$_devbox_cache"
 fi
 unset _devbox_cache
+
+# User tool paths (after devbox to avoid being overwritten)
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$BUN_INSTALL/bin:$HOME/.moon/bin:${PATH}:${HOME}/go/bin"
 
 # ghq root
 export GHQ_ROOT="$HOME/repos"

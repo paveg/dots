@@ -72,18 +72,14 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           echo "Checking shell format..."
 
-          # Check zsh files (remove template syntax first)
-          for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
-            if [[ -f "$file" ]]; then
-              sed 's/{{[^}]*}}//g' "$file" > /tmp/check.sh
-              shfmt -d -i 2 -ci /tmp/check.sh || echo "::warning::$file needs formatting"
-            fi
-          done
+          # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
+          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" \) -print0 | \
+            xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
         run: |
           echo "Checking lua format..."
-          stylua --check dot_config/nvim/ || echo "::warning::Lua files need formatting"
+          stylua --check dot_config/nvim/
 
       - name: Check JSON format
         run: |
@@ -261,10 +257,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Neovim
+      - name: Install Neovim (stable)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y neovim
+          curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+          tar xzf nvim-linux-x86_64.tar.gz
+          sudo cp -r nvim-linux-x86_64/* /usr/local/
 
       - name: Setup Neovim config
         run: |
@@ -274,11 +271,15 @@ jobs:
       - name: Test Neovim startup
         run: |
           echo "Testing Neovim startup..."
-          timeout 60 nvim --headless -c 'qall' 2>&1 || true
-          echo "✓ Neovim config loaded"
+          timeout 60 nvim --headless -c 'qall' 2>&1
 
       - name: Validate init.lua
         run: nvim --headless -c 'lua print("init.lua OK")' -c 'qall' 2>&1
+
+      - name: Test plugin config (Lazy sync)
+        run: |
+          echo "Testing plugin installation..."
+          timeout 120 nvim --headless "+Lazy! sync" "+qa" 2>&1
 
   # Aggregator job for branch protection
   # This job always runs and reports success only if all required jobs passed or were skipped

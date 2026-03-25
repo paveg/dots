@@ -7,6 +7,7 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       { "j-hui/fidget.nvim", opts = {} },
+      "b0o/schemastore.nvim",
     },
     config = function()
       -- Setup Mason first
@@ -23,13 +24,20 @@ return {
 
       require("mason-lspconfig").setup({
         ensure_installed = {
-          "lua_ls",
-          "ts_ls",
+          "bashls",
+          "cssls",
           "gopls",
-          "rust_analyzer",
+          "html",
+          "jsonls",
+          "lua_ls",
           "pyright",
           "ruby_lsp",
+          "rust_analyzer",
           "sorbet",
+          "taplo",
+          "terraformls",
+          "ts_ls",
+          "yamlls",
         },
         automatic_installation = true,
       })
@@ -55,9 +63,8 @@ return {
         end,
       })
 
-      -- LSP capabilities (for nvim-cmp)
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+      -- LSP capabilities (for blink.cmp)
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       -- Setup servers using vim.lsp.config (Neovim 0.11+)
       -- Lua
@@ -119,8 +126,80 @@ return {
         capabilities = capabilities,
       }
 
+      -- Bash/Zsh
+      vim.lsp.config.bashls = {
+        capabilities = capabilities,
+        filetypes = { "sh", "bash", "zsh" },
+      }
+
+      -- TOML
+      vim.lsp.config.taplo = {
+        capabilities = capabilities,
+      }
+
+      -- YAML
+      vim.lsp.config.yamlls = {
+        capabilities = capabilities,
+        settings = {
+          yaml = {
+            schemaStore = { enable = false, url = "" },
+            schemas = require("schemastore").yaml.schemas(),
+          },
+        },
+      }
+
+      -- JSON
+      vim.lsp.config.jsonls = {
+        capabilities = capabilities,
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      }
+
+      -- HTML
+      vim.lsp.config.html = {
+        capabilities = capabilities,
+      }
+
+      -- CSS
+      vim.lsp.config.cssls = {
+        capabilities = capabilities,
+      }
+
+      -- Terraform
+      vim.lsp.config.terraformls = {
+        capabilities = capabilities,
+      }
+
+      -- MoonBit (not managed by mason, uses system `moon lsp`)
+      vim.lsp.config.moonbit_lsp = {
+        cmd = { "moon", "lsp" },
+        filetypes = { "moonbit" },
+        root_markers = { "moon.mod.json" },
+        capabilities = capabilities,
+      }
+
       -- Enable all configured servers
-      vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "rust_analyzer", "pyright", "ruby_lsp", "sorbet" })
+      vim.lsp.enable({
+        "bashls",
+        "cssls",
+        "gopls",
+        "html",
+        "jsonls",
+        "lua_ls",
+        "moonbit_lsp",
+        "pyright",
+        "ruby_lsp",
+        "rust_analyzer",
+        "sorbet",
+        "taplo",
+        "terraformls",
+        "ts_ls",
+        "yamlls",
+      })
     end,
   },
 
@@ -140,18 +219,32 @@ return {
     },
     opts = {
       formatters_by_ft = {
-        lua = { "stylua" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        json = { "prettier" },
-        yaml = { "prettier" },
-        markdown = { "prettier" },
+        css = { "prettier" },
         go = { "gofumpt", "goimports" },
-        python = { "black" },
-        rust = { "rustfmt" },
+        html = { "prettier" },
+        javascript = { "prettier" },
+        javascriptreact = { "prettier" },
+        json = { "prettier" },
+        lua = { "stylua" },
+        markdown = { "prettier" },
+        moonbit = { "moonfmt" },
+        python = { "ruff_fix", "ruff_format" },
         ruby = { "stree" },
+        rust = { "rustfmt" },
+        sh = { "shfmt" },
+        terraform = { "terraform_fmt" },
+        toml = { "taplo" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        yaml = { "prettier" },
+        zsh = { "shfmt" },
+      },
+      formatters = {
+        moonfmt = {
+          command = "moonfmt",
+          args = { "$FILENAME" },
+          stdin = false,
+        },
       },
       format_on_save = {
         timeout_ms = 500,

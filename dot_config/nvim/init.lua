@@ -55,9 +55,12 @@ opt.updatetime = 250
 opt.timeoutlen = 300
 opt.completeopt = "menuone,noselect"
 
--- Disable netrw (using nvim-tree or oil instead)
+-- Disable netrw (using oil.nvim instead)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- MoonBit filetype detection
+vim.filetype.add({ extension = { mbt = "moonbit" } })
 
 -- =============================================================================
 -- Keymaps

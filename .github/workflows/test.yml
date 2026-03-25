@@ -76,8 +76,8 @@ jobs:
           failed=0
           for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
             if [[ -f "$file" ]]; then
-              sed 's/{{[^}]*}}//g' "$file" > /tmp/check.sh
-              if ! shfmt -d -i 2 -ci /tmp/check.sh; then
+              sed 's/{{[^}]*}}//g' "$file" | cat -s > /tmp/check.sh
+              if ! shfmt -d -i 2 -ci -ln bash /tmp/check.sh; then
                 echo "::error::$file needs formatting"
                 failed=1
               fi

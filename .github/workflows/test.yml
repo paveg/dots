@@ -72,18 +72,9 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           echo "Checking shell format..."
 
-          # Check zsh files (remove template syntax first)
-          failed=0
-          for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
-            if [[ -f "$file" ]]; then
-              sed 's/{{[^}]*}}//g' "$file" | cat -s > /tmp/check.sh
-              if ! shfmt -d -i 2 -ci -ln bash /tmp/check.sh; then
-                echo "::error::$file needs formatting"
-                failed=1
-              fi
-            fi
-          done
-          [[ "$failed" -eq 0 ]]
+          # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
+          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" \) -print0 | \
+            xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
         run: |

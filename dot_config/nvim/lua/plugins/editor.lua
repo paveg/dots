@@ -1,21 +1,19 @@
 return {
   -- File explorer
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    "stevearc/oil.nvim",
+    dependencies = { "echasnovski/mini.icons" },
     keys = {
-      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Toggle file explorer" },
+      { "<leader>e", "<cmd>Oil<cr>", desc = "Open file explorer" },
+      { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
     },
     opts = {
-      filters = {
-        dotfiles = false,
+      default_file_explorer = true,
+      view_options = {
+        show_hidden = true,
       },
-      git = {
-        enable = true,
-        ignore = false,
-      },
-      view = {
-        width = 35,
+      keymaps = {
+        ["q"] = "actions.close",
       },
     },
   },

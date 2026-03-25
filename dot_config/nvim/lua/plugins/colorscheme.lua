@@ -12,7 +12,7 @@ return {
         sidebars = "dark",
         floats = "dark",
       },
-      sidebars = { "qf", "help", "NvimTree", "terminal" },
+      sidebars = { "qf", "help", "terminal" },
       on_highlights = function(hl, c)
         -- Customize highlights if needed
         hl.CursorLineNr = { fg = c.orange, bold = true }

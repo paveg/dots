@@ -2,7 +2,7 @@ return {
   -- Status line
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "echasnovski/mini.icons" },
     opts = {
       options = {
         theme = "tokyonight",
@@ -16,18 +16,10 @@ return {
   {
     "akinsho/bufferline.nvim",
     version = "*",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "echasnovski/mini.icons" },
     opts = {
       options = {
         diagnostics = "nvim_lsp",
-        offsets = {
-          {
-            filetype = "NvimTree",
-            text = "File Explorer",
-            highlight = "Directory",
-            separator = true,
-          },
-        },
       },
     },
   },
@@ -79,7 +71,6 @@ return {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
         },
       },
       presets = {

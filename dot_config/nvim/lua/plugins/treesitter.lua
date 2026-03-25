@@ -11,6 +11,35 @@ return {
           pcall(vim.treesitter.start, event.buf)
         end,
       })
+
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = {
+          "bash",
+          "css",
+          "go",
+          "gomod",
+          "gosum",
+          "html",
+          "javascript",
+          "json",
+          "lua",
+          "markdown",
+          "markdown_inline",
+          "python",
+          "query",
+          "regex",
+          "ruby",
+          "rust",
+          "terraform",
+          "toml",
+          "tsx",
+          "typescript",
+          "vim",
+          "vimdoc",
+          "yaml",
+        },
+        auto_install = true,
+      })
     end,
   },
 

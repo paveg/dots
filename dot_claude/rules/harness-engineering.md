@@ -29,6 +29,13 @@ alwaysApply: true
 - When stuck in a fix loop (3+ attempts at the same issue), re-plan instead of retrying
 - Maximum 5 review-fix iterations before presenting current state to user
 
+## Decision Records
+
+- Record non-trivial technical decisions as ADRs (Architecture Decision Records)
+- Check for existing ADR directory (`docs/adr/`, `docs/decisions/`, `adr/`, etc.) and follow that convention. If none exists, recommend `docs/adr/`
+- Before making architectural choices, read existing ADRs for prior decisions and constraints
+- ADR format: title, status, context, decision, consequences
+
 ## Harness Simplification
 
 - Each guardrail encodes an assumption about what the model cannot do reliably

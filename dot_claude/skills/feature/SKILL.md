@@ -48,7 +48,8 @@ Initial request: $ARGUMENTS
    - Target a different aspect (similar features, architecture, UI patterns, etc.)
    - Return a list of 5-10 key files to read
 2. Read all files identified by agents to build deep understanding
-3. Present comprehensive summary of findings and patterns
+3. Check for existing ADRs (`docs/adr/`, `docs/decisions/`, `adr/`, etc.) and read relevant ones for prior decisions and constraints
+4. Present comprehensive summary of findings and patterns
 
 ---
 
@@ -103,6 +104,7 @@ Nice-to-have:
 2. Review all approaches and form your recommendation
 3. Present to user: brief summary of each, trade-offs, **your recommendation with reasoning**
 4. **Ask user which approach they prefer**
+5. Record the chosen approach as an ADR if the decision is non-trivial (new patterns, technology choices, significant trade-offs)
 
 ---
 

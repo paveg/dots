@@ -33,3 +33,10 @@ alwaysApply: true
 - Write "why", not "what"
 - Only add "what" comments when improving multi-line code readability
 - Avoid redundant comments that restate obvious code
+
+## Database Migrations
+
+- Never hand-write migration files (SQL, meta, journal)
+- Always generate via ORM migration CLI (e.g., `drizzle-kit generate`)
+- Commit generated files as-is without manual edits
+- Never manually create or edit ORM-managed metadata (snapshots, journals)

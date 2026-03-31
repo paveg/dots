@@ -4,3 +4,6 @@
 
 # Local directories
 .claude/
+
+# Business-only configs (contain company infrastructure details)
+dot_config/colima/

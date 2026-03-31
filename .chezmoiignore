@@ -37,6 +37,7 @@ homebrew/
 # Work-specific files on personal machines
 {{ if not .business_use }}
 .config/git/freee
+.config/colima/
 homebrew/Brewfile.work
 .claude/rules/pr-size.md
 .claude/skills/acli/

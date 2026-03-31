@@ -3,42 +3,43 @@ return {
     "nvim-treesitter/nvim-treesitter",
     lazy = false, -- treesitter does not support lazy-loading
     build = ":TSUpdate",
-    config = function()
+    opts = {
+      ensure_installed = {
+        "bash",
+        "css",
+        "go",
+        "gomod",
+        "gosum",
+        "html",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "query",
+        "regex",
+        "ruby",
+        "rust",
+        "terraform",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "vimdoc",
+        "yaml",
+      },
+      auto_install = true,
+    },
+    config = function(_, opts)
+      require("nvim-treesitter").setup(opts)
+
       -- Enable treesitter highlighting on FileType
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("treesitter_setup", { clear = true }),
         callback = function(event)
           pcall(vim.treesitter.start, event.buf)
         end,
-      })
-
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "bash",
-          "css",
-          "go",
-          "gomod",
-          "gosum",
-          "html",
-          "javascript",
-          "json",
-          "lua",
-          "markdown",
-          "markdown_inline",
-          "python",
-          "query",
-          "regex",
-          "ruby",
-          "rust",
-          "terraform",
-          "toml",
-          "tsx",
-          "typescript",
-          "vim",
-          "vimdoc",
-          "yaml",
-        },
-        auto_install = true,
       })
     end,
   },

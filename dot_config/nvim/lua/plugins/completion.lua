@@ -24,7 +24,6 @@ return {
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
-        cmdline = {},
       },
       completion = {
         documentation = { auto_show = true },

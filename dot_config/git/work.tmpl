@@ -2,4 +2,6 @@
 [user]
   email = {{ .work_email }}
   useConfigOnly = true
+[core]
+  hooksPath = {{ .chezmoi.homeDir }}/.fdev-git-hooks
 {{- end }}

@@ -446,14 +446,36 @@ _wt_add() {
   echo "Created worktree: $dir (branch: $name)"
 }
 
+_wt_fzf_select() {
+  local repo_base
+  repo_base="$(_wt_repo_basename)"
+  git worktree list --porcelain | awk -v base="$repo_base" '
+    /^worktree / {
+      n = split(substr($0, 10), parts, "/")
+      dir = parts[n]
+      if (dir == base) next
+      sub("^" base "-", "", dir)
+      print dir
+    }
+  ' | fzf --reverse --height=40% --prompt="${1:-worktree}> "
+}
+
 _wt_rm() {
   local name="$1" force=""
   if [[ -z "$name" ]]; then
-    echo "Usage: wt rm <name> [--force]" >&2
-    return 1
+    _wt_guard || return 1
+    name="$(_wt_fzf_select "rm")"
+    [[ -z "$name" ]] && return 0
   fi
   _wt_guard || return 1
-  [[ "$2" == "--force" ]] && force="--force"
+
+  # Protect main worktree
+  if [[ "$name" == "$(_wt_repo_basename)" ]]; then
+    echo "Error: Cannot remove the main worktree" >&2
+    return 1
+  fi
+
+  [[ "${@[-1]}" == "--force" ]] && force="--force"
 
   local dir
   dir="$(_wt_dir "$name")"
@@ -507,17 +529,7 @@ _wt_cd() {
 
   local name="$1"
   if [[ -z "$name" ]]; then
-    # fzf selection from worktree names
-    local repo_base
-    repo_base="$(_wt_repo_basename)"
-    name=$(git worktree list --porcelain | awk -v base="$repo_base" '
-      /^worktree / {
-        n = split(substr($0, 10), parts, "/")
-        dir = parts[n]
-        sub("^" base "-", "", dir)
-        print dir
-      }
-    ' | fzf --reverse --height=40% --prompt="worktree> ")
+    name="$(_wt_fzf_select "cd")"
     [[ -z "$name" ]] && return 0
   fi
 
@@ -541,10 +553,11 @@ EOF
 
 wt() {
   case "$1" in
-    add) _wt_add "${@:2}" ;;
-    rm)  _wt_rm "${@:2}" ;;
-    ls)  _wt_ls ;;
-    cd)  _wt_cd "${@:2}" ;;
-    *)   _wt_usage ;;
+    add)  _wt_add "${@:2}" ;;
+    rm)   _wt_rm "${@:2}" ;;
+    ls)   _wt_ls ;;
+    cd)   _wt_cd "${@:2}" ;;
+    help) _wt_usage ;;
+    *)    _wt_cd "$@" ;;
   esac
 }

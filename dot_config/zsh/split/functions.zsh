@@ -443,6 +443,7 @@ _wt_add() {
     git worktree add -b "$name" "$dir" "$base" || return 1
   fi
   tmux new-window -n "$name" -c "$dir"
+  tmux set-option -w automatic-rename off
   echo "Created worktree: $dir (branch: $name)"
 }
 
@@ -539,15 +540,64 @@ _wt_cd() {
   }
 }
 
+_wt_list_names() {
+  local repo_base
+  repo_base="$(_wt_repo_basename)"
+  git worktree list --porcelain | awk -v base="$repo_base" '
+    /^worktree / {
+      path = substr($0, 10)
+      n = split(path, parts, "/")
+      dir = parts[n]
+      if (dir == base) next
+      sub("^" base "-", "", dir)
+      name = dir
+    }
+    /^branch / {
+      branch = substr($0, 8)
+      sub("^refs/heads/", "", branch)
+    }
+    /^HEAD / { branch = "(detached)" }
+    /^$/ {
+      if (name != "") printf "%-30s %-30s %s\n", name, branch, path
+      name = ""; branch = ""; path = ""
+    }
+    END {
+      if (name != "") printf "%-30s %-30s %s\n", name, branch, path
+    }
+  '
+}
+
+_wt_interactive() {
+  _wt_guard || return 1
+
+  local items
+  items=$(_wt_list_names)
+  [[ -z "$items" ]] && items="(no worktrees)"
+
+  local reload_cmd="source ~/.config/zsh/split/functions.zsh && _wt_list_names"
+  local add_cmd="source ~/.config/zsh/split/functions.zsh && read 'b?branch: ' && wt add \$b"
+  local rm_cmd="source ~/.config/zsh/split/functions.zsh && wt rm {1}"
+
+  echo "$items" | fzf \
+    --reverse \
+    --header="enter:switch / ctrl-a:add / ctrl-d:remove" \
+    --bind "enter:become(tmux select-window -t :{1})" \
+    --bind "ctrl-a:execute($add_cmd)+reload($reload_cmd)" \
+    --bind "ctrl-d:execute($rm_cmd)+reload($reload_cmd)"
+}
+
 _wt_usage() {
   cat <<'EOF'
 Usage: wt <command> [args]
 
 Commands:
-  add <name> [base]   Create worktree + tmux window (default base: HEAD)
+  add <name> [base]    Create worktree + tmux window (default base: HEAD)
   rm  <name> [--force] Remove worktree + tmux window
   ls                   List worktrees (+ = tmux window exists)
   cd  [name]           Switch to worktree tmux window (fzf if no name)
+  help                 Show this help
+
+  (no args)            Interactive mode (fzf)
 EOF
 }
 
@@ -558,6 +608,7 @@ wt() {
     ls)   _wt_ls ;;
     cd)   _wt_cd "${@:2}" ;;
     help) _wt_usage ;;
+    "")   _wt_interactive ;;
     *)    _wt_cd "$@" ;;
   esac
 }

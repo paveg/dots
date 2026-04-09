@@ -1,4 +1,9 @@
 # =============================================================================
+# Profiling (must be first)
+# =============================================================================
+[[ "${ZSHRC_PROFILE:-0}" == "1" ]] && zmodload zsh/zprof
+
+# =============================================================================
 # XDG Base Directory (fallback if .zshenv not sourced)
 # =============================================================================
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -7,8 +12,22 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 # =============================================================================
-# Homebrew safety
+# Homebrew setup (macOS)
 # =============================================================================
+{{- if eq .chezmoi.os "darwin" }}
+# shellenv is cached; invalidated automatically when brew binary updates
+_brew_bin="/opt/homebrew/bin/brew"
+if [[ -x "$_brew_bin" ]]; then
+  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/brew.zsh"
+  if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
+    mkdir -p "$(dirname "$_brew_cache")"
+    "$_brew_bin" shellenv > "$_brew_cache"
+  fi
+  source "$_brew_cache"
+fi
+unset _brew_bin _brew_cache
+{{- end }}
+
 # Prevent accidental installation of tools managed by other package managers
 # - node/npm/pnpm/yarn: use devbox or mise
 # - python/pip: use uv
@@ -39,7 +58,15 @@ skip_global_compinit=1
 # =============================================================================
 # Must be activated before auto_tmux to ensure tmux is in PATH
 if command -v mise &>/dev/null; then
-  eval "$(mise activate zsh)"
+  _mise_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/mise.zsh"
+  # Invalidate cache when mise version changes
+  _mise_ver="$(mise --version 2>/dev/null)"
+  if [[ ! -f "$_mise_cache" ]] || ! grep -qF "# mise $_mise_ver" "$_mise_cache" 2>/dev/null; then
+    mkdir -p "$(dirname "$_mise_cache")"
+    { echo "# mise $_mise_ver"; mise activate zsh; } > "$_mise_cache"
+  fi
+  source "$_mise_cache"
+  unset _mise_cache _mise_ver
 fi
 
 {{ if .auto_tmux -}}

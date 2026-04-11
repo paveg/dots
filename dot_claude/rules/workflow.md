@@ -18,6 +18,36 @@ alwaysApply: true
 - For complex problems, throw more compute at it via subagents
 - One tack per subagent for focused execution
 
+### Subagent-Driven Development (default for implementation)
+
+- Default execution model once a plan exists: dispatch implementation
+  via the Agent tool with `isolation: "worktree"`. The harness creates
+  a temporary git worktree, runs the subagent there, and returns the
+  worktree path + branch. Auto-cleanup if the subagent made no changes
+- Main process stays as the evaluator — satisfies the
+  generator-evaluator separation in `harness-engineering.md`
+- Briefing must include the relevant rules inline (tdd.md, react.md,
+  development-principles.md, etc.) — subagents have no conversation history
+- After implementation, dispatch separate review subagents (read-only,
+  pointed at the returned worktree path): spec compliance first, then
+  code quality
+- Subagent may commit inside its worktree; **push and PR creation
+  require explicit user confirmation**
+- `isolation: "worktree"` works identically in private and business
+  environments — it is a core harness feature, not a plugin
+- If `superpowers:subagent-driven-development` is available, it layers
+  ready-made implementer / spec-reviewer / code-quality-reviewer prompts
+  on top. Otherwise dispatch manually — the policy is the same
+
+### Stay in main process for
+
+- Brainstorming, spec clarification, architecture decisions
+- Exploratory work where the next step depends on what you just saw
+  (debugging, bug reproduction, interactive TDD without a plan)
+- Trivial edits: single file, <10 lines, obvious intent
+- Work where mid-execution human intervention is likely (UI polish,
+  taste-sensitive content)
+
 ## Verification
 
 - Never mark a task complete without proving it works

@@ -3,7 +3,7 @@
 
 # Font
 font-family = "UDEV Gothic NF"
-font-size = 16
+font-size = 20
 font-thicken = true
 font-feature = -dlig
 

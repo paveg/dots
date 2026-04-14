@@ -38,3 +38,6 @@ devbox.lock
 **/.claude/settings.local.json
 
 sourcemaps
+
+docs/superpowers/
+.claude/worktrees/

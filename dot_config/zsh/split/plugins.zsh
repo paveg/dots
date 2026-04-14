@@ -14,11 +14,10 @@ source "${ZINIT_HOME}/zinit.zsh"
 # Turbo-loaded plugins
 # =============================================================================
 zinit wait lucid blockf light-mode for \
-  atload"zicompinit; zicdreplay" \
+  atload"autoload -Uz compinit && compinit -C -d \${XDG_CACHE_HOME:-\$HOME/.cache}/zsh/.zcompdump && zicdreplay" \
     zsh-users/zsh-completions
 
 zinit wait lucid light-mode for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting
 
 zinit wait lucid light-mode for \

@@ -10,3 +10,7 @@ createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 ```
 
+## Migrations
+
+- See `development-principles.md` for migration rules
+

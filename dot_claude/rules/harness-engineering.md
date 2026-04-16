@@ -18,10 +18,19 @@ alwaysApply: true
 
 ## Review Discipline
 
+### Giving reviews
+
 - Review only changed code. Do not flag pre-existing issues unless they interact with changes
 - Classify findings: CRITICAL (blocks ship) / IMPORTANT (should fix) / LOW (nice-to-have)
 - Drop LOW findings. Present only CRITICAL and IMPORTANT
 - For each fix: state whether it addresses the root cause or is a workaround
+
+### Receiving reviews
+
+- Do not blindly implement feedback — first verify the suggestion is technically correct
+- If a reviewer's suggestion would break something, say so with evidence
+- If feedback is vague or unclear, ask for clarification instead of guessing intent
+- No performative agreement ("great suggestion!") — just evaluate and act
 
 ## Oscillation Guard
 

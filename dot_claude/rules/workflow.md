@@ -6,7 +6,10 @@ alwaysApply: true
 
 ## Planning
 
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- For non-trivial tasks (3+ steps or architectural decisions): **brainstorm → design → plan** in that order
+  - Brainstorm: explore user intent, ask one question at a time, propose 2-3 approaches with tradeoffs
+  - Design: get incremental approval on each section before proceeding
+  - Plan: break into checkable items only after design is agreed upon
 - If something goes sideways, STOP and re-plan immediately
 - Use plan mode for verification steps, not just building
 - Write detailed specs upfront to reduce ambiguity
@@ -54,6 +57,10 @@ alwaysApply: true
 - Diff behavior between main and your changes when relevant
 - Ask yourself: "Would a staff engineer approve this?"
 - Run tests, check logs, demonstrate correctness
+- The verification command must run **in the same message** as the completion claim
+- Show the full output and exit code — do not summarize or paraphrase
+- Forbidden phrases: "should pass", "probably works", "looks correct", "seems fine"
+- Only evidence counts: if you didn't run it, you don't know
 
 ## Demand Elegance (Balanced)
 
@@ -62,12 +69,17 @@ alwaysApply: true
 - Skip this for simple, obvious fixes
 - Challenge your own work before presenting it
 
-## Autonomous Bug Fixing
+## Systematic Bug Fixing
 
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests — then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
+When given a bug report: fix it without hand-holding, but **investigate before patching**.
+
+1. **Investigate**: Read the error message, reproduce the bug, check recent changes, trace the data flow
+2. **Compare**: Find a working case and diff it against the broken one
+3. **Hypothesize**: Form a theory, test it with the smallest possible experiment
+4. **Fix**: Write a failing test that captures the bug, then fix it, then verify
+
+- After 3 failed fix attempts on the same issue, **stop and re-plan** — do not try fix #4
+- Zero context switching required from the user throughout this process
 
 ## Self-Improvement Loop
 

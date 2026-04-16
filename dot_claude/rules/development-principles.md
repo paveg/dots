@@ -4,10 +4,6 @@ alwaysApply: true
 
 # Development Principles
 
-## Test-Driven Development
-
-- See `tdd.md` for detailed TDD rules
-
 ## Simplicity
 
 - Less code is better code

@@ -13,3 +13,4 @@ updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow().$onUpdate(()
 ## Migrations
 
 - See `development-principles.md` for migration rules
+

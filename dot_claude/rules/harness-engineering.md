@@ -45,24 +45,7 @@ alwaysApply: true
 - Before making architectural choices, read existing ADRs for prior decisions and constraints
 - Write ADRs in English
 - File naming: `NNNN-short-description.md` (e.g., `0001-use-postgresql-over-sqlite.md`)
-
-ADR template:
-
-```markdown
-# ADR-NNNN: Title
-
-## Status
-Proposed | Accepted | Deprecated | Superseded by ADR-XXXX
-
-## Context
-What forces are at play? Why is this decision needed?
-
-## Decision
-What was decided and why this option over alternatives.
-
-## Consequences
-What becomes easier, what becomes harder. Both positive and negative.
-```
+- Template: `docs/adr/template.md`
 
 ## Harness Simplification
 

@@ -18,6 +18,10 @@ background-opacity = 0.95
 maximize = true
 macos-titlebar-style = tabs
 
+# Left Option -> Alt (enables terminal Alt-keybindings like Alt+R/Alt+C)
+# Right Option still inserts macOS special chars (®, ™, …)
+macos-option-as-alt = left
+
 # Shell
 command = zsh -l
 shell-integration = detect

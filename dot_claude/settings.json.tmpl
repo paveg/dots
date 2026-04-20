@@ -100,7 +100,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "c=$(jq -r '.tool_input.command // \"\"'); echo \"$c\" | grep -qE '\\bgh pr (create|edit)\\b' && jq -n --rawfile a \"$HOME/.claude/rules/gh-pr-body.md\" '{hookSpecificOutput:({hookEventName:\"PreToolUse\",additionalContext:$a})}' 2>/dev/null || true"
+            "command": "$HOME/.claude/hooks/gh-pr-inject.sh"
           }
         ]
       },
@@ -109,7 +109,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "p=$(jq -r '.tool_input.file_path // \"\"'); echo \"$p\" | grep -q '/\\.local/share/chezmoi/' && jq -n --rawfile a \"$HOME/.claude/rules/chezmoi.md\" '{hookSpecificOutput:({hookEventName:\"PreToolUse\",additionalContext:$a})}' 2>/dev/null || true"
+            "command": "$HOME/.claude/hooks/chezmoi-inject.sh"
           }
         ]
       }

@@ -72,7 +72,8 @@
     "code-simplifier@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": false,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true
 {{- end }}
   },
 {{- if not .business_use }}
@@ -87,5 +88,31 @@
   "skipDangerousModePermissionPrompt": true,
 {{- end }}
   "alwaysThinkingEnabled": true,
-  "language": "Follow the user's input language. Prioritize accuracy. Think step-by-step. Do not guess—ask or investigate when uncertain."
+  "language": "Follow the user's input language. Prioritize accuracy. Think step-by-step. Do not guess—ask or investigate when uncertain.",
+  "claudeMdExcludes": [
+    "**/.claude/rules/gh-pr-body.md",
+    "**/.claude/rules/chezmoi.md"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/gh-pr-inject.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/chezmoi-inject.sh"
+          }
+        ]
+      }
+    ]
+  }
 }

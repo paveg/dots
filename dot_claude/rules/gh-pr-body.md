@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
 
 # `gh pr` body: never backslash-escape backticks
@@ -23,9 +23,13 @@ gh pr view <N> --repo <owner>/<repo> --json body -q '.body' \
 
 `<<'EOF'` is intentionally non-interpolating. Escaping backticks "to be safe" is the exact failure mode: the shell leaves the backslash in place, and GitHub then renders `backslash-backslash-backslash-mermaid` as literal text instead of opening a code fence. This has broken mermaid diagrams in real PRs (paveg/gontainer #2) more than once. The reactive fix is always the same strip-and-re-push, so the preventive discipline is to stop emitting the backslashes in the first place.
 
+## When to include mermaid
+
+For PRs touching architecture, flows, state, or cross-system interactions: embed a mermaid diagram in the body. A diagram up front makes review faster than bulleted prose. Structural refactors should show before/after side-by-side. Diagram type by use case: see `mermaid-diagrams.md`.
+
 ## How to apply
 
-Whenever constructing a PR body with non-trivial Markdown:
+Whenever constructing a PR body with non-trivial Markdown (mermaid, code fences, nested backticks):
 
 1. Default path — `Write` the body to a scratch file (e.g. `/tmp/pr_body.md`), then `gh pr edit N --body-file /tmp/pr_body.md`.
 2. Only use inline heredoc bodies for plain prose with no code fences at all.

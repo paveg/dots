@@ -33,6 +33,8 @@ This skill applies to **both** scopes equally. The evaluation workflow is identi
 
 When tuning a global prompt, consider that it will run across many different project contexts — design scenarios that span 2–3 representative project types, not just the repo where you noticed the problem.
 
+**Always edit the chezmoi source** at `~/.local/share/chezmoi/dot_claude/` — never edit `~/.claude/` directly. Changes to the live path are overwritten by the next `chezmoi apply`. After each iteration's fix, confirm with the user before running `chezmoi apply` to reflect the change.
+
 ## Workflow
 
 ### Step 0 — Description/Body Consistency Check (static, no dispatch needed)
@@ -92,6 +94,7 @@ Requirements checklist must contain **at least 1 `[critical]` item** (0 items ma
 Apply the minimal fix that addresses one theme of unclear points. Scope per iteration:
 - **1 theme per iteration** (related micro-fixes count as 1 theme; unrelated fixes go to the next iter)
 - Before applying: state which checklist item / judgment criterion this fix satisfies (axis names and judgment criteria are different — map to the criterion text, not the axis label)
+- **Edit the chezmoi source** (`~/.local/share/chezmoi/dot_claude/`), never `~/.claude/` directly. After editing, confirm with the user before running `chezmoi apply`.
 
 ### Step 6 — Re-evaluate
 

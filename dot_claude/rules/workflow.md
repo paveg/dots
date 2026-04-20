@@ -29,6 +29,17 @@ alwaysApply: true
 - After implementation, dispatch separate review subagents: spec compliance, then code quality
 - **Push and PR creation require explicit user confirmation**
 
+### Worktree Location
+
+- When creating worktrees manually (sequential subagent dispatch in a shared worktree),
+  always use **`<project-root>/.claude/worktrees/<branch-name>`**
+- NOT `~/.claude/worktrees/` (user-global) and NOT sibling-of-repo paths (`../foo-branch`)
+- Add `.claude/worktrees/` to the project's `.gitignore` if not already excluded
+- Rationale: keeps worktrees scoped to the project, avoids cross-project name collisions,
+  and makes cleanup obvious (delete with the project, not orphaned in a global cache)
+- The Agent tool's `isolation: "worktree"` parameter handles its own worktree placement
+  automatically — this rule applies to manually-created worktrees only
+
 ### Stay in main process for
 
 - Brainstorming, spec clarification, architecture decisions

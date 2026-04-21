@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gog gmail settings filters:*)"
+      "Bash(mysql:*)",
+      "Bash(gh*)",
+      "Bash(go*)",
+      "Bash(git worktree*)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -23,11 +26,12 @@
       "Bash(wget:*)",
       "Bash(nc:*)",
       "Bash(psql:*)",
-      "Bash(mysql:*)",
       "Bash(mongod:*)",
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(**/.dev.vars)",
+      "Read(**/.envrc)",
+      "Read(**/.envrc.*)",
       "Read(id_rsa)",
       "Read(id_ed25519)",
       "Read(**/*token*)",

@@ -1,10 +1,11 @@
 #!/bin/bash
-# Bootstrap ~/repos/paveg/atcoder as an empty git repo for AtCoder solutions.
-# Runs once per machine.
+# Bootstrap ~/repos/github.com/paveg/atcoder as an empty git repo for AtCoder
+# solutions. Uses the <host>/<owner>/<repo> layout shared by other repos in
+# ~/repos/. Runs once per machine.
 
 set -euo pipefail
 
-dir="$HOME/repos/paveg/atcoder"
+dir="$HOME/repos/github.com/paveg/atcoder"
 
 if [[ -d "$dir/.git" ]]; then
   exit 0

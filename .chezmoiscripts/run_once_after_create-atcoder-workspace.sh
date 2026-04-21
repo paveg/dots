@@ -14,7 +14,7 @@ mkdir -p "$dir"
 cd "$dir"
 git init -q -b main
 
-cat > .gitignore <<'EOF'
+cat >.gitignore <<'EOF'
 # Build artifacts
 *.out
 *.exe

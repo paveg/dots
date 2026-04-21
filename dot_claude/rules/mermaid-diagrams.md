@@ -29,4 +29,12 @@ Actively use mermaid when explaining architecture, flow, sequences, or state. A 
 - Show before/after side-by-side for structural refactors
 - Prefer `LR` for pipelines, `TD` for hierarchies
 
+## Terminal rendering constraints (mermaid-ascii)
+
+A Stop hook auto-renders ```` ```mermaid ```` blocks as ASCII in my terminal via [mermaid-ascii](https://github.com/AlexanderGrooff/mermaid-ascii). To keep renders clean, author diagrams within its limits:
+
+- **Decision nodes:** use `[label]` not `{label}` — curly-brace diamonds break silently (label appears as a separate node)
+- **Supported types:** `graph TD/TB/LR`, `flowchart TD/TB/LR`, `sequenceDiagram` — rendered inline
+- **Unsupported types:** `stateDiagram-v2`, `erDiagram`, and others — the raw mermaid source is still shown; switch to `graph TD` if visualization matters, otherwise accept the raw text
+
 For embedding in PR bodies safely (backslash-escape pitfall), see `gh-pr-body.md`.

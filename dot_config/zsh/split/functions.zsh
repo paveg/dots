@@ -665,3 +665,35 @@ wt() {
     *)    _wt_cd "$@" ;;
   esac
 }
+
+# =============================================================================
+# AtCoder login via 1Password
+# =============================================================================
+# Fetches credentials from the AtCoder item in Personal vault and runs oj login.
+# Uses field id (not label) to disambiguate duplicate-labeled fields created by
+# 1Password's web form autofill. Session cookie is stored under
+# ~/Library/Application Support/online-judge-tools/, so re-login is only needed
+# after cookie expiry.
+atcoder-login() {
+  if ! command -v op >/dev/null 2>&1; then
+    echo "Error: op (1Password CLI) not found" >&2
+    return 1
+  fi
+  if ! command -v oj >/dev/null 2>&1; then
+    echo "Error: oj (online-judge-tools) not found — run 'devbox install'" >&2
+    return 1
+  fi
+
+  local item='tcrb5hlxmncj3d45ttchkx6y5y'
+  local json user pass
+  json=$(op item get "$item" --format json --reveal) || return 1
+  user=$(echo "$json" | jq -r '.fields[] | select(.id == "username") | .value')
+  pass=$(echo "$json" | jq -r '.fields[] | select(.id == "password") | .value')
+
+  if [[ -z "$user" || -z "$pass" ]]; then
+    echo "Error: failed to extract credentials (id='username'/'password' not found)" >&2
+    return 1
+  fi
+
+  oj login https://atcoder.jp/ -u "$user" -p "$pass"
+}

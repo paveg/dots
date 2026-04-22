@@ -729,3 +729,58 @@ atcoder-login() {
     fi
   fi
 }
+
+# Open the current AtCoder task's problem page in the browser.
+# Run from a task directory (e.g., ~/repos/github.com/paveg/atcoder/abc321/a).
+# Derives URL from the directory hierarchy: <contest>/<task>.
+atc-open() {
+  local task contest
+  task=$(basename "$PWD")
+  contest=$(basename "$(dirname "$PWD")")
+  open "https://atcoder.jp/contests/${contest}/tasks/${contest}_${task}"
+}
+
+# Open the contest's task list page in the browser.
+# If run from a task directory, uses the parent (contest) name.
+# If run from a contest directory, uses the cwd name.
+atc-top() {
+  local contest
+  # Heuristic: if cwd contains tests/ or main.go, treat as task dir → use parent
+  if [[ -d tests || -f main.go ]]; then
+    contest=$(basename "$(dirname "$PWD")")
+  else
+    contest=$(basename "$PWD")
+  fi
+  open "https://atcoder.jp/contests/${contest}/tasks"
+}
+
+# Build main.go and run sample tests.
+# acc writes samples to tests/ (plural), oj defaults to test/ (singular) — both
+# are supported. Additional args pass through to oj t (e.g., --print-input).
+atc-test() {
+  go build -o a.out main.go || return 1
+  local dir
+  if [[ -d tests ]]; then
+    dir=tests
+  elif [[ -d test ]]; then
+    dir=test
+  else
+    echo "No tests/ or test/ directory found" >&2
+    return 1
+  fi
+  oj t -d "$dir" "$@"
+}
+
+# Submit the current task's main.go to AtCoder by calling oj directly.
+# Bypasses `acc submit` because acc's facade-arg handling currently breaks
+# oj's URL guess when extra options (e.g. -l) are passed. Derives URL from
+# the cwd hierarchy (same convention as atc-open). `-l 6051` pins to
+# "Go (go 1.25.1)" so oj does not prompt between that and gccgo (6050).
+# Override language with `atc-submit -l <id>`; auto-yes with `-y`.
+atc-submit() {
+  local task contest url
+  task=$(basename "$PWD")
+  contest=$(basename "$(dirname "$PWD")")
+  url="https://atcoder.jp/contests/${contest}/tasks/${contest}_${task}"
+  oj s "$url" main.go -l 6051 "$@"
+}

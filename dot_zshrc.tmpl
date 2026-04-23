@@ -132,6 +132,9 @@ fi
 {{ include "dot_config/zsh/split/options.zsh" }}
 {{ include "dot_config/zsh/split/aliases.zsh" }}
 {{ include "dot_config/zsh/split/functions.zsh" }}
+{{- if not .business_use }}
+{{ include "dot_config/zsh/split/atcoder.zsh" }}
+{{- end }}
 
 # =============================================================================
 # SSH Agent

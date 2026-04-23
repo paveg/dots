@@ -45,6 +45,11 @@ return {
     },
     opts = {
       defaults = {
+        preview = {
+          -- Use vim.treesitter.start (native) via FileType autocmd instead of
+          -- nvim-treesitter's highlight module, which is no longer available.
+          treesitter = false,
+        },
         mappings = {
           i = {
             ["<C-j>"] = "move_selection_next",

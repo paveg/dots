@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# PreToolUse(Write|Edit) hook: inject ~/.claude/rules/chezmoi.md as
-# additionalContext when file_path is under ~/.local/share/chezmoi/.
+# PreToolUse hook: inject ~/.claude/rules/browser-automation.md as
+# additionalContext when invoking any mcp__claude-in-chrome__* tool.
 # Reads Claude Code hook JSON from stdin; emits JSON on stdout.
 set -euo pipefail
 
-rule="$HOME/.claude/rules/chezmoi.md"
+rule="$HOME/.claude/rules/browser-automation.md"
 
-path=$(jq -r '.tool_input.file_path // ""')
+tool=$(jq -r '.tool_name // ""')
 
-case "$path" in
-  */.local/share/chezmoi/*) ;;
+case "$tool" in
+  mcp__claude-in-chrome__*) ;;
   *) exit 0 ;;
 esac
 

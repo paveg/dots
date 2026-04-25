@@ -4,19 +4,30 @@ alwaysApply: true
 
 # Harness Engineering
 
-## Generator-Evaluator Separation
+## Harness vs Guardrail
+
+Sections in this file fall into two categories:
+
+- **[Harness]** Pre-design — shapes how the agent runs *before* it acts
+- **[Guardrail]** Post-verification — detects deviation *after* the agent acts
+
+Harness is a design decision; guardrail is a mechanical check. Separating "is this pre-design or post-verification?" prevents rule bloat.
+
+Push checks toward guardrails whenever a deterministic tool can do the job: **the stronger the mechanical verification, the more autonomy the agent can be safely given**.
+
+## [Guardrail] Generator-Evaluator Separation
 
 - Never self-assess quality of your own output as the final verdict
 - When reviewing code you wrote, launch a separate agent that did not participate in generation
 - The evaluator should test behavior, not read implementation to form its judgment
 
-## Sprint Contracts
+## [Harness] Sprint Contracts
 
 - Before implementation: agree on concrete "done" criteria with the user
 - Done criteria must be verifiable (testable assertions, observable behavior, measurable outcomes)
 - If criteria cannot be verified automatically, state which require manual verification
 
-## Review Discipline
+## [Guardrail] Review Discipline
 
 ### Giving reviews
 
@@ -32,13 +43,13 @@ alwaysApply: true
 - If feedback is vague or unclear, ask for clarification instead of guessing intent
 - No performative agreement ("great suggestion!") — just evaluate and act
 
-## Oscillation Guard
+## [Guardrail] Oscillation Guard
 
 - If a fix reverts a previous fix (A -> B -> A pattern), stop and escalate to the user
 - When stuck in a fix loop (3+ attempts at the same issue), re-plan instead of retrying
 - Maximum 5 review-fix iterations before presenting current state to user
 
-## Decision Records
+## [Harness] Decision Records
 
 - Record non-trivial technical decisions as ADRs (Architecture Decision Records)
 - Check for existing ADR directory (`docs/adr/`, `docs/decisions/`, `adr/`, etc.) and follow that convention. If none exists, recommend `docs/adr/`
@@ -63,8 +74,9 @@ What was decided and why this option over alternatives.
 What becomes easier, what becomes harder. Both positive and negative.
 ```
 
-## Harness Simplification
+## [Meta] Harness Simplification
 
 - Each guardrail encodes an assumption about what the model cannot do reliably
 - Periodically question whether a guardrail is still necessary
 - Remove ceremony that no longer prevents real failures
+- When a model upgrade lands, audit which guardrails were patching the old model's limits and drop the ones that no longer earn their cost

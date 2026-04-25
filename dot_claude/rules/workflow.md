@@ -91,3 +91,28 @@ When given a bug report: fix it without hand-holding, but **investigate before p
 - **Explain Changes**: High-level summary at each step
 - **Document Results**: Add review section to tasks/todo.md
 - **Capture Lessons**: Update tasks/lessons.md after corrections
+
+## Rule Hygiene
+
+Long instruction sets degrade model behavior — IFScale (arxiv 2507.11538) shows primacy bias kicks in around 150–200 instructions, and Chroma's context rot study confirms degradation across all 18 frontier models tested. The fix is volume discipline, not "just one more bullet."
+
+- Treat the always-loaded rule set in `~/.claude/rules/` as a budget capped near **150 effective instructions**
+- When near the cap, every new rule must come with a **proposed deletion or downgrade** of an existing one (grow-by-replace)
+- Project-specific rules (framework, ORM, deployment target) belong in the project's CLAUDE.md, not the global set
+- Detail-heavy or rarely-applicable rules should be `alwaysApply: false` so they load on demand
+- Periodically audit: which rules have not prevented a real failure in the last few months? Drop them
+
+## Escalation Ladder
+
+Where to place a new constraint, by violation history and reversibility:
+
+| Level | Location | When to use |
+| :---- | :------- | :---------- |
+| L1 | Mention in `CLAUDE.md` or task instructions | First occurrence; soft preference |
+| L2 | New/extended rule in `~/.claude/rules/*.md` | Same issue noticed twice or more |
+| L3 | `~/.claude/hooks/` (PreToolUse, Stop, etc.) | Repeated violation OR irreversible action (push --force, rm -rf, secret leak) |
+| L4 | Project CI / required check | Production impact, security, or compliance |
+
+- Skip levels when the action is irreversible — go straight to L3+ instead of trusting prose
+- Prefer machine-checkable enforcement (L3/L4) over instructions (L1/L2) whenever a deterministic check is possible
+- See `harness-engineering.md` for why this matches "the stronger the mechanical verification, the more autonomy"

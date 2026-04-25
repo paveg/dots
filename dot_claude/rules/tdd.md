@@ -43,3 +43,13 @@ TDD does not apply to contexts without test frameworks:
 - CI/CD pipeline definitions
 - Shell scripts without a test harness
 - Declarative config files (JSON, YAML, TOML)
+
+## Applying TDD to the Harness Itself
+
+Rules and hooks under `~/.claude/` are also code; they deserve the same Red-Green-Refactor discipline before being committed.
+
+1. **Red**: Reproduce the failure pattern *without* the new rule/hook in place. Confirm the agent fails the way you expect
+2. **Green**: Add the rule or hook. Confirm the same scenario is now blocked or corrected
+3. **Refactor**: In a fresh session, probe edge cases — paraphrased prompts, adjacent tasks — to confirm the rule is not just memorized to one phrasing
+
+A rule added without a Red step is indistinguishable from cargo culting. If you cannot articulate the concrete failure it prevents, do not add it.

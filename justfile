@@ -35,8 +35,13 @@ lint:
     @echo "✓ Done!"
 
 # Run all checks
-test: lint fmt-check
+test: lint fmt-check test-hooks
     @echo "✓ All checks passed!"
+
+# Run hook tests
+test-hooks:
+    @echo "Running hook tests..."
+    @bash tests/hooks/run-tests.sh
 
 # Install formatter tools
 install:

@@ -25,104 +25,19 @@
 {{- end }}
 
 # =============================================================================
-# SSH Agent
+# Modules: 順不同 (環境セットアップ)
 # =============================================================================
-{{- if eq .chezmoi.os "darwin" }}
-# macOS: Use system SSH agent with Keychain integration
-if [[ -z "$SSH_AUTH_SOCK" ]]; then
-  # Try to get from launchctl first
-  local sock
-  sock=$(launchctl getenv SSH_AUTH_SOCK)
-  
-  # Fallback: Find listener socket safely (restricted to current user)
-  if [[ ! -S "$sock" ]]; then
-    sock=$(find /private/tmp/com.apple.launchd.* -name Listeners -user "$USER" -type s 2>/dev/null | head -1)
-  fi
-
-  [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
-fi
-
-# Load keys into agent (only if agent is available)
-[[ -S "$SSH_AUTH_SOCK" ]] && ssh-add --apple-load-keychain &>/dev/null
-{{- else }}
-# Linux: Use keychain for SSH agent management
-if command -v keychain &>/dev/null; then
-  local ssh_keys=()
-  [[ -f "$HOME/.ssh/id_ed25519" ]] && ssh_keys+=("id_ed25519")
-  [[ -f "$HOME/.ssh/id_github" ]] && ssh_keys+=("id_github")
-  [[ -f "$HOME/.ssh/id_rsa" ]] && ssh_keys+=("id_rsa")
-
-  if (( ${#ssh_keys[@]} > 0 )); then
-    eval "$(keychain --eval --quiet ${ssh_keys[@]})"
-  fi
-fi
-{{- end }}
-
-# =============================================================================
-# bun completions
-# =============================================================================
-# Pre-load compinit with -C so _bun's internal fallback (which calls plain
-# `compinit`, triggering compaudit ~13ms) is skipped via its `command -v` guard.
-if [[ -s "$HOME/.bun/_bun" ]]; then
-  autoload -Uz compinit && compinit -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompdump"
-  source "$HOME/.bun/_bun"
-fi
-
-# =============================================================================
-# pnpm setup
-# =============================================================================
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
-# =============================================================================
-# Vite+ bin
-# =============================================================================
-[[ -f "$HOME/.vite-plus/env" ]] && source "$HOME/.vite-plus/env"
-
-# =============================================================================
-# CF CLI completions (shipped via Vite+)
-# =============================================================================
-[[ -f "$HOME/.config/cf/completions/_cf.zsh" ]] && source "$HOME/.config/cf/completions/_cf.zsh"
-
+{{ includeTemplate "dot_config/zsh/modules/ssh-agent.zsh.tmpl" . }}
+{{ include "dot_config/zsh/modules/bun.zsh" }}
+{{ include "dot_config/zsh/modules/pnpm.zsh" }}
+{{ include "dot_config/zsh/modules/vite-plus.zsh" }}
+{{ include "dot_config/zsh/modules/cf-cli.zsh" }}
 {{- if not .business_use }}
 {{- if and (ne .grafana_instance_id "") (ne .grafana_api_token "") }}
-# =============================================================================
-# Claude Code Telemetry → Grafana Cloud (personal only)
-# =============================================================================
-export CLAUDE_CODE_ENABLE_TELEMETRY=1
-export OTEL_SERVICE_NAME="claude-code"
-export OTEL_RESOURCE_ATTRIBUTES="service.namespace=LLMs"
-export OTEL_METRICS_EXPORTER=otlp
-export OTEL_TRACES_EXPORTER=otlp
-export OTEL_LOGS_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
-export OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(printf '%s' '{{ .grafana_instance_id }}:{{ .grafana_api_token }}' | base64)"
-# Trace/log detail flags
-export OTEL_LOG_TOOL_CONTENT=true
-export OTEL_LOG_TOOL_DETAILS=true
-export OTEL_LOG_USER_PROMPTS=true
-# Enable session/version dimensions for future metrics aggregation
-export OTEL_METRICS_INCLUDE_SESSION_ID=true
-export OTEL_METRICS_INCLUDE_VERSION=true
-# Grafana SA token for dashboard provisioning (just grr-push)
-export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"
+{{ includeTemplate "dot_config/zsh/modules/telemetry.zsh.tmpl" . }}
 {{- end }}
 {{- end }}
-
-# =============================================================================
-# Local environment variables (not managed by chezmoi)
-# =============================================================================
-# Priority: .env.local -> .zshrc.local (both are gitignored)
-
-# Machine-specific environment variables
-[[ -f "$HOME/.env.local" ]] && source "$HOME/.env.local"
-
-# Machine-specific shell configuration
-[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+{{ include "dot_config/zsh/modules/local-config.zsh" }}
 {{- if .business_use }}
 
 # =============================================================================
@@ -130,9 +45,4 @@ export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"
 # =============================================================================
 # Add work-specific configurations here
 {{ end }}
-
-# =============================================================================
-# Powerlevel10k configuration
-# =============================================================================
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+{{ include "dot_config/zsh/modules/p10k-config.zsh" }}

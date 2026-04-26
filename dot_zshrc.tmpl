@@ -15,10 +15,17 @@
 {{ include "dot_config/zsh/init/auto-tmux.zsh" }}
 {{- end }}
 {{ include "dot_config/zsh/init/p10k-instant.zsh" }}
-
 {{ include "dot_config/zsh/init/plugins.zsh" }}
 {{ include "dot_config/zsh/init/options.zsh" }}
+
+# =============================================================================
+# Aliases (declarative, no side-effects)
+# =============================================================================
 {{ include "dot_config/zsh/aliases.zsh" }}
+
+# =============================================================================
+# Features: 順不同 (関数定義中心)
+# =============================================================================
 {{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
 {{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
 {{ include "dot_config/zsh/features/kube.zsh" }}
@@ -48,11 +55,12 @@
 {{- end }}
 {{- end }}
 {{ include "dot_config/zsh/modules/local-config.zsh" }}
+{{ include "dot_config/zsh/modules/p10k-config.zsh" }}
+
 {{- if .business_use }}
 
 # =============================================================================
 # Work Environment
 # =============================================================================
 # Add work-specific configurations here
-{{ end }}
-{{ include "dot_config/zsh/modules/p10k-config.zsh" }}
+{{- end }}

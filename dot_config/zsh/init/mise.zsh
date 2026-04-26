@@ -1,3 +1,9 @@
+# mise.zsh — mise (rtx) runtime version manager activation
+# Provides:     PATH (mise shims), mise function
+# Requires:     mise (任意 — 不在時は no-op)
+# Side-effects: mise activate zsh の出力をキャッシュ&source
+# Load-order:   AFTER homebrew (mise が brew で入る場合), BEFORE auto-tmux
+
 # mise (runtime version manager) - early activation for tmux
 # Must be activated before auto_tmux to ensure tmux is in PATH
 if command -v mise &>/dev/null; then

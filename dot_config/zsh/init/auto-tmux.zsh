@@ -1,3 +1,10 @@
+# auto-tmux.zsh — auto-attach/create tmux on terminal startup
+# Provides:     auto_tmux (起動時に即時実行)
+# Requires:     tmux, fzf (任意)
+# Side-effects: exec して shell プロセスを置換する。p10k より前必須。
+#               CI/Docker 環境では no-op (DISABLE_AUTO_TMUX=1 で個別無効化可)
+# Load-order:   AFTER mise (PATH に tmux), BEFORE p10k-instant
+
 # Auto tmux on terminal startup
 # Must run BEFORE p10k instant prompt (exec replaces shell, breaks p10k state)
 auto_tmux() {

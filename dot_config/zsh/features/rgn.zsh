@@ -1,3 +1,9 @@
+# rgn.zsh — ripgrep + fzf → nvim live grep
+# Provides:     rgn, _rgn_widget
+# Requires:     rg (ripgrep), fzf, nvim
+# Side-effects: zle widget _rgn_widget を登録 + bindkey '^[r' で割り当て
+# Load-order:   AFTER plugins (zle が利用可能)
+
 # ripgrep + fzf -> nvim (live grep, multi-select, open at line)
 # Usage: rgn [pattern]        # typing live-reloads rg
 #        Tab                  # multi-select matches

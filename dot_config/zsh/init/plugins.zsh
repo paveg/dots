@@ -1,3 +1,12 @@
+# plugins.zsh — zinit + zsh plugins (turbo mode), zoxide
+# Provides:     zinit, p10k prompt, fast-syntax-highlighting,
+#               zsh-autosuggestions, zsh-history-substring-search,
+#               zsh-abbr (abbreviations), zoxide (z command)
+# Requires:     git (for zinit clone)
+# Side-effects: set ZINIT_HOME, zinit clone (first run only), load plugins,
+#               call compinit, register many widgets
+# Load-order:   AFTER perf-flags, BEFORE options (options uses zinit)
+
 # =============================================================================
 # Zinit
 # =============================================================================

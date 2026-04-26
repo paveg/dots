@@ -16,6 +16,9 @@ devbox.lock
 # CI/IDE directories
 .github/
 
+# Repo-local docs (specs, plans, ADRs — not for home dir)
+docs/
+
 # macOS specific
 {{ if ne .chezmoi.os "darwin" }}
 .config/karabiner/
@@ -46,7 +49,7 @@ homebrew/Brewfile.work
 # Personal-only AtCoder tooling (excluded on work machines)
 {{ if .business_use }}
 .config/atcoder-cli-nodejs/
-.config/zsh/split/atcoder.zsh
+.config/zsh/atcoder.zsh
 .chezmoiscripts/run_once_after_configure-atcoder-cli.sh
 .chezmoiscripts/run_once_after_create-atcoder-workspace.sh
 .chezmoiscripts/run_onchange_after_install-atcoder-tools.sh

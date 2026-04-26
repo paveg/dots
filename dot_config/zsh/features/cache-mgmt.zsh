@@ -1,0 +1,26 @@
+# Cache management
+zsh-clear-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/zsh/completions"
+  rm -rf "${XDG_CACHE_HOME}/p10k"*
+  rm -rf "${XDG_CACHE_HOME}/gitstatus"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  rm -rf "${XDG_DATA_HOME}/zinit"
+  echo "All cache cleared. Restart shell to reinstall zinit."
+  echo "Note: atuin history is preserved in ~/.local/share/atuin/"
+}
+
+zsh-update-cache() {
+  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "${XDG_CACHE_HOME}/zsh/completions"
+  rm -rf "${XDG_CACHE_HOME}/p10k"*
+  rm -rf "${XDG_CACHE_HOME}/gitstatus"
+  rm -f "${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+  echo "Init cache cleared. Restart shell to regenerate."
+}
+
+zsh-bench() {
+  for i in {1..10}; do
+    time zsh -i -c exit
+  done
+}

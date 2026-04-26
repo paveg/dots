@@ -1,0 +1,26 @@
+# homebrew.zsh.tmpl — macOS Homebrew shellenv + forbidden formulae list
+# Provides:     PATH (brew bin), HOMEBREW_PREFIX, HOMEBREW_FORBIDDEN_FORMULAE
+# Requires:     /opt/homebrew/bin/brew (macOS only, gracefully no-op on Linux)
+# Side-effects: cache 'brew shellenv' and source it; export various env vars
+# Load-order:   AFTER xdg, BEFORE mise
+
+# Homebrew setup (macOS)
+{{- if eq .chezmoi.os "darwin" }}
+# shellenv is cached; invalidated automatically when brew binary updates
+_brew_bin="/opt/homebrew/bin/brew"
+if [[ -x "$_brew_bin" ]]; then
+  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/brew.zsh"
+  if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
+    mkdir -p "$(dirname "$_brew_cache")"
+    "$_brew_bin" shellenv > "$_brew_cache"
+  fi
+  source "$_brew_cache"
+fi
+unset _brew_bin _brew_cache
+{{- end }}
+
+# Prevent accidental installation of tools managed by other package managers
+# - node/npm/pnpm/yarn: use devbox or mise
+# - python/pip: use uv
+# - claude: use npm -g
+export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude"

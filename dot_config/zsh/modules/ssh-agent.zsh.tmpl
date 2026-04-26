@@ -1,0 +1,37 @@
+# ssh-agent.zsh.tmpl — SSH agent setup (macOS Keychain / Linux keychain)
+# Provides:     SSH_AUTH_SOCK
+# Requires:     ssh-add (macOS), keychain (Linux, optional)
+# Side-effects: set SSH_AUTH_SOCK; add keys to the agent via ssh-add
+# Load-order:   free (any time during interactive shell init)
+
+# SSH Agent
+{{- if eq .chezmoi.os "darwin" }}
+# macOS: Use system SSH agent with Keychain integration
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  # Try to get from launchctl first
+  local sock
+  sock=$(launchctl getenv SSH_AUTH_SOCK)
+
+  # Fallback: Find listener socket safely (restricted to current user)
+  if [[ ! -S "$sock" ]]; then
+    sock=$(find /private/tmp/com.apple.launchd.* -name Listeners -user "$USER" -type s 2>/dev/null | head -1)
+  fi
+
+  [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
+fi
+
+# Load keys into agent (only if agent is available)
+[[ -S "$SSH_AUTH_SOCK" ]] && ssh-add --apple-load-keychain &>/dev/null
+{{- else }}
+# Linux: Use keychain for SSH agent management
+if command -v keychain &>/dev/null; then
+  local ssh_keys=()
+  [[ -f "$HOME/.ssh/id_ed25519" ]] && ssh_keys+=("id_ed25519")
+  [[ -f "$HOME/.ssh/id_github" ]] && ssh_keys+=("id_github")
+  [[ -f "$HOME/.ssh/id_rsa" ]] && ssh_keys+=("id_rsa")
+
+  if (( ${#ssh_keys[@]} > 0 )); then
+    eval "$(keychain --eval --quiet ${ssh_keys[@]})"
+  fi
+fi
+{{- end }}

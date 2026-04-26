@@ -6,19 +6,19 @@ default:
     @just --list
 
 # Format all files
+# Note: devbox.json.tmpl is a chezmoi template (mixed JSON + Go template directives).
+# Rendered output is verified by fmt-check; the template itself is hand-edited.
 fmt:
     @echo "Formatting Lua files..."
     @stylua dot_config/nvim/
-    @echo "Formatting JSON files..."
-    @python3 -c "import json; f='dot_local/share/devbox/global/default/devbox.json'; d=json.load(open(f)); open(f,'w').write(json.dumps(d,indent=2)+'\n')"
     @echo "✓ Done!"
 
 # Check formatting without changes
 fmt-check:
     @echo "Checking Lua format..."
     @stylua --check dot_config/nvim/
-    @echo "Checking JSON format..."
-    @python3 -c "import json; f='dot_local/share/devbox/global/default/devbox.json'; d=json.load(open(f)); expected=json.dumps(d,indent=2)+'\n'; actual=open(f).read(); exit(0 if expected==actual else 1)"
+    @echo "Checking devbox.json template renders as valid JSON..."
+    @chezmoi execute-template < dot_local/share/devbox/global/default/devbox.json.tmpl | python3 -c "import json,sys; json.load(sys.stdin)"
     @echo "✓ All files formatted correctly!"
 
 # Run linters
@@ -34,8 +34,19 @@ lint:
     @find dot_config/nvim -name "*.lua" -exec luac -p {} \; 2>/dev/null || true
     @echo "✓ Done!"
 
+# Lint Provides header on side-effecting zsh files (init/, modules/)
+lint-headers:
+    @echo "Checking header convention..."
+    @for f in dot_config/zsh/init/*.zsh* dot_config/zsh/modules/*.zsh*; do \
+        if ! head -10 "$f" | grep -qE '^# Provides:'; then \
+            echo "✗ $f: missing '# Provides:' header (top 10 lines)"; \
+            exit 1; \
+        fi \
+    done
+    @echo "✓ Headers OK!"
+
 # Run all checks
-test: lint fmt-check test-hooks
+test: lint lint-headers fmt-check test-hooks
     @echo "✓ All checks passed!"
 
 # Run hook tests

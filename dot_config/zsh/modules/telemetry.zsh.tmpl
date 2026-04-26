@@ -1,0 +1,25 @@
+# telemetry.zsh.tmpl — Claude Code OTLP → Grafana Cloud (personal only)
+# Provides:     none (exports only)
+# Requires:     grafana_instance_id, grafana_api_token, grafana_sa_token (chezmoi data)
+# Side-effects: export CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_*, GRAFANA_SA_TOKEN
+# Load-order:   free (only needs to run before claude code launches)
+
+# Claude Code Telemetry → Grafana Cloud (personal only)
+export CLAUDE_CODE_ENABLE_TELEMETRY=1
+export OTEL_SERVICE_NAME="claude-code"
+export OTEL_RESOURCE_ATTRIBUTES="service.namespace=LLMs"
+export OTEL_METRICS_EXPORTER=otlp
+export OTEL_TRACES_EXPORTER=otlp
+export OTEL_LOGS_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
+export OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(printf '%s' '{{ .grafana_instance_id }}:{{ .grafana_api_token }}' | base64)"
+# Trace/log detail flags
+export OTEL_LOG_TOOL_CONTENT=true
+export OTEL_LOG_TOOL_DETAILS=true
+export OTEL_LOG_USER_PROMPTS=true
+# Enable session/version dimensions for future metrics aggregation
+export OTEL_METRICS_INCLUDE_SESSION_ID=true
+export OTEL_METRICS_INCLUDE_VERSION=true
+# Grafana SA token for dashboard provisioning (just grr-push)
+export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"

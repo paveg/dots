@@ -1,0 +1,4 @@
+# Worktrees live at <project-root>/.claude/worktrees/<slug>
+# (overrides workmux default of <project>__worktrees/ sibling)
+worktree_dir: .claude/worktrees
+nerdfont: true

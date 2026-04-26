@@ -39,9 +39,17 @@ _fzf_cd_ghq() {
   local root repo
   root="$(command ghq root 2>/dev/null)" || return 1
 
-  # Save original buffer state for restoration on cancel
-  local orig_buffer="$BUFFER"
-  local orig_cursor="$CURSOR"
+  # $WIDGET is only set when invoked via zle (e.g. via the ^g binding).
+  # When called as a plain command (e.g. via the `repos` alias), zle is not
+  # active, so accessing BUFFER/CURSOR or calling `zle ...` would fail.
+  local in_widget=0
+  [[ -n "$WIDGET" ]] && in_widget=1
+
+  local orig_buffer orig_cursor
+  if (( in_widget )); then
+    orig_buffer="$BUFFER"
+    orig_cursor="$CURSOR"
+  fi
 
   # Ensure cache exists
   [[ ! -f "$_GHQ_CACHE" ]] && _ghq_cache_update
@@ -69,9 +77,11 @@ _fzf_cd_ghq() {
 
   # Handle ESC or empty selection - restore original buffer
   if [[ -z "$repo" ]]; then
-    BUFFER="$orig_buffer"
-    CURSOR="$orig_cursor"
-    zle reset-prompt
+    if (( in_widget )); then
+      BUFFER="$orig_buffer"
+      CURSOR="$orig_cursor"
+      zle reset-prompt
+    fi
     return 0
   fi
 
@@ -80,12 +90,16 @@ _fzf_cd_ghq() {
     # Execute cd directly instead of through BUFFER
     # This avoids issues with stray input being left in the zle buffer
     cd "$dir"
-    zle reset-prompt
+    (( in_widget )) && zle reset-prompt
   else
-    BUFFER="$orig_buffer"
-    CURSOR="$orig_cursor"
-    zle -M "Directory not found: $dir"
-    zle reset-prompt
+    if (( in_widget )); then
+      BUFFER="$orig_buffer"
+      CURSOR="$orig_cursor"
+      zle -M "Directory not found: $dir"
+      zle reset-prompt
+    else
+      echo "Directory not found: $dir" >&2
+    fi
   fi
 }
 zle -N _fzf_cd_ghq

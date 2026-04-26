@@ -128,12 +128,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-{{ include "dot_config/zsh/split/plugins.zsh" }}
-{{ include "dot_config/zsh/split/options.zsh" }}
-{{ include "dot_config/zsh/split/aliases.zsh" }}
+{{ include "dot_config/zsh/init/plugins.zsh" }}
+{{ include "dot_config/zsh/init/options.zsh" }}
+{{ include "dot_config/zsh/aliases.zsh" }}
 {{ include "dot_config/zsh/split/functions.zsh" }}
 {{- if not .business_use }}
-{{ include "dot_config/zsh/split/atcoder.zsh" }}
+{{ include "dot_config/zsh/atcoder.zsh" }}
 {{- end }}
 
 # =============================================================================

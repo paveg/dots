@@ -8,5 +8,8 @@ dot_local/share/devbox/global/default/devbox.lock
 .claude/
 .firecrawl/
 
+# workmux Copilot CLI hooks (unused; auto-created by `workmux setup` if it detects Copilot CLI)
+.github/hooks/
+
 # Business-only configs (contain company infrastructure details)
 dot_config/colima/

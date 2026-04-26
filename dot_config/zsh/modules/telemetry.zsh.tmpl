@@ -1,8 +1,8 @@
 # telemetry.zsh.tmpl — Claude Code OTLP → Grafana Cloud (personal only)
-# Provides:     なし (export のみ)
+# Provides:     none (exports only)
 # Requires:     grafana_instance_id, grafana_api_token, grafana_sa_token (chezmoi data)
-# Side-effects: CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_*, GRAFANA_SA_TOKEN を export
-# Load-order:   free (claude code 起動より前であればよい)
+# Side-effects: export CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_*, GRAFANA_SA_TOKEN
+# Load-order:   free (only needs to run before claude code launches)
 
 # Claude Code Telemetry → Grafana Cloud (personal only)
 export CLAUDE_CODE_ENABLE_TELEMETRY=1

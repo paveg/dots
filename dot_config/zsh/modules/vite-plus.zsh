@@ -1,6 +1,6 @@
 # vite-plus.zsh — Vite+ env loader
-# Provides:     なし (~/.vite-plus/env が定義する変数)
-# Requires:     ~/.vite-plus/env (任意 — 不在時は no-op)
+# Provides:     none (vars defined by ~/.vite-plus/env)
+# Requires:     ~/.vite-plus/env (optional — no-op if absent)
 # Side-effects: source ~/.vite-plus/env
 # Load-order:   free
 

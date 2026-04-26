@@ -1,8 +1,8 @@
 # ssh-agent.zsh.tmpl — SSH agent setup (macOS Keychain / Linux keychain)
 # Provides:     SSH_AUTH_SOCK
-# Requires:     ssh-add (macOS), keychain (Linux 任意)
-# Side-effects: SSH_AUTH_SOCK 設定, ssh-add で鍵を agent に追加
-# Load-order:   free (interactive shell であればよい)
+# Requires:     ssh-add (macOS), keychain (Linux, optional)
+# Side-effects: set SSH_AUTH_SOCK; add keys to the agent via ssh-add
+# Load-order:   free (any time during interactive shell init)
 
 # SSH Agent
 {{- if eq .chezmoi.os "darwin" }}

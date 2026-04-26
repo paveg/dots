@@ -1,7 +1,7 @@
 # pnpm.zsh — pnpm PATH setup
 # Provides:     PNPM_HOME, PATH (pnpm bin)
-# Requires:     なし
-# Side-effects: PNPM_HOME export, PATH 先頭に追加 (重複防止チェックあり)
+# Requires:     none
+# Side-effects: export PNPM_HOME and prepend it to PATH (with dedup check)
 # Load-order:   free
 
 # pnpm setup

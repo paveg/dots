@@ -1,9 +1,9 @@
 # ghq-fzf.zsh — ghq + fzf repository navigation
 # Provides:     ghq, _fzf_cd_ghq, repos, _GHQ_CACHE
 # Requires:     ghq, fzf, bat (preview), eza (fallback)
-# Side-effects: 起動時に _ghq_cache_update を背景実行 (キャッシュなし時のみ)。
-#               zle widget _fzf_cd_ghq を ^g に bind。alias repos 追加
-# Load-order:   AFTER plugins (zle が利用可能)
+# Side-effects: run _ghq_cache_update in background at load (only when cache is missing).
+#               Bind zle widget _fzf_cd_ghq to ^g. Add 'repos' alias.
+# Load-order:   AFTER plugins (so zle is available)
 
 # ghq + fzf repository navigation (cached for speed)
 _GHQ_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/ghq_list"

@@ -1,8 +1,8 @@
 # options.zsh — zsh shell options, history, key bindings
 # Provides:     HISTFILE, HISTSIZE, SAVEHIST, _disable_mouse_reporting (precmd hook)
 # Requires:     zinit (the file calls `zinit wait lucid` for completion zstyles)
-# Side-effects: HIST 系変数 export, setopt 多数, bindkey -e, precmd hook 登録,
-#               zinit wait lucid for completion zstyles
+# Side-effects: export HIST_* vars, multiple setopt calls, bindkey -e,
+#               register precmd hook, zinit wait lucid for completion zstyles
 # Load-order:   AFTER plugins (zinit must be defined), BEFORE features/
 
 # =============================================================================

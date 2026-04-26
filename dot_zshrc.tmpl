@@ -4,7 +4,7 @@
 [[ "${ZSHRC_PROFILE:-0}" == "1" ]] && zmodload zsh/zprof
 
 # =============================================================================
-# Init: 順序が意味を持つ起動シーケンス
+# Init: ordered startup sequence (load order matters)
 # =============================================================================
 {{ include "dot_config/zsh/init/xdg.zsh" }}
 {{ includeTemplate "dot_config/zsh/init/homebrew.zsh.tmpl" . }}
@@ -24,7 +24,7 @@
 {{ include "dot_config/zsh/aliases.zsh" }}
 
 # =============================================================================
-# Features: 順不同 (関数定義中心)
+# Features: order-independent (function definitions)
 # =============================================================================
 {{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
 {{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
@@ -42,7 +42,7 @@
 {{- end }}
 
 # =============================================================================
-# Modules: 順不同 (環境セットアップ)
+# Modules: order-independent (environment setup)
 # =============================================================================
 {{ includeTemplate "dot_config/zsh/modules/ssh-agent.zsh.tmpl" . }}
 {{ include "dot_config/zsh/modules/bun.zsh" }}

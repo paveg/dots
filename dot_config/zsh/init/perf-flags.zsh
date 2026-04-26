@@ -1,8 +1,8 @@
 # perf-flags.zsh — zsh startup performance flags
 # Provides:     DISABLE_MAGIC_FUNCTIONS, skip_global_compinit
-# Requires:     なし
-# Side-effects: zsh global vars を設定 (zinit / oh-my-zsh の挙動に影響)
-# Load-order:   BEFORE plugins (zinit が読む前)
+# Requires:     none
+# Side-effects: set zsh global vars (affects zinit / oh-my-zsh behavior)
+# Load-order:   BEFORE plugins (so zinit picks them up)
 
 # Performance flags
 DISABLE_MAGIC_FUNCTIONS=true

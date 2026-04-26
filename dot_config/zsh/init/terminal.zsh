@@ -1,7 +1,7 @@
 # terminal.zsh — TERM compatibility shimming
-# Provides:     TERM (補正値)
-# Requires:     infocmp (任意)
-# Side-effects: TERM を xterm-256color または screen-256color に上書きする条件あり
+# Provides:     TERM (corrected value)
+# Requires:     infocmp (optional)
+# Side-effects: conditionally override TERM to xterm-256color or screen-256color
 # Load-order:   AFTER xdg
 
 # Terminal compatibility

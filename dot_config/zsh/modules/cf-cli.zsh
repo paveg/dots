@@ -1,6 +1,6 @@
 # cf-cli.zsh — CF CLI completions (shipped via Vite+)
 # Provides:     _cf (completion)
-# Requires:     ~/.config/cf/completions/_cf.zsh (任意 — 不在時は no-op)
+# Requires:     ~/.config/cf/completions/_cf.zsh (optional — no-op if absent)
 # Side-effects: source completion file
 # Load-order:   AFTER vite-plus
 

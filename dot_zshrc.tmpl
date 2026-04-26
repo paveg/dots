@@ -4,129 +4,17 @@
 [[ "${ZSHRC_PROFILE:-0}" == "1" ]] && zmodload zsh/zprof
 
 # =============================================================================
-# XDG Base Directory (fallback if .zshenv not sourced)
+# Init: 順序が意味を持つ起動シーケンス
 # =============================================================================
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-
-# =============================================================================
-# Homebrew setup (macOS)
-# =============================================================================
-{{- if eq .chezmoi.os "darwin" }}
-# shellenv is cached; invalidated automatically when brew binary updates
-_brew_bin="/opt/homebrew/bin/brew"
-if [[ -x "$_brew_bin" ]]; then
-  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/brew.zsh"
-  if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
-    mkdir -p "$(dirname "$_brew_cache")"
-    "$_brew_bin" shellenv > "$_brew_cache"
-  fi
-  source "$_brew_cache"
-fi
-unset _brew_bin _brew_cache
+{{ include "dot_config/zsh/init/xdg.zsh" }}
+{{ includeTemplate "dot_config/zsh/init/homebrew.zsh.tmpl" . }}
+{{ include "dot_config/zsh/init/terminal.zsh" }}
+{{ include "dot_config/zsh/init/perf-flags.zsh" }}
+{{ include "dot_config/zsh/init/mise.zsh" }}
+{{- if .auto_tmux }}
+{{ include "dot_config/zsh/init/auto-tmux.zsh" }}
 {{- end }}
-
-# Prevent accidental installation of tools managed by other package managers
-# - node/npm/pnpm/yarn: use devbox or mise
-# - python/pip: use uv
-# - claude: use npm -g
-export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude"
-
-# =============================================================================
-# Terminal compatibility
-# =============================================================================
-# Fall back to xterm-256color if terminfo is missing (e.g., SSH to older servers)
-if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
-  export TERM=xterm-256color
-fi
-
-# Ensure TERM matches tmux default-terminal when inside tmux
-if [[ -n "$TMUX" ]] && [[ "$TERM" != "screen-256color" ]]; then
-  export TERM=screen-256color
-fi
-
-# =============================================================================
-# Performance flags
-# =============================================================================
-DISABLE_MAGIC_FUNCTIONS=true
-skip_global_compinit=1
-
-# =============================================================================
-# mise (runtime version manager) - early activation for tmux
-# =============================================================================
-# Must be activated before auto_tmux to ensure tmux is in PATH
-if command -v mise &>/dev/null; then
-  _mise_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/mise.zsh"
-  # Invalidate cache when mise version changes
-  _mise_ver="$(mise --version 2>/dev/null)"
-  if [[ ! -f "$_mise_cache" ]] || ! grep -qF "# mise $_mise_ver" "$_mise_cache" 2>/dev/null; then
-    mkdir -p "$(dirname "$_mise_cache")"
-    { echo "# mise $_mise_ver"; mise activate zsh; } > "$_mise_cache"
-  fi
-  source "$_mise_cache"
-  unset _mise_cache _mise_ver
-fi
-
-{{ if .auto_tmux -}}
-# =============================================================================
-# Auto tmux on terminal startup
-# =============================================================================
-# Must run BEFORE p10k instant prompt (exec replaces shell, breaks p10k state)
-auto_tmux() {
-  # Skip if already in tmux
-  [[ -n "$TMUX" ]] && return 0
-  # Skip if not interactive
-  [[ ! -o interactive ]] && return 0
-  # Skip if explicitly disabled
-  [[ "${DISABLE_AUTO_TMUX:-0}" = "1" ]] && return 0
-  # Skip in CI/Docker
-  [[ -n "$CI" || -n "$CONTAINER" || -f /.dockerenv ]] && return 0
-
-  if (( $+commands[tmux] )); then
-    # Get existing sessions
-    local sessions
-    sessions=(${(f)"$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"})
-
-    if (( ${#sessions[@]} == 0 )); then
-      # No sessions: create new
-      exec tmux new-session
-    elif (( ${#sessions[@]} == 1 )); then
-      # Single session: attach directly
-      exec tmux attach-session -t "${sessions[1]}"
-    else
-      # Multiple sessions: select with fzf or fallback
-      local selected
-      if (( $+commands[fzf] )); then
-        selected=$(tmux list-sessions -F '#{session_name}: #{session_windows} windows (#{session_created_string})' 2>/dev/null \
-          | fzf --height=40% --reverse --header="Select tmux session (ESC for new)" \
-          | cut -d: -f1)
-      else
-        # Fallback: attach to first session if fzf unavailable
-        selected="${sessions[1]}"
-      fi
-
-      if [[ -n "$selected" ]]; then
-        exec tmux attach-session -t "$selected"
-      else
-        exec tmux new-session
-      fi
-    fi
-  fi
-}
-auto_tmux
-{{ end -}}
-
-# =============================================================================
-# Powerlevel10k instant prompt
-# =============================================================================
-# Enable instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+{{ include "dot_config/zsh/init/p10k-instant.zsh" }}
 
 {{ include "dot_config/zsh/init/plugins.zsh" }}
 {{ include "dot_config/zsh/init/options.zsh" }}

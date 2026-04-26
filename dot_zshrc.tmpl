@@ -19,7 +19,17 @@
 {{ include "dot_config/zsh/init/plugins.zsh" }}
 {{ include "dot_config/zsh/init/options.zsh" }}
 {{ include "dot_config/zsh/aliases.zsh" }}
-{{ include "dot_config/zsh/split/functions.zsh" }}
+{{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
+{{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
+{{ include "dot_config/zsh/features/kube.zsh" }}
+{{ include "dot_config/zsh/features/rgn.zsh" }}
+{{ include "dot_config/zsh/features/devbox-brew.zsh" }}
+{{ include "dot_config/zsh/features/profiling.zsh" }}
+{{ include "dot_config/zsh/features/dotenv-auto.zsh" }}
+{{ include "dot_config/zsh/features/cache-mgmt.zsh" }}
+{{ include "dot_config/zsh/features/dotfiles-helpers.zsh" }}
+{{ include "dot_config/zsh/features/local-config-cmd.zsh" }}
+{{ include "dot_config/zsh/features/documentation.zsh" }}
 {{- if not .business_use }}
 {{ include "dot_config/zsh/atcoder.zsh" }}
 {{- end }}

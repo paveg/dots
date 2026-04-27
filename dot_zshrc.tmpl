@@ -62,5 +62,17 @@
 # =============================================================================
 # Work Environment
 # =============================================================================
-# Add work-specific configurations here
+# mise activates earlier in zshrc and snapshots PATH; on every prompt its
+# precmd hook restores PATH from that snapshot, appending anything added
+# later (incl. keg-only openssl@3) to the back. Force openssl@3 to stay
+# at the front via our own precmd hook, registered AFTER mise's so it
+# runs later in the chain.
+_brew_force_openssl_path() {
+  local brew_openssl="{{ .homebrew_prefix }}/opt/openssl@3/bin"
+  [[ -d "$brew_openssl" ]] || return
+  [[ "${PATH%%:*}" == "$brew_openssl" ]] && return
+  export PATH="$brew_openssl:${PATH//:$brew_openssl/}"
+}
+typeset -ag precmd_functions
+precmd_functions+=(_brew_force_openssl_path)
 {{- end }}

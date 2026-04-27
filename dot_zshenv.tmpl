@@ -70,4 +70,26 @@ export GITLEAKS_CONFIG="$XDG_CONFIG_HOME/gitleaks/config.toml"
 # =============================================================================
 export BUSINESS_USE=1
 export COLIMA_HOME="$XDG_CONFIG_HOME/colima"
+
+# Corporate TLS inspection CA: wire palo-root.pem (in Homebrew's cert store)
+# into common SSL env vars so curl/Node/Python/Ruby-OpenSSL trust certificates
+# reissued by a corporate TLS-inspecting proxy.
+# PATH ordering for openssl@3 and general Homebrew bin is handled in .zshrc
+# (must run last to survive subsequent reordering by mise/devbox/pnpm/etc.).
+# NIX_SSL_CERT_FILE is read by nix-built tools (devbox, nix CLI, builders that
+# inherit env), which ignore the standard SSL_CERT_FILE and use their own
+# baked-in CA bundle path otherwise.
+_brew_ca_dir="{{ .homebrew_prefix }}/etc/openssl@3/certs"
+_brew_palo_ca="$_brew_ca_dir/palo-root.pem"
+
+if [[ -f "$_brew_palo_ca" ]]; then
+  export SSL_CERT_DIR="$_brew_ca_dir"
+  export CAPATH="$_brew_ca_dir"
+  export SSL_CERT_FILE="$_brew_palo_ca"
+  export NODE_EXTRA_CA_CERTS="$_brew_palo_ca"
+  export CURL_CA_BUNDLE="$_brew_palo_ca"
+  export NIX_SSL_CERT_FILE="$_brew_palo_ca"
+fi
+
+unset _brew_ca_dir _brew_palo_ca
 {{- end }}

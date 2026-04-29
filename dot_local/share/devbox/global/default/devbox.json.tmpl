@@ -49,7 +49,9 @@
     "deno@latest",
     "rustup@latest",
     "mergiraf@latest",
+{{- if not .business_use }}
     "github:raine/workmux",
+{{- end }}
     "textlint@latest",
     "textlint-rule-preset-ja-technical-writing@latest",
     "textlint-rule-preset-ja-spacing@latest"

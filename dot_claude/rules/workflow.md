@@ -27,7 +27,7 @@ alwaysApply: true
 - Main process stays as the evaluator (see `harness-engineering.md` generator-evaluator separation)
 - Brief subagents with relevant rules inline — they have no conversation history
 - After implementation, dispatch separate review subagents: spec compliance, then code quality
-- **Push and PR creation require explicit user confirmation**
+- **Push and PR creation require explicit user confirmation** — including post-phase follow-ups (docs, cleanup, completion records). Prefer branch-protection enforcement over discipline.
 
 ### Worktree Location
 

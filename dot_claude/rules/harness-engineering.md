@@ -26,6 +26,7 @@ Push checks toward guardrails whenever a deterministic tool can do the job: **th
 - Before implementation: agree on concrete "done" criteria with the user
 - Done criteria must be verifiable (testable assertions, observable behavior, measurable outcomes)
 - If criteria cannot be verified automatically, state which require manual verification
+- For multi-turn implementation tasks, encode the contract via `/goal <criteria>` so the harness tracks completion across turns (shows live elapsed/turns/tokens overlay)
 
 ## [Guardrail] Review Discipline
 

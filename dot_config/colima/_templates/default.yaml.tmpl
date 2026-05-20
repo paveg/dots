@@ -59,12 +59,14 @@ mounts:
   # Home directory (replicate default colima behaviour)
   - location: {{ .chezmoi.homeDir }}
     writable: true
+{{- if .business_use }}
   # Certificate for Palo Alto proxy (single source of truth: homebrew openssl)
   - location: /opt/homebrew/etc/openssl@3/certs
     mountPoint: /tmp/certs
     writable: false
-
-# Provision: only offline tasks (no network required)
+{{- end }}
+{{ if .business_use -}}
+# Provision: corporate CA cert install (work machines only)
 provision:
   - mode: system
     script: |
@@ -75,3 +77,4 @@ provision:
         systemctl daemon-reload
         systemctl restart docker || true
       fi
+{{- end }}

@@ -1,0 +1,77 @@
+# Colima default instance configuration
+# Managed by chezmoi — edit this template, not ~/.config/colima/_templates/default.yaml
+#
+# References:
+# - freee dev setup recommends: cpu: 8, memory: 24, disk: 100, vmType: vz, mountType: virtiofs, rosetta: true
+#   (baseline: M4 MacBook Pro 48GB)
+# - Local override below is tuned for current host; adjust cpu/memory if host RAM allows.
+
+# VM resources (freee dev setup baseline; matches M4 MBP 48GB host)
+cpu: 8
+memory: 24
+# disk:     separate 100GB data disk — currently NOT auto-mounted on colima 0.10.1
+#           + lima 2.1.1 (vdb stays raw). Kept as a placeholder; once the upstream
+#           bug is fixed, container data should live there instead of rootDisk.
+disk: 100
+# rootDisk: 100GB root filesystem. Holds /var/lib/{docker,containerd} until
+#           dataDisk auto-mount works. Default is 20GB which fills up fast with
+#           multi-image ECR pulls (containerd snapshots layer extraction).
+rootDisk: 100
+
+# Apple Virtualization.framework (fastest on Apple Silicon)
+# Troubleshooting notes (learned the hard way on macOS 26 Tahoe):
+# 1. If startup hangs at "essential requirement 1 of 3: ssh", check first:
+#    - `~/.cache/colima/caches/*.raw` — a 0-byte cache file means a previous
+#      download was interrupted. Delete and retry; symptoms ranged from
+#      VZ-1-second-stopped to UEFI Shell drop-through.
+#    - `~/.config/colima/_lima/_config/user` — lima 2.1.1 generates this SSH
+#      private key with 0644 perms; opensshd rejects it as "too open" and
+#      colima loops on Permission denied. `chmod 600` fixes it.
+# 2. If VZ itself proves incompatible on a future macOS, swap to:
+#      vmType: qemu
+#      mountType: 9p
+#      rosetta: false
+vmType: vz
+mountType: virtiofs
+rosetta: true
+
+# Architecture
+arch: aarch64
+
+# Container runtime
+runtime: docker
+
+# Forward host SSH agent to VM (git, ssh2node, etc.)
+forwardAgent: true
+
+# Do not modify ~/.ssh/config (managed by chezmoi)
+sshConfig: false
+
+# Network
+network:
+  address: false
+  dns: []
+  dnsHosts:
+    host.docker.internal: host.lima.internal
+
+# Mounts
+mounts:
+  # Home directory (replicate default colima behaviour)
+  - location: {{ .chezmoi.homeDir }}
+    writable: true
+  # Certificate for Palo Alto proxy (single source of truth: homebrew openssl)
+  - location: /opt/homebrew/etc/openssl@3/certs
+    mountPoint: /tmp/certs
+    writable: false
+
+# Provision: only offline tasks (no network required)
+provision:
+  - mode: system
+    script: |
+      # Corporate CA certificate (skip if not provided)
+      if [ -f /tmp/certs/palo-root.pem ]; then
+        cp -f /tmp/certs/palo-root.pem /usr/local/share/ca-certificates/palo-root.crt
+        update-ca-certificates
+        systemctl daemon-reload
+        systemctl restart docker || true
+      fi

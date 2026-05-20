@@ -4,7 +4,7 @@
 {{- if .signing_key }}
   signingkey = {{ .signing_key }}
 {{- else }}
-  signingkey = ~/.ssh/id_github.pub
+  signingkey = ~/.ssh/id_ed25519.pub
 {{- end }}
 
 [commit]

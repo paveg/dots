@@ -36,13 +36,13 @@
     "docker-client@latest",
     "docker-compose@latest",
     "docker-credential-helpers@latest",
-    "saml2aws@latest",
     "k9s@latest",
     "sops@latest",
-    "ssm-session-manager-plugin@latest",
     "acli@latest",
 {{- end }}
+{{- if not .business_use }}
     "gitleaks@latest",
+{{- end }}
     "glow@latest",
     "tree-sitter@latest",
     "uv@latest",

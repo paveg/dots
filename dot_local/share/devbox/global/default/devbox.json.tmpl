@@ -36,22 +36,19 @@
     "docker-client@latest",
     "docker-compose@latest",
     "docker-credential-helpers@latest",
-    "saml2aws@latest",
     "k9s@latest",
     "sops@latest",
-    "ssm-session-manager-plugin@latest",
     "acli@latest",
 {{- end }}
+{{- if not .business_use }}
     "gitleaks@latest",
+{{- end }}
     "glow@latest",
     "tree-sitter@latest",
     "uv@latest",
     "deno@latest",
     "rustup@latest",
     "mergiraf@latest",
-{{- if not .business_use }}
-    "github:raine/workmux",
-{{- end }}
     "textlint@latest",
     "textlint-rule-preset-ja-technical-writing@latest",
     "textlint-rule-preset-ja-spacing@latest"

@@ -27,7 +27,6 @@ fi
 if command -v keychain &>/dev/null; then
   local ssh_keys=()
   [[ -f "$HOME/.ssh/id_ed25519" ]] && ssh_keys+=("id_ed25519")
-  [[ -f "$HOME/.ssh/id_github" ]] && ssh_keys+=("id_github")
   [[ -f "$HOME/.ssh/id_rsa" ]] && ssh_keys+=("id_rsa")
 
   if (( ${#ssh_keys[@]} > 0 )); then

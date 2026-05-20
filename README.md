@@ -317,7 +317,7 @@ Common SSH settings are managed, host-specific configs should be in `~/.ssh/conf
 ```bash
 # ~/.ssh/config.local (not tracked, create manually)
 Host github.com
-  IdentityFile ~/.ssh/id_github
+  IdentityFile ~/.ssh/id_ed25519
 
 Host myserver
   HostName 192.168.1.100

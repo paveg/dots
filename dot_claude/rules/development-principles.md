@@ -24,11 +24,30 @@ alwaysApply: true
 - Do not speculate on specifications — ask or investigate
 - Admit uncertainty rather than guessing
 
+## Readability
+
+Code is read far more often than it is written. Optimize for the reader.
+
+- **Naming is documentation**: variable, function, class, and module names must reveal intent without requiring a comment. Prefer `remainingRetryCount` over `cnt`, `fetchUserProfile` over `getData`
+- Avoid abbreviations unless they are universal in the domain (`id`, `url`, `http`, `db` are fine; `usr`, `cnt`, `mgr` are not)
+- Boolean names should read as assertions: `isVisible`, `hasPermission`, `shouldRetry`
+- Functions should describe **what** they do, not **how**: `sortByCreatedAt` over `quickSortImpl`
+- Scope rule: the wider the scope, the more descriptive the name. Single-letter names are acceptable only in trivial lambdas or loop indices
+
 ## Comments
 
-- Write "why", not "what"
-- Only add "what" comments when improving multi-line code readability
-- Avoid redundant comments that restate obvious code
+Default: **no comments**. Only add a comment when ALL of the following are true:
+
+1. The **why** is non-obvious (hidden constraint, subtle invariant, workaround for a specific bug)
+2. Removing the comment would leave a future reader confused
+3. The information cannot be conveyed by better naming alone
+
+Explicitly forbidden:
+- Repeating what the code does (`// increment counter`)
+- Referencing the current task, PR, or issue (`// added for #123`)
+- Multi-line docblocks that restate the function signature
+- Section banners (`// --- Helper Functions ---`)
+- Commented-out code (delete it; git remembers)
 
 ## Database Migrations
 

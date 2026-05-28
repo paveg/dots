@@ -61,6 +61,17 @@ Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr
 
 `fetch_edinet.py` needs a Subscription-Key. Set `EDINET_SUBSCRIPTION_KEY`, or store it in 1Password at `op://Personal/EDINET/credential` (override path via `EDINET_OP_REF`).
 
+## JP fallback when EDINET is unavailable
+
+EDINET API is occasionally down, key activation can be delayed, and the portal has had outages. When `fetch_edinet.py` exits non-zero for a JP ticker:
+
+1. **Do NOT abort the memo.** Continue with Phase 2/3/5 using `fetch_yahoo.py {code}` only (it auto-suffixes `.T` and covers price + PE/PSR + market cap + TTM revenue / operating income / FCF).
+2. In Phase 1 (segment breakdown) and Phase 4 (filings-sourced risks), write `数字取得失敗 — EDINET unavailable. Paste 有報 / 短信 URL to enable.` Then ask the user: *「有報か短信の URL があれば貼ってください。なければこのまま Yahoo の数字で進めます」*
+3. If the user pastes a URL or PDF, fetch / read it and fill in Phase 1 + 4 from there.
+4. The Verdict (Phase 5) can still ground itself on Phase 2 / 3 alone; flag the missing filings context in the Invalidation list.
+
+This keeps JP coverage usable even when EDINET is offline.
+
 ## Fail-loud rules
 
 - No hallucinated revenue / margin / multiples. If you can't source it, write "数字取得失敗".

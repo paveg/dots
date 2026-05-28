@@ -20,12 +20,11 @@ The skill emits a 100–200 line memo covering business, fundamentals (3-year tr
 ## What's in scope (v1)
 
 - US individual stocks (10-K / 10-Q / 8-K via SEC EDGAR + Yahoo Finance)
-- JP individual stocks via Yahoo Finance Japan (price + multiples). 有報 / 決算短信 are read via manual URL/PDF paste — EDINET API auto-fetch is v1.1.
+- JP individual stocks via Yahoo Finance Japan (price + multiples) + EDINET (有価証券報告書 / 四半期報告書 auto-fetch)
 
 ## What's not in scope (v1)
 
 - ETF / index funds → v1.1
-- EDINET API auto-fetch (requires free subscription key from disclosure2.edinet-fsa.go.jp) → v1.1
 - Dividend-focused screens (yield + payout ratio + coverage) — different rubric
 - Crypto, commodities, individual bonds
 - Hong Kong / Shanghai / European listings
@@ -42,6 +41,7 @@ references/risk-taxonomy.md    # 5 axes Active/Latent/Inactive scoring
 references/data-sources.md     # EDGAR / EDINET / Yahoo / Damodaran query notes
 scripts/fetch_yahoo.py         # `uv run scripts/fetch_yahoo.py NVDA`     (US + JP via .T)
 scripts/fetch_edgar.py         # `uv run scripts/fetch_edgar.py NVDA`     (US filings)
+scripts/fetch_edinet.py        # `uv run scripts/fetch_edinet.py 7203`    (JP 有報 + 四半期報告書)
 ```
 
 ## Smoke-test the fetchers
@@ -53,6 +53,9 @@ cd ~/.claude/skills/equity-decision
 uv run scripts/fetch_yahoo.py NVDA  | jq '.summary'
 uv run scripts/fetch_yahoo.py 7203  | jq '.summary'   # JP auto-suffix .T
 uv run scripts/fetch_edgar.py NVDA  | jq '.filings[0]'
+uv run scripts/fetch_edinet.py 7203 | jq '.docs[0]'
 ```
 
 Expected: each returns a JSON object with the documented shape (see each script's docstring).
+
+`fetch_edinet.py` needs a Subscription-Key. Set `EDINET_SUBSCRIPTION_KEY` env var or store it in 1Password at `op://Personal/EDINET/credential` (override path via `EDINET_OP_REF`).

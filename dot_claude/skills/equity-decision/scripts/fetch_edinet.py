@@ -58,11 +58,12 @@ def get_key() -> str:
         return env_key
     op_ref = os.environ.get("EDINET_OP_REF", DEFAULT_OP_REF)
     try:
+        # op read via Desktop integration takes ~5s; a tight timeout flakes.
         result = subprocess.run(
             ["op", "read", op_ref],
             capture_output=True,
             text=True,
-            timeout=5,
+            timeout=20,
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
         result = None

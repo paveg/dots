@@ -18,11 +18,13 @@ Produces a structured purchase memo for an individual stock (US or JP). Adapted 
 | Form | Example | Routing |
 |---|---|---|
 | US ticker | `NVDA`, `AAPL` | `^[A-Z]{1,5}$` → EDGAR + Yahoo Finance |
-| JP code | `7203`, `9984` | `^\d{4}$` → EDINET + Yahoo Finance (Japan) |
+| JP code | `7203`, `9984` | `^\d{4}$` → Yahoo Finance Japan (有報 manual URL paste — see below) |
 | URL | `https://www.sec.gov/.../10-K.htm` | Read page; infer symbol; route per above |
 | Mixed | `NVDA "DC growth slowing"` | Use the extra string as a hypothesis to test in Phase 5 |
 | Flag | `--ja 9434` | Force JP routing for ambiguous 4-digit |
 | Flag | `--no-cache NVDA` | Skip 24h cache, refetch |
+
+**Note on JP filings**: EDINET API requires a free subscription key (deferred to v1.1). For now, paste the 有価証券報告書 / 決算短信 URL or PDF text alongside the ticker, e.g. `/equity-decision 7203 https://www.toyota.co.jp/.../yuho.pdf`.
 
 ## Output
 
@@ -45,6 +47,20 @@ A single markdown memo of 100–200 lines, matching `references/equity-workflow.
 4. Fill the memo template phase-by-phase. **If a number cannot be fetched or sourced, write "数字取得失敗 — manual entry required" — never make up a number.**
 5. Apply rubrics from `references/dcf-rubric.md`, `references/growth-stock-checks.md`, `references/risk-taxonomy.md`.
 6. Emit the memo, then the deep-dive menu.
+
+## Data fetchers
+
+Run these from `~/.claude/skills/equity-decision/scripts/` via `uv run`:
+
+| When | Command | Returns |
+|---|---|---|
+| US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA` | quote, PE/PSR, market cap, TTM revenue/FCF |
+| US ticker → recent filings | `uv run scripts/fetch_edgar.py NVDA` | latest 10-K, 10-Q, 5 × 8-K (with URLs) |
+| JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203` | same shape, auto `.T` suffix |
+
+Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr contains `数字取得失敗: ...` — propagate that text into the memo, do not invent numbers.
+
+JP filings (有報 / 短信) have no fetcher in v1 — paste the URL/PDF alongside the ticker.
 
 ## Fail-loud rules
 

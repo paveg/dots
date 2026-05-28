@@ -34,17 +34,15 @@ Key forms:
 
 ## JP Equities
 
-### EDINET
+### EDINET — deferred to v1.1
 
-- **Document list** (per date): `GET https://disclosure.edinet-fsa.go.jp/api/v2/documents.json?date=YYYY-MM-DD&type=2`
-- **Document body** (PDF or XBRL): `GET https://disclosure.edinet-fsa.go.jp/api/v2/documents/{docID}?type=2`
-- **No auth key required** (as of 2026); rate limit is unstated but conservative — keep to ≤1 RPS.
-- Filter by `docTypeCode`:
-  - `120` — 有価証券報告書 (annual)
-  - `140` — 四半期報告書 (quarterly)
-  - `160` — 半期報告書
-
-To find a 4-digit securities code → EDINET CIK (`edinetCode`): use the document listing's `secCode` field.
+- **Status (2026-05)**: EDINET v2 now requires a `Subscription-Key` header. Free key obtainable from <https://disclosure2.edinet-fsa.go.jp/>.
+- v1 of this skill does NOT auto-fetch EDINET. For JP 有報 / 短信, paste the URL or PDF text alongside the ticker.
+- Once a key is configured (planned v1.1):
+  - **Document list** (per date): `GET https://disclosure.edinet-fsa.go.jp/api/v2/documents.json?date=YYYY-MM-DD&type=2`
+  - **Document body** (PDF or XBRL): `GET https://disclosure.edinet-fsa.go.jp/api/v2/documents/{docID}?type=2`
+  - Filter by `docTypeCode`: `120` 有価証券報告書 / `140` 四半期報告書 / `160` 半期報告書
+  - 4-digit securities code → `edinetCode` resolution: use the document listing's `secCode` field (4-digit ticker + trailing `0`)
 
 ### TDnet (適時開示)
 

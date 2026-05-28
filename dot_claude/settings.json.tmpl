@@ -49,7 +49,8 @@
       "Write(**/.ssh/*)",
       "Write(**/authorized_keys)",
       "mcp__supabase__execute_sql"
-    ]
+    ],
+    "defaultMode": "auto"
   },
 {{- if .business_use }}
   "env": {
@@ -131,6 +132,10 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/rules-inject.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/block-rot-comments.py"
           }
         ]
       },

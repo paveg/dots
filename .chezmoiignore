@@ -19,6 +19,9 @@ devbox.lock
 # Repo-local docs (specs, plans, ADRs — not for home dir)
 docs/
 
+# Repo-local tests for dot_claude/hooks (run via `just test`)
+tests/
+
 # macOS specific
 {{ if ne .chezmoi.os "darwin" }}
 .config/karabiner/

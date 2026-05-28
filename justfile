@@ -54,6 +54,11 @@ test-hooks:
     @echo "Running hook tests..."
     @bash tests/hooks/run-tests.sh
 
+# Run skill fetcher tests
+test-skills:
+    @echo "Running skill fetcher tests..."
+    @bash tests/skills/equity-decision/run-tests.sh
+
 # Install formatter tools
 install:
     @echo "Installing formatters via devbox..."

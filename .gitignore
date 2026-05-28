@@ -8,6 +8,10 @@ dot_local/share/devbox/global/default/devbox.lock
 .claude/
 .firecrawl/
 
+# Python tooling caches (pytest harness under tests/skills/)
+__pycache__/
+.pytest_cache/
+
 # workmux Copilot CLI hooks (unused; auto-created by `workmux setup` if it detects Copilot CLI)
 .github/hooks/
 

@@ -38,6 +38,16 @@ just diff        # Show pending chezmoi changes
 - `dot_config/ghostty/` - Terminal emulator config
 - `private_dot_ssh/` - SSH config (common settings only)
 
+## Package Management Policy
+
+Personal (non-business) CLI tools follow an availability waterfall — use the first layer that provides the package:
+
+1. **devbox (Nix)** — first choice for cross-platform CLI tools. Reproducible, pinned in `devbox.lock`. Add via `devbox global add`. Because `devbox.json` is a chezmoi template (business/personal split), the change is **not** auto-persisted — the `devbox()` wrapper warns you to add the package to the matching block in `devbox.json.tmpl` by hand (personal packages go in the `not .business_use` block).
+2. **mise** — Nix gap-filler only. Use when a tool is **not in nixpkgs** but available via a mise backend (`ubi:` release binaries, `go:`, `cargo:`, `npm:`). Declared in `dot_config/mise/config.toml`. mise does **not** manage language runtimes here — `node`/`go`/`deno` stay in devbox global.
+3. **Homebrew** — last resort for CLI. Use only when a tool is in neither nix nor a mise backend (e.g. brew-tap-only tools).
+
+Out of the waterfall (always Homebrew): GUI apps (`cask`), Mac App Store (`mas`), VSCode extensions, and macOS-specific CLI that isn't portable (e.g. `colima`, `vips`, `swiftlint`, `xcodegen`).
+
 ## Authoring rules & skills
 
 Rules (`dot_claude/rules/`) and skills (`dot_claude/skills/`) added to this repo are written in **English**. Japanese is allowed only where nuance requires it — e.g. a skill `description`'s trigger phrases that the user types in Japanese, or a generated-output template whose reader is Japanese.

@@ -38,6 +38,10 @@ just diff        # Show pending chezmoi changes
 - `dot_config/ghostty/` - Terminal emulator config
 - `private_dot_ssh/` - SSH config (common settings only)
 
+## Authoring rules & skills
+
+Rules (`dot_claude/rules/`) and skills (`dot_claude/skills/`) added to this repo are written in **English**. Japanese is allowed only where nuance requires it — e.g. a skill `description`'s trigger phrases that the user types in Japanese, or a generated-output template whose reader is Japanese.
+
 ## CI
 
 GitHub Actions runs on every push/PR to main:

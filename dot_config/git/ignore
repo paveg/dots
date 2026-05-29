@@ -40,3 +40,6 @@ devbox.lock
 sourcemaps
 
 .claude/worktrees/
+
+# AI working notes (per-repo, never committed)
+.ai/

@@ -1,14 +1,20 @@
-# Devbox wrapper - auto re-add to chezmoi after global changes
+# Devbox wrapper - persist global changes back to chezmoi after mutations
 devbox() {
   command devbox "$@"
   local ret=$?
 
-  # Re-add devbox global config to chezmoi after modifying commands
   if [[ "$1" == "global" ]] && [[ "$2" =~ ^(add|rm|install|remove|update)$ ]]; then
-    local devbox_global="${HOME}/.local/share/devbox/global/default"
-    if [[ -f "${devbox_global}/devbox.json" ]]; then
-      chezmoi re-add "${devbox_global}/devbox.json" "${devbox_global}/devbox.lock" 2>/dev/null
-      echo "📦 chezmoi re-add: devbox.json, devbox.lock"
+    local json="${HOME}/.local/share/devbox/global/default/devbox.json"
+    local src
+    src="$(chezmoi source-path "$json" 2>/dev/null)"
+
+    if [[ "$src" == *.tmpl ]]; then
+      # chezmoi re-add silently skips template sources, so it can't round-trip
+      # the business/personal split — edit the template by hand instead.
+      echo "⚠ devbox.json is a chezmoi template — change NOT auto-persisted." >&2
+      echo "  Update ${src} (personal packages: the 'not .business_use' block)." >&2
+    elif [[ -n "$src" ]]; then
+      chezmoi re-add "$json" 2>/dev/null && echo "📦 chezmoi re-add: devbox.json"
     fi
   fi
 

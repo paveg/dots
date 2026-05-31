@@ -5,5 +5,5 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-uv run --with pytest --with requests-mock --with yfinance --with beautifulsoup4 \
+uv run --with pytest --with requests-mock --with yfinance --with beautifulsoup4 --with lxml \
   python -m pytest -v --tb=short

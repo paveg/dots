@@ -3,12 +3,14 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #   "requests>=2.31",
+#   "lxml>=5.0",
 # ]
 # ///
 """fetch_edinet.py — EDINET filings for a JP 4-digit securities code.
 
 Usage:
-    uv run fetch_edinet.py <4-digit-secCode>
+    uv run fetch_edinet.py <4-digit-secCode>   # list latest filings
+    uv run fetch_edinet.py --sections <docID>  # extract 監査/訴訟 from a 有報
 
 Output (stdout, JSON):
     {
@@ -16,13 +18,17 @@ Output (stdout, JSON):
       "edinetCode": "E02144",
       "docs": [
         {"docTypeCode": "120", "docDescription": "...", "submitDateTime": "...", "docID": "S...", "url": "https://..."},
-        {"docTypeCode": "140", ...}
+        {"docTypeCode": "160", ...}
       ]
     }
 
 Walks back up to 400 days from today, listing one day at a time, until both the
-latest 有価証券報告書 (docTypeCode 120) and the latest 四半期報告書 (docTypeCode 140)
-have been collected (or 400 days exhausted).
+latest 有価証券報告書 (docTypeCode 120) and the latest 半期報告書 (docTypeCode 160)
+have been collected (or 400 days exhausted). 四半期報告書 (140) was abolished in
+the 2024 disclosure reform.
+
+The --sections mode downloads the 有報 XBRL (type=1) for a given docID and returns
+{"docID": ..., "sections": {"audit": {...}, "litigation": {...}}}.
 
 Authentication:
     The EDINET v2 API requires the `Ocp-Apim-Subscription-Key` header. Obtain a
@@ -36,17 +42,78 @@ Exit codes:
     1 — fetch / auth / lookup failed (message on stderr begins with `数字取得失敗`)
     2 — usage error
 """
+import io
 import json
 import os
+import re
 import subprocess
 import sys
+import zipfile
 from datetime import date, timedelta
 from time import sleep
 
 import requests
+from lxml import etree
+from lxml import html as lhtml
+
+LITIGATION_RE = re.compile(r"訴訟|係争|損害賠償")
+_WS_RE = re.compile(r"\s+")
+
+
+def _detag(raw: str) -> str:
+    if not raw:
+        return ""
+    try:
+        text = lhtml.fromstring(raw).text_content()
+    except Exception:
+        text = raw
+    return _WS_RE.sub(" ", text).strip()
+
+
+def extract_sections_from_instance(instance_bytes: bytes) -> dict:
+    root = etree.fromstring(instance_bytes)
+    audit = {"element": "AuditsTextBlock", "found": False, "text": None}
+    matches: list[dict] = []
+    for el in root.iter():
+        local = etree.QName(el).localname
+        if "TextBlock" not in local:
+            continue
+        raw = el.text
+        if not raw or not raw.strip():
+            continue
+        text = _detag(raw)
+        if local == "AuditsTextBlock" and not audit["found"]:
+            audit = {"element": local, "found": True, "text": text}
+        m = LITIGATION_RE.search(text)
+        if m:
+            start = max(0, m.start() - 60)
+            end = min(len(text), m.end() + 120)
+            matches.append({"element": local, "snippet": text[start:end]})
+    return {
+        "audit": audit,
+        "litigation": {"found": bool(matches), "matches": matches},
+    }
+
+
+def _instance_from_zip(zip_bytes: bytes) -> bytes:
+    zf = zipfile.ZipFile(io.BytesIO(zip_bytes))
+    for name in zf.namelist():
+        if "/PublicDoc/" in name and name.endswith(".xbrl"):
+            return zf.read(name)
+    raise ValueError("数字取得失敗: PublicDoc .xbrl not found in EDINET ZIP")
+
+
+def fetch_sections(doc_id: str) -> dict:
+    key = get_key()
+    url = f"https://disclosure.edinet-fsa.go.jp/api/v2/documents/{doc_id}?type=1"
+    r = requests.get(url, headers={KEY_HEADER: key}, timeout=60)
+    r.raise_for_status()
+    instance = _instance_from_zip(r.content)
+    return {"docID": doc_id, "sections": extract_sections_from_instance(instance)}
+
 
 API = "https://disclosure.edinet-fsa.go.jp/api/v2/documents.json"
-TARGET_TYPES = ("120", "140")
+TARGET_TYPES = ("120", "160")  # 120=有報, 160=半期報告書（140 四半期報告書は2024改正で廃止）
 MAX_DAYS_BACK = 400
 KEY_HEADER = "Ocp-Apim-Subscription-Key"
 DEFAULT_OP_REF = "op://Personal/EDINET/credential"
@@ -58,12 +125,12 @@ def get_key() -> str:
         return env_key
     op_ref = os.environ.get("EDINET_OP_REF", DEFAULT_OP_REF)
     try:
-        # op read via Desktop integration takes ~5s; a tight timeout flakes.
+        # op read via Desktop integration prompts biometrics; allow time to approve.
         result = subprocess.run(
             ["op", "read", op_ref],
             capture_output=True,
             text=True,
-            timeout=20,
+            timeout=45,
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
         result = None
@@ -87,6 +154,25 @@ def _doc_url(doc_id: str) -> str:
     return f"https://disclosure.edinet-fsa.go.jp/api/v2/documents/{doc_id}?type=2"
 
 
+def collect_targets(results: list, code_padded: str, found: dict) -> str | None:
+    edinet_code = None
+    for item in results or []:
+        if item.get("secCode") != code_padded:
+            continue
+        if edinet_code is None and item.get("edinetCode"):
+            edinet_code = item["edinetCode"]
+        doc_type = item.get("docTypeCode")
+        if doc_type in TARGET_TYPES and doc_type not in found:
+            found[doc_type] = {
+                "docTypeCode": doc_type,
+                "docDescription": item.get("docDescription", ""),
+                "submitDateTime": item.get("submitDateTime", ""),
+                "docID": item.get("docID", ""),
+                "url": _doc_url(item.get("docID", "")),
+            }
+    return edinet_code
+
+
 def fetch_docs(sec_code: str) -> dict:
     key = get_key()
     code_padded = sec_code.zfill(4) + "0"
@@ -108,20 +194,9 @@ def fetch_docs(sec_code: str) -> dict:
                 f"数字取得失敗: EDINET API rejected key — {payload}"
             )
 
-        for item in payload.get("results", []) or []:
-            if item.get("secCode") != code_padded:
-                continue
-            if edinet_code is None and item.get("edinetCode"):
-                edinet_code = item["edinetCode"]
-            doc_type = item.get("docTypeCode")
-            if doc_type in TARGET_TYPES and doc_type not in found:
-                found[doc_type] = {
-                    "docTypeCode": doc_type,
-                    "docDescription": item.get("docDescription", ""),
-                    "submitDateTime": item.get("submitDateTime", ""),
-                    "docID": item.get("docID", ""),
-                    "url": _doc_url(item.get("docID", "")),
-                }
+        ec = collect_targets(payload.get("results", []), code_padded, found)
+        if ec and edinet_code is None:
+            edinet_code = ec
 
         if all(t in found for t in TARGET_TYPES):
             break
@@ -137,11 +212,24 @@ def fetch_docs(sec_code: str) -> dict:
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: fetch_edinet.py <4-digit-secCode>", file=sys.stderr)
+    args = sys.argv[1:]
+    if len(args) == 2 and args[0] == "--sections":
+        try:
+            data = fetch_sections(args[1])
+        except Exception as e:
+            msg = f"{e}" if str(e).startswith("数字取得失敗") else f"数字取得失敗: {e}"
+            print(msg, file=sys.stderr)
+            return 1
+        json.dump(data, sys.stdout, ensure_ascii=False)
+        return 0
+    if len(args) != 1:
+        print(
+            "usage: fetch_edinet.py <4-digit-secCode> | --sections <docID>",
+            file=sys.stderr,
+        )
         return 2
     try:
-        data = fetch_docs(sys.argv[1])
+        data = fetch_docs(args[0])
     except Exception as e:
         print(f"{e}" if str(e).startswith("数字取得失敗") else f"数字取得失敗: {e}", file=sys.stderr)
         return 1

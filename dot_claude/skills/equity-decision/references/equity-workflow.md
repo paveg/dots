@@ -100,3 +100,4 @@ Customer concentration: {one line — top customer %, top-5 %, or "not disclosed
   - **Buy**: thesis grounded, current price in bear or base range, no Tier-1 risks active
   - **Watch**: thesis interesting but waiting on a catalyst or price → "what specifically would trigger?"
   - **Pass**: thesis weak, valuation in bull range, or ≥1 unmitigated Tier-1 risk
+- **Phase 4（JP）**: EDINET が使える場合、`fetch_edinet.py --sections {docID}` の出力で `⚖️ Regulation/litigation` と `📚 Accounting` を埋める。`sections.audit.text` から監査体制（監査役会/監査等委員会、会計監査人、非監査報酬の有無）を要約。`sections.litigation.found == false` または事業リスクの一般言及のみなら「重大な係争の個別開示なし」と記す。捏造禁止は同様に適用。 `sections.audit.found == false` の稀なケース（外国会社報告書等）は「監査体制の開示取得失敗 — 有報を直接確認」と記す。

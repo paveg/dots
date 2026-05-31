@@ -78,3 +78,14 @@ def test_missing_key_exits_nonzero(monkeypatch):
     assert result.returncode != 0
     assert "数字取得失敗" in result.stderr
     assert "key unavailable" in result.stderr.lower() or "EDINET_SUBSCRIPTION_KEY" in result.stderr
+
+
+@requires_key
+def test_sections_extracts_audit_and_litigation():
+    """--sections <docID> pulls 監査の状況 + 訴訟 from a real 有報 (OLC 第65期)."""
+    data = run_script("--sections", "S100VY55")
+    assert data["docID"] == "S100VY55"
+    audit = data["sections"]["audit"]
+    assert audit["found"] is True
+    assert "監査の状況" in audit["text"]
+    assert data["sections"]["litigation"]["found"] is True

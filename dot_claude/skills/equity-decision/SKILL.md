@@ -55,13 +55,16 @@ Run these from `~/.claude/skills/equity-decision/scripts/` via `uv run`:
 | US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA` | quote, PE/PSR, market cap, TTM revenue/FCF |
 | US ticker → recent filings | `uv run scripts/fetch_edgar.py NVDA` | latest 10-K, 10-Q, 5 × 8-K (with URLs) |
 | JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203` | same shape, auto `.T` suffix |
-| JP code → EDINET filings | `uv run scripts/fetch_edinet.py 7203` | latest 有報 + 四半期報告書 (with URLs) |
+| JP code → EDINET filings | `uv run scripts/fetch_edinet.py 7203` | latest 有報 + 半期報告書 (with URLs) |
+| JP 有報本文 → 訴訟・監査 | `uv run scripts/fetch_edinet.py --sections {docID}` | `sections.audit`（監査の状況本文）+ `sections.litigation.matches`（訴訟/係争/損害賠償スニペット） |
 
 Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr contains `数字取得失敗: ...` — propagate that text into the memo, do not invent numbers.
 
 `fetch_edinet.py` needs a Subscription-Key. Set `EDINET_SUBSCRIPTION_KEY`, or store it in 1Password at `op://Personal/EDINET/credential` (override path via `EDINET_OP_REF`).
 
 ## JP fallback when EDINET is unavailable
+
+> EDINET が通る場合: まず `fetch_edinet.py {code}` で有報 docID を取得し、続けて `fetch_edinet.py --sections {docID}` で Phase 4 の ⚖️訴訟・📚監査 を一次情報から埋める（Phase 4 の手動補完は不要）。
 
 EDINET API is occasionally down, key activation can be delayed, and the portal has had outages. When `fetch_edinet.py` exits non-zero for a JP ticker:
 

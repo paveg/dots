@@ -24,7 +24,7 @@ Diagrams are the centerpiece. Use mermaid aggressively to maximize the reader's
 comprehension and knowledge retention.
 
 - **Any explanation involving structure, time order, relationships, or before/after gets a mermaid diagram** — do not settle for prose alone
-- Aim for **at least one diagram per section** across skeleton §1–§4 (skip sections with no such structure)
+- Aim for **at least one diagram per section** across §1–§3, **one diagram per sub-area in §4** (matching the skeleton's "diagram per area"), plus the §5 dependency diagram (skip sections with no such structure). §0 Mindset and the §5 tier table are **tables — not counted** toward the diagram budget; the §5 dependency diagram **is** counted
 - Give each diagram a one-line caption (what it shows) right before or after it, so it reads standalone
 - One diagram = one concept. Show the `audience` before → after and the prerequisite Tier dependencies as diagrams too
 - Do not cram — **split** instead (node cap and diagram types per "Mermaid diagram types" below)
@@ -55,14 +55,18 @@ to write outside the repo. Outside a git repo where `.ai/` is not ignored, set
 4. **Parallel fan-out**: assign each sub-area to an Explore subagent; have it return **only "conclusion + evidence `path(:line)`"** (no long quotations — preserve main context)
 5. **Synthesize**: pour into the skeleton below. Open with the `audience` before → after to create the perspective shift
 6. Pass the **quality gates** (below)
-7. **Write** to `out` (create `.ai/` if absent). Finish by presenting the viewer command `mo <out>`. Installs (brew/npm/gh ext, etc.) need network — delegate to the user; automate only generation (file write) and localhost viewing
+7. **Write** to `out` (create `.ai/` if absent). If the output dir already holds an index/README, add a one-line pointer to the new primer (reading-order position + freshness). Finish by presenting the viewer command `mo <out>`. Installs (brew/npm/gh ext, etc.) need network — delegate to the user; automate only generation (file write) and localhost viewing
 
 ## Output skeleton (fixed)
 
 Write the primer in the audience's language; translate the headings accordingly.
+If the audience's language is not explicit, default to the language the
+`audience`/`topic` arguments are written in; if mixed or unstated, use the
+language of the user's request.
 
 ```
 # <topic> Learning Primer (for <audience>)
+> Freshness header (blockquote, not frontmatter): sources researched / last updated YYYY-MM-DD / disposable note
 0. Mindset (current → target / perspective-shift table)
 1. Big picture and the "why" + diagram
 2. Components & related repos/tools map + diagram
@@ -74,7 +78,9 @@ Write the primer in the audience's language; translate the headings accordingly.
 Appendix: glossary (optional)
 ```
 
-### Mermaid diagram types (derive from content; one per concept, ~4–8 total)
+### Mermaid diagram types (derive from content; one per concept)
+
+**Budget: 4–8 diagrams total.** If per-§4-sub-area coverage would push the total past 8, merge related sub-areas or drop the lowest-value diagram — the 8-cap wins over per-section coverage.
 
 | Purpose | Syntax |
 |---------|--------|

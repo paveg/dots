@@ -43,6 +43,7 @@ cask "obsidian"
 cask "raycast"
 cask "session-manager-plugin"
 cask "slack"
+cask "zed"
 mas "MenuBar Stats", id: 714196447
 mas "Xcode", id: 497799835
 go "github.com/fullstorydev/grpcurl/cmd/grpcurl"

@@ -202,6 +202,13 @@ def collect_targets(results: list, code_padded: str, found: dict) -> str | None:
     return edinet_code
 
 
+def _check_status(payload: dict) -> None:
+    metadata_status = str(payload.get("metadata", {}).get("status", ""))
+    top_status = str(payload.get("StatusCode", ""))
+    if metadata_status not in ("", "200") or top_status not in ("", "200"):
+        raise ValueError(f"数字取得失敗: EDINET API rejected key — {payload}")
+
+
 def fetch_docs(sec_code: str) -> dict:
     key = get_key()
     code_padded = sec_code.zfill(4) + "0"
@@ -216,12 +223,7 @@ def fetch_docs(sec_code: str) -> dict:
         r.raise_for_status()
         payload = r.json()
 
-        metadata_status = str(payload.get("metadata", {}).get("status", ""))
-        top_status = str(payload.get("StatusCode", ""))
-        if metadata_status not in ("", "200") or top_status not in ("", "200"):
-            raise ValueError(
-                f"数字取得失敗: EDINET API rejected key — {payload}"
-            )
+        _check_status(payload)
 
         ec = collect_targets(payload.get("results", []), code_padded, found)
         if ec and edinet_code is None:
@@ -249,9 +251,7 @@ def fetch_ipo(name_substring: str) -> dict:
         r = requests.get(API, headers=headers, params=params, timeout=15)
         r.raise_for_status()
         payload = r.json()
-        meta = str(payload.get("metadata", {}).get("status", ""))
-        if meta not in ("", "200"):
-            raise ValueError(f"数字取得失敗: EDINET API rejected key — {payload}")
+        _check_status(payload)
         for doc in match_ipo_docs(payload.get("results", []), name_substring):
             if doc["docID"] and doc["docID"] not in seen:
                 seen[doc["docID"]] = doc

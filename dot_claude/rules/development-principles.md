@@ -49,6 +49,14 @@ Explicitly forbidden:
 - Section banners (`// --- Helper Functions ---`)
 - Commented-out code (delete it; git remembers)
 
+## Command Legibility
+
+Shell commands you run are audited by the user in real time. Optimize for "obvious at a glance," not cleverness.
+
+- Avoid long pipe chains. When a one-liner chains more than ~3 stages (`|`), the user cannot tell what it does — split into separate steps, or write a short script and run that
+- Prefer a dedicated tool (Read, Grep, Glob) over a `find | xargs | sed | awk` pipeline when one exists
+- When a pipeline genuinely is the right tool (e.g. `… | jq …`), say in one line what it produces
+
 ## Database Migrations
 
 - Never hand-write migration files (SQL, meta, journal)

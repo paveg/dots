@@ -1,0 +1,231 @@
+# Hand-authored Codex execution-policy rules, managed by chezmoi.
+#
+# Why a dedicated file (not default.rules): Codex auto-appends Smart-Approval
+# rules to ~/.codex/rules/default.rules, so that file drifts and stays
+# unmanaged. Codex merges every *.rules in ~/.codex/rules/ at startup, so the
+# rules below combine with the auto-generated ones; the strictest decision
+# wins (forbidden > prompt > allow). A broad `git push` allow in default.rules
+# therefore still applies, while the force-push variants below are refused.
+#
+# Policy: destructive SRE ops are `prompt` (require human approval, re-gated
+# even inside trusted projects); only never-via-agent operations are
+# `forbidden`. Note `prompt` can be bypassed by danger-full-access / YOLO
+# modes, whereas `forbidden` holds across modes.
+#
+# Matching is an exact prefix on parsed argv, so flag-suffix / global-flag
+# forms (e.g. `git push origin main -f`, `aws --region x s3 rb`) are not
+# caught. Typical hand/agent-typed forms are.
+#
+# Validate after editing (match/not_match are compile-time load assertions):
+#   codex execpolicy check --pretty --rules ~/.codex/rules/custom.rules -- terraform destroy
+#
+# Per-environment switching (business vs personal) can be added later by
+# wrapping rules in chezmoi template guards keyed on .business_use; this file
+# is already a .tmpl, so no rename is needed.
+
+# ---------------------------------------------------------------- git --------
+prefix_rule(
+    pattern = ["git", "push", "--force"],
+    decision = "forbidden",
+    justification = "Force-push rewrites published history. Use --force-with-lease and push by hand.",
+    match = ["git push --force", "git push --force origin main"],
+    not_match = ["git push --force-with-lease", "git push origin main"],
+)
+
+prefix_rule(
+    pattern = ["git", "push", "-f"],
+    decision = "forbidden",
+    justification = "Force-push rewrites published history. Use --force-with-lease and push by hand.",
+    match = ["git push -f", "git push -f origin main"],
+    not_match = ["git push origin main"],
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "git reset --hard discards uncommitted work.",
+    match = ["git reset --hard", "git reset --hard HEAD~1"],
+    not_match = ["git reset", "git reset --soft HEAD~1", "git reset HEAD file"],
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "prompt",
+    justification = "git clean deletes untracked files.",
+    match = ["git clean -fd", "git clean -fdx", "git clean -n"],
+    not_match = ["git status", "git checkout ."],
+)
+
+prefix_rule(
+    pattern = ["git", "branch", "-D"],
+    decision = "prompt",
+    justification = "git branch -D force-deletes a possibly unmerged branch.",
+    match = ["git branch -D feature/x"],
+    not_match = ["git branch -d feature/x", "git branch", "git branch -a"],
+)
+
+# ---------------------------------------------------------------- aws --------
+prefix_rule(
+    pattern = ["aws", "s3", "rb", "--force"],
+    decision = "forbidden",
+    justification = "Force-removing a non-empty S3 bucket is unrecoverable; never via an agent.",
+    match = ["aws s3 rb --force s3://my-bucket"],
+    not_match = ["aws s3 rb s3://my-bucket", "aws s3 ls"],
+)
+
+prefix_rule(
+    pattern = ["aws", "s3", ["rb", "rm"]],
+    decision = "prompt",
+    justification = "S3 bucket removal / recursive object deletion.",
+    match = ["aws s3 rb s3://b", "aws s3 rm s3://b/key"],
+    not_match = ["aws s3 cp a s3://b", "aws s3 ls"],
+)
+
+prefix_rule(
+    pattern = ["aws", "ec2", "terminate-instances"],
+    decision = "prompt",
+    justification = "Terminating EC2 instances is destructive.",
+    match = ["aws ec2 terminate-instances --instance-ids i-0abc"],
+    not_match = ["aws ec2 describe-instances", "aws ec2 stop-instances --instance-ids i-0abc"],
+)
+
+prefix_rule(
+    pattern = ["aws", "rds", ["delete-db-instance", "delete-db-cluster"]],
+    decision = "prompt",
+    justification = "Deleting an RDS instance/cluster is destructive.",
+    match = ["aws rds delete-db-instance --db-instance-identifier db1", "aws rds delete-db-cluster --db-cluster-identifier c1"],
+    not_match = ["aws rds describe-db-instances", "aws rds create-db-instance --db-instance-identifier db1"],
+)
+
+prefix_rule(
+    pattern = ["aws", "cloudformation", "delete-stack"],
+    decision = "prompt",
+    justification = "Deleting a CloudFormation stack tears down its resources.",
+    match = ["aws cloudformation delete-stack --stack-name s1"],
+    not_match = ["aws cloudformation describe-stacks"],
+)
+
+prefix_rule(
+    pattern = ["aws", "eks", "delete-cluster"],
+    decision = "prompt",
+    justification = "Deleting an EKS cluster is destructive.",
+    match = ["aws eks delete-cluster --name c1"],
+    not_match = ["aws eks describe-cluster --name c1"],
+)
+
+prefix_rule(
+    pattern = ["aws", "kms", "schedule-key-deletion"],
+    decision = "prompt",
+    justification = "Scheduling KMS key deletion can render encrypted data unrecoverable.",
+    match = ["aws kms schedule-key-deletion --key-id k1"],
+    not_match = ["aws kms describe-key --key-id k1"],
+)
+
+prefix_rule(
+    pattern = ["aws", "secretsmanager", "delete-secret"],
+    decision = "prompt",
+    justification = "Deleting a secret is destructive.",
+    match = ["aws secretsmanager delete-secret --secret-id s1"],
+    not_match = ["aws secretsmanager get-secret-value --secret-id s1"],
+)
+
+prefix_rule(
+    pattern = ["aws", "dynamodb", "delete-table"],
+    decision = "prompt",
+    justification = "Deleting a DynamoDB table is destructive.",
+    match = ["aws dynamodb delete-table --table-name t1"],
+    not_match = ["aws dynamodb describe-table --table-name t1"],
+)
+
+# ------------------------------------------------------------ terraform ------
+prefix_rule(
+    pattern = ["terraform", "apply", "-auto-approve"],
+    decision = "forbidden",
+    justification = "-auto-approve bypasses the plan-review gate; an agent must never apply unattended.",
+    match = ["terraform apply -auto-approve"],
+    not_match = ["terraform apply", "terraform plan"],
+)
+
+prefix_rule(
+    pattern = ["terraform", "destroy", "-auto-approve"],
+    decision = "forbidden",
+    justification = "-auto-approve bypasses confirmation on destroy; never unattended via an agent.",
+    match = ["terraform destroy -auto-approve"],
+    not_match = ["terraform destroy", "terraform plan -destroy"],
+)
+
+prefix_rule(
+    pattern = ["terraform", ["apply", "destroy"]],
+    decision = "prompt",
+    justification = "terraform apply/destroy mutates real infrastructure.",
+    match = ["terraform apply", "terraform destroy", "terraform apply -input=false"],
+    not_match = ["terraform plan", "terraform validate", "terraform fmt"],
+)
+
+prefix_rule(
+    pattern = ["terraform", "state", ["rm", "mv"]],
+    decision = "prompt",
+    justification = "Rewriting Terraform state is high-risk.",
+    match = ["terraform state rm aws_instance.foo", "terraform state mv a b"],
+    not_match = ["terraform state list", "terraform state show aws_instance.foo"],
+)
+
+prefix_rule(
+    pattern = ["terraform", ["import", "taint"]],
+    decision = "prompt",
+    justification = "terraform import/taint alters state and next-apply behavior.",
+    match = ["terraform import aws_instance.foo i-0abc", "terraform taint aws_instance.foo"],
+    not_match = ["terraform output", "terraform show"],
+)
+
+# ---------------------------------------------------------------- sops -------
+prefix_rule(
+    pattern = ["sops", ["-d", "--decrypt"]],
+    decision = "prompt",
+    justification = "Decrypting SOPS secrets exposes plaintext to the agent context and Codex logs.",
+    match = ["sops -d secrets.enc.yaml", "sops --decrypt secrets.enc.yaml"],
+    not_match = ["sops -e secrets.yaml", "sops --encrypt secrets.yaml", "sops secrets.yaml"],
+)
+
+# ----------------------------------------------------------------- k8s -------
+prefix_rule(
+    pattern = ["kubectl", ["delete", "drain"]],
+    decision = "prompt",
+    justification = "kubectl delete/drain removes or evicts workloads.",
+    match = ["kubectl delete pod foo", "kubectl delete ns bar", "kubectl drain node-1"],
+    not_match = ["kubectl get pods", "kubectl describe pod foo", "kubectl apply -f x.yaml"],
+)
+
+prefix_rule(
+    pattern = ["helm", ["uninstall", "delete", "upgrade"]],
+    decision = "prompt",
+    justification = "helm uninstall/upgrade mutates released workloads.",
+    match = ["helm uninstall myrel", "helm upgrade myrel chart", "helm delete myrel"],
+    not_match = ["helm list", "helm status myrel", "helm template chart"],
+)
+
+# ------------------------------------------------------------------ fs -------
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "prompt",
+    justification = "rm -rf recursively force-deletes.",
+    match = ["rm -rf build", "rm -rf node_modules"],
+    not_match = ["rm file.txt", "rm -i file.txt", "ls -rf"],
+)
+
+prefix_rule(
+    pattern = ["rm", "-fr"],
+    decision = "prompt",
+    justification = "rm -fr recursively force-deletes (flag-order variant).",
+    match = ["rm -fr build"],
+    not_match = ["rm -r build", "rm -f file"],
+)
+
+# ------------------------------------------------------------------ db -------
+prefix_rule(
+    pattern = ["dropdb"],
+    decision = "forbidden",
+    justification = "Dropping a database is unrecoverable; run it manually with intent.",
+    match = ["dropdb app_dev", "dropdb --if-exists app_dev"],
+    not_match = ["createdb app_dev"],
+)

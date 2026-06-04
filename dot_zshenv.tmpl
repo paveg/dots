@@ -90,4 +90,11 @@ if [[ -f "$_brew_palo_ca" ]]; then
 fi
 
 unset _brew_ca_dir _brew_palo_ca
+
+# nix-provided npm defaults its global prefix to the read-only /nix/store,
+# so `npm install -g` fails with EACCES. Redirect globals to a writable XDG
+# dir. An env var outranks ~/.npmrc, so this also survives `chezmoi apply`
+# wiping any manually-added prefix line there.
+export NPM_CONFIG_PREFIX="$XDG_DATA_HOME/npm-global"
+export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
 {{- end }}

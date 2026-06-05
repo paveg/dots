@@ -45,6 +45,7 @@ A single markdown memo of 100–200 lines, matching `references/equity-workflow.
 4. Fill the memo template phase-by-phase. **If a number cannot be fetched or sourced, write "数字取得失敗 — manual entry required" — never make up a number.**
 5. Apply rubrics from `references/dcf-rubric.md`, `references/growth-stock-checks.md`, `references/risk-taxonomy.md`.
 6. Emit the memo, then the deep-dive menu.
+7. **Only if the user asks for an execution / order plan** ("発注", "注文の入れ方", "自分ならどう買う", "指値いくら"): read `references/order-execution.md` and produce a rule-based buy plan (指値 / 期限 / 株数 / 余力% / 撤退), grounded on the Phase 3 fair-value bands and Phase 5 invalidation KPIs.
 
 ## Data fetchers
 
@@ -80,6 +81,16 @@ This keeps JP coverage usable even when EDINET is offline.
 - No hallucinated revenue / margin / multiples. If you can't source it, write "数字取得失敗".
 - No "approximately" or "around" numbers without citing the source filing.
 - DCF inputs (WACC, terminal growth) must be inside `references/dcf-rubric.md` guardrails or explicitly flagged.
+
+### Yahoo distortion correction (JP especially)
+
+`fetch_yahoo.py` is reliable for **price / marketCap / PER (when profitable) / PSR / beta**, but the following are frequently wrong — cross-check against IR BANK / 決算短信 actuals and **state which you adopted**:
+
+- **`operatingIncome_ttm` (JP)** is often off by a large margin (wrong period, non-consolidated, or stale). Always prefer the company's disclosed 営業利益 (IR BANK `/results`, 決算短信). If Yahoo and the filing diverge, adopt the filing and note "Yahoo営業益は不採用".
+- **PER when the company is loss-making / took an impairment** is a meaningless headline (it ignores the forward loss or is inflated by a one-off). Mark it `*` and read off forward/core earnings instead.
+- **`revenue_ttm`** can be understated/lagged for some JP tickers, which then **distorts PSR**. If revenue conflicts with the latest 通期 actual, recompute PSR on the filing revenue and flag it (`※`).
+- **Wrong quote / ambiguous ticker**: if price × shares ≠ marketCap, or a `.O`/foreign quote is returned instead of `.T`, the quote is suspect — verify via 日経 / IR BANK before using.
+- When a value is corrected, show both (Yahoo vs adopted) so the reader can audit. Never silently pass a known-bad Yahoo figure into the memo.
 
 ## Disclaimer
 

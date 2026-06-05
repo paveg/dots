@@ -10,6 +10,7 @@
 
 Usage:
     uv run fetch_edinet.py <4-digit-secCode>   # list latest filings
+    uv run fetch_edinet.py --ipo "<filerName>"     # locate pre-IPO 有価証券届出書 (030/040) by name
     uv run fetch_edinet.py --sections <docID>  # extract 監査/訴訟 from a 有報
 
 Output (stdout, JSON):
@@ -48,6 +49,7 @@ import os
 import re
 import subprocess
 import sys
+import unicodedata
 import zipfile
 from datetime import date, timedelta
 from time import sleep
@@ -114,6 +116,33 @@ def fetch_sections(doc_id: str) -> dict:
 
 API = "https://disclosure.edinet-fsa.go.jp/api/v2/documents.json"
 TARGET_TYPES = ("120", "160")  # 120=有報, 160=半期報告書（140 四半期報告書は2024改正で廃止）
+IPO_TYPES = ("030", "040")  # 030=有価証券届出書, 040=訂正有価証券届出書
+IPO_DAYS_BACK = 180  # 届出書 is typically filed ~1 month pre-listing; 訂正 later
+
+
+def _norm(s: str) -> str:
+    return unicodedata.normalize("NFKC", s or "").replace(" ", "").lower()
+
+
+def match_ipo_docs(results: list, name_substring: str) -> list[dict]:
+    needle = _norm(name_substring)
+    out = []
+    for item in results or []:
+        if item.get("docTypeCode") not in IPO_TYPES:
+            continue
+        if needle and needle not in _norm(item.get("filerName", "")):
+            continue
+        out.append({
+            "docTypeCode": item.get("docTypeCode"),
+            "filerName": item.get("filerName", ""),
+            "docDescription": item.get("docDescription", ""),
+            "submitDateTime": item.get("submitDateTime", ""),
+            "docID": item.get("docID", ""),
+            "url": _doc_url(item.get("docID", "")),
+        })
+    return out
+
+
 MAX_DAYS_BACK = 400
 KEY_HEADER = "Ocp-Apim-Subscription-Key"
 DEFAULT_OP_REF = "op://Personal/EDINET/credential"
@@ -173,6 +202,13 @@ def collect_targets(results: list, code_padded: str, found: dict) -> str | None:
     return edinet_code
 
 
+def _check_status(payload: dict) -> None:
+    metadata_status = str(payload.get("metadata", {}).get("status", ""))
+    top_status = str(payload.get("StatusCode", ""))
+    if metadata_status not in ("", "200") or top_status not in ("", "200"):
+        raise ValueError(f"数字取得失敗: EDINET API rejected key — {payload}")
+
+
 def fetch_docs(sec_code: str) -> dict:
     key = get_key()
     code_padded = sec_code.zfill(4) + "0"
@@ -187,12 +223,7 @@ def fetch_docs(sec_code: str) -> dict:
         r.raise_for_status()
         payload = r.json()
 
-        metadata_status = str(payload.get("metadata", {}).get("status", ""))
-        top_status = str(payload.get("StatusCode", ""))
-        if metadata_status not in ("", "200") or top_status not in ("", "200"):
-            raise ValueError(
-                f"数字取得失敗: EDINET API rejected key — {payload}"
-            )
+        _check_status(payload)
 
         ec = collect_targets(payload.get("results", []), code_padded, found)
         if ec and edinet_code is None:
@@ -211,6 +242,29 @@ def fetch_docs(sec_code: str) -> dict:
     return {"ticker": sec_code, "edinetCode": edinet_code, "docs": docs}
 
 
+def fetch_ipo(name_substring: str) -> dict:
+    key = get_key()
+    headers = {KEY_HEADER: key}
+    seen: dict[str, dict] = {}
+    for day in iter_days(date.today(), IPO_DAYS_BACK):
+        params = {"date": day.isoformat(), "type": "2"}
+        r = requests.get(API, headers=headers, params=params, timeout=15)
+        r.raise_for_status()
+        payload = r.json()
+        _check_status(payload)
+        for doc in match_ipo_docs(payload.get("results", []), name_substring):
+            if doc["docID"] and doc["docID"] not in seen:
+                seen[doc["docID"]] = doc
+        sleep(0.3)
+    if not seen:
+        raise ValueError(
+            f"数字取得失敗: no 有価証券届出書/訂正 found for filerName~={name_substring!r} "
+            f"in last {IPO_DAYS_BACK} days. Paste the 目論見書/届出書 URL to proceed."
+        )
+    docs = sorted(seen.values(), key=lambda d: d["submitDateTime"])
+    return {"query": name_substring, "docs": docs}
+
+
 def main() -> int:
     args = sys.argv[1:]
     if len(args) == 2 and args[0] == "--sections":
@@ -222,9 +276,18 @@ def main() -> int:
             return 1
         json.dump(data, sys.stdout, ensure_ascii=False)
         return 0
+    if len(args) == 2 and args[0] == "--ipo":
+        try:
+            data = fetch_ipo(args[1])
+        except Exception as e:
+            msg = f"{e}" if str(e).startswith("数字取得失敗") else f"数字取得失敗: {e}"
+            print(msg, file=sys.stderr)
+            return 1
+        json.dump(data, sys.stdout, ensure_ascii=False)
+        return 0
     if len(args) != 1:
         print(
-            "usage: fetch_edinet.py <4-digit-secCode> | --sections <docID>",
+            "usage: fetch_edinet.py <4-digit-secCode> | --ipo <filerName> | --sections <docID>",
             file=sys.stderr,
         )
         return 2

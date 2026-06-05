@@ -6,7 +6,7 @@ alwaysApply: true
 
 Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs, .md files. These are rendered as proper diagrams by GitHub, Obsidian, VS Code preview, etc.
 
-Do not use mermaid in chat / terminal responses. The terminal cannot render mermaid as a real diagram, and ASCII fallbacks add noise without aiding comprehension. For in-conversation explanations, use prose, ASCII tables, or short bullet lists.
+Do not use mermaid in chat / terminal responses — the terminal cannot render it as a real diagram. There, ASCII art (diagrams and tables), prose, or short bullet lists are the right tools.
 
 ## Where to use
 

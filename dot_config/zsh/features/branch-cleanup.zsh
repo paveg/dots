@@ -6,7 +6,9 @@ rub() {
     return 1
   fi
   local merged
-  merged=$(git branch --merged | grep -Ev "*|${PROTECTED_BRANCHES}")
+  merged=$(git branch --format='%(refname:short)' --merged \
+    | grep -Evx "${PROTECTED_BRANCHES}" \
+    | grep -Fvx "$(git branch --show-current)")
   [[ -z "$merged" ]] && echo "No merged branches to delete" && return 0
   echo "$merged" | xargs git branch -d
 }

@@ -21,45 +21,47 @@ set -euo pipefail
 cmd=$(jq -r '.tool_input.command // ""')
 [[ -n $cmd ]] || exit 0
 
+# Lowercase copy for case-insensitive matching via bash builtins (no subshells).
+# Avoids ${cmd,,} (bash 4+ only) and shopt -s nocasematch (version quirks).
+cmd_lc=$(printf '%s' "$cmd" | tr '[:upper:]' '[:lower:]')
+
 # Allowlist: if the command explicitly opts into a test environment, let it
 # through. Inheriting RAILS_ENV from the shell does not count — the marker
 # must be in the command itself.
-if echo "$cmd" | grep -qiE '\b(RAILS_ENV|NODE_ENV|MIX_ENV|RACK_ENV)=test\b'; then
-  exit 0
-fi
-if echo "$cmd" | grep -qiE '\bDJANGO_SETTINGS_MODULE=[^[:space:]]*test'; then
-  exit 0
-fi
+[[ $cmd_lc =~ (^|[[:space:]])(rails_env|node_env|mix_env|rack_env)=test([[:space:]]|$) ]] && exit 0
+[[ $cmd_lc =~ (^|[[:space:]])django_settings_module=[^[:space:]]*test ]]                  && exit 0
 
-# Destructive patterns across common stacks. Keep generic — no
-# project-specific naming. `\b` boundaries to avoid matching inside paths.
+# Destructive patterns across common stacks (written in lowercase ERE).
+# `\b` boundaries to avoid matching inside paths.
+# Tested with bash [[ =~ ]] — no subprocess per pattern.
 patterns=(
   # Rails / Rake / bin/rails (db:reset, db:drop, db:setup, db:schema:load)
-  '(rails|rake|bin/rails)[[:space:]]+db:(reset|drop|setup|schema:load|nuke)\b'
+  # \b not supported in bash ERE; use ([^[:alnum:]_]|$) for end-of-word
+  '(rails|rake|bin/rails)[[:space:]]+db:(reset|drop|setup|schema:load|nuke)([^[:alnum:]_]|$)'
   # Django
-  'manage\.py[[:space:]]+(flush|reset_db|sqlflush)\b'
+  'manage\.py[[:space:]]+(flush|reset_db|sqlflush)([^[:alnum:]_]|$)'
   # Prisma
-  'prisma[[:space:]]+migrate[[:space:]]+reset\b'
-  'prisma[[:space:]]+db[[:space:]]+push[^&|;]*--force-reset\b'
-  'prisma[[:space:]]+db[[:space:]]+seed[^&|;]*--reset\b'
+  'prisma[[:space:]]+migrate[[:space:]]+reset([^[:alnum:]_]|$)'
+  'prisma[[:space:]]+db[[:space:]]+push[^&|;]*--force-reset([^[:alnum:]_]|$)'
+  'prisma[[:space:]]+db[[:space:]]+seed[^&|;]*--reset([^[:alnum:]_]|$)'
   # Sequelize CLI
-  'sequelize[[:space:]]+db:drop\b'
-  'sequelize[[:space:]]+db:migrate:undo:all\b'
+  'sequelize[[:space:]]+db:drop([^[:alnum:]_]|$)'
+  'sequelize[[:space:]]+db:migrate:undo:all([^[:alnum:]_]|$)'
   # TypeORM
-  'typeorm[[:space:]]+schema:drop\b'
+  'typeorm[[:space:]]+schema:drop([^[:alnum:]_]|$)'
   # Knex
-  'knex[[:space:]]+migrate:rollback[[:space:]]+--all\b'
-  # PostgreSQL
-  '\bdropdb\b'
+  'knex[[:space:]]+migrate:rollback[[:space:]]+--all([^[:alnum:]_]|$)'
+  # PostgreSQL — (^|[^[:alnum:]_]) for start-of-word too
+  '(^|[^[:alnum:]_])dropdb([^[:alnum:]_]|$)'
   # MySQL admin
-  'mysqladmin[[:space:]]+([^&|;]*[[:space:]])?drop\b'
+  'mysqladmin[[:space:]]+([^&|;]*[[:space:]])?drop([^[:alnum:]_]|$)'
   # Raw SQL escaping into shell context
-  'DROP[[:space:]]+(DATABASE|SCHEMA)\b'
-  'TRUNCATE([[:space:]]+TABLE)?\b'
+  'drop[[:space:]]+(database|schema)([^[:alnum:]_]|$)'
+  'truncate([[:space:]]+table)?([^[:alnum:]_]|$)'
 )
 
 for p in "${patterns[@]}"; do
-  if echo "$cmd" | grep -qiE "$p"; then
+  if [[ $cmd_lc =~ $p ]]; then
     matched="$p"
     reason="Destructive database operation blocked by the db-safety guard.
 

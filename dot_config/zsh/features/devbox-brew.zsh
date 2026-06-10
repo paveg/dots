@@ -1,4 +1,6 @@
-# Devbox wrapper - persist global changes back to chezmoi after mutations
+# devbox-brew.zsh - wrap devbox to persist global changes via chezmoi; dump Brewfile
+# Provides:     devbox, brewbundle
+# Requires:     devbox, chezmoi, brew
 devbox() {
   command devbox "$@"
   local ret=$?

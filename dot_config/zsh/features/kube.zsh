@@ -1,3 +1,7 @@
+# kube.zsh - switch kubernetes context/namespace with fzf
+# Provides:     kctx, kns, kinfo
+# Requires:     kubectl, fzf
+
 # Switch kube context with fzf
 kctx() {
   local context

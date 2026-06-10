@@ -34,10 +34,10 @@ lint:
     @find dot_config/nvim -name "*.lua" -exec luac -p {} \; 2>/dev/null || true
     @echo "✓ Done!"
 
-# Lint Provides header on side-effecting zsh files (init/, modules/)
+# Lint Provides header on zsh files (init/, modules/, features/)
 lint-headers:
     @echo "Checking header convention..."
-    @for f in dot_config/zsh/init/*.zsh* dot_config/zsh/modules/*.zsh*; do \
+    @for f in dot_config/zsh/init/*.zsh* dot_config/zsh/modules/*.zsh* dot_config/zsh/features/*.zsh; do \
         if ! head -10 "$f" | grep -qE '^# Provides:'; then \
             echo "✗ $f: missing '# Provides:' header (top 10 lines)"; \
             exit 1; \

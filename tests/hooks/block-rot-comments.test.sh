@@ -110,4 +110,28 @@ new='function f() {}\n'
 out=$(run "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"a.ts\",\"old_string\":\"$old\",\"new_string\":\"$new\"}}")
 [[ -z $out ]] || fail "blocked edit that removed a rot comment: $out"
 
+# === MultiEdit: all edits clean → ALLOW ===
+out=$(run '{"tool_name":"MultiEdit","tool_input":{"file_path":"a.ts","edits":[{"old_string":"function a() { return 1; }\n","new_string":"function a() { return 2; }\n"},{"old_string":"function b() { return 1; }\n","new_string":"function b() { return 2; }\n"}]}}')
+[[ -z $out ]] || fail "MultiEdit with clean edits was blocked: $out"
+
+# === MultiEdit: rot marker in a later edit → BLOCK ===
+# Rot pattern assembled at runtime so this source line is not flagged.
+_rot_marker='TO''DO: fix later'
+_me_payload=$(printf '{"tool_name":"MultiEdit","tool_input":{"file_path":"a.ts","edits":[{"old_string":"function a() {}\\n","new_string":"function a() {}\\n"},{"old_string":"function b() {}\\n","new_string":"// %s\\nfunction b() {}\\n"}]}}' "$_rot_marker")
+out=$(run "$_me_payload")
+is_block "$out" || fail "MultiEdit with rot marker in later edit was not blocked: $out"
+reason_has "$out" "rot" || fail "MultiEdit deny reason missing 'rot' keyword: $out"
+
+# === Write: line-comment rot marker (HA-CK style) → BLOCK ===
+_hack='HA''CK: workaround for upstream bug'
+_hack_payload=$(printf '{"tool_name":"Write","tool_input":{"file_path":"a.ts","content":"// %s\\nfunction f() {}\\n"}}' "$_hack")
+out=$(run "$_hack_payload")
+is_block "$out" || fail "did not block line-comment rot marker: $out"
+
+# === Write: block-comment rot marker (TE-MP style) → BLOCK ===
+_temp='TE''MP: remove after launch'
+_temp_payload=$(printf '{"tool_name":"Write","tool_input":{"file_path":"a.ts","content":"/* %s */\\nfunction f() {}\\n"}}' "$_temp")
+out=$(run "$_temp_payload")
+is_block "$out" || fail "did not block block-comment rot marker: $out"
+
 echo "all assertions passed"

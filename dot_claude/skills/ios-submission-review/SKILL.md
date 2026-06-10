@@ -115,4 +115,4 @@ Skip this step if no browser automation is available or the user declines. Note 
 - Don't report PASS items in detail — just list them. Focus the user's attention on failures and warnings
 - If IAP is detected, check RevenueCat/StoreKit configuration thoroughly — IAP rejections are painful because resubmission requires full re-review
 - If the project has no iOS-specific files, say so and exit early
-- When using Chrome for visual verification, follow the browser-automation rule: operate one field at a time, verify after each action
+- When using Chrome for visual verification: operate one field at a time, verify after each action

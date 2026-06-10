@@ -99,7 +99,7 @@ Collect user preference, refine final version
 
 ## Generation Rules
 
-### Structure Template
+### Structure Template (Single Post)
 
 ```
 [HOOK] 1-2 lines to stop the scroll
@@ -141,7 +141,7 @@ Collect user preference, refine final version
 
 ## Thread Design
 
-### Structure Template
+### Structure Template (Thread)
 
 ```
 1/N [HOOK] Why read this + "Thread below"

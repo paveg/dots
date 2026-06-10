@@ -129,23 +129,27 @@ jobs:
           sudo apt-get install -y lua5.4
           find dot_config/nvim -name "*.lua" -exec lua5.4 -p {} \; -print
 
-  chezmoi-linux:
-    name: Chezmoi (Linux, ${{ matrix.env_name }})
+  chezmoi:
+    name: Chezmoi (${{ matrix.os }}, ${{ matrix.env_name }})
     needs: changes
     if: needs.changes.outputs.chezmoi == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
+        env_name: [personal, business]
         include:
-          - business_use: ''
-            env_name: personal
-          - business_use: '1'
-            env_name: business
+          - env_name: personal
+            business_use: ''
+          - env_name: business
+            business_use: '1'
     steps:
       - uses: actions/checkout@v4
 
       - name: Install chezmoi
-        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Setup test config (provide prompted values)
         run: |
@@ -171,48 +175,6 @@ jobs:
           chezmoi init --source="${PWD}"
           chezmoi managed | head -20
           chezmoi cat ~/.config/git/config || true
-
-  chezmoi-macos:
-    name: Chezmoi (macOS, ${{ matrix.env_name }})
-    needs: changes
-    if: needs.changes.outputs.chezmoi == 'true'
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        include:
-          - business_use: ''
-            env_name: personal
-          - business_use: '1'
-            env_name: business
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install chezmoi
-        run: brew install chezmoi
-
-      - name: Setup test config (provide prompted values)
-        run: |
-          mkdir -p ~/.config/chezmoi
-          cat > ~/.config/chezmoi/chezmoi.yaml << 'EOF'
-          data:
-            name: "Test User"
-            email: "test@example.com"
-            work_email: "test@work.example.com"
-          EOF
-
-      - name: Test chezmoi init (dry-run)
-        env:
-          BUSINESS_USE: ${{ matrix.business_use }}
-        run: |
-          echo "Testing chezmoi template expansion..."
-          chezmoi init --source="${PWD}" --dry-run --verbose
-
-      - name: Verify template expansion
-        env:
-          BUSINESS_USE: ${{ matrix.business_use }}
-        run: |
-          chezmoi init --source="${PWD}"
-          chezmoi managed | head -20
 
   devbox:
     name: Devbox Validation
@@ -281,7 +243,7 @@ jobs:
   # This job always runs and reports success only if all required jobs passed or were skipped
   ci-complete:
     name: CI Complete
-    needs: [format, lint, chezmoi-linux, chezmoi-macos, devbox, neovim]
+    needs: [format, lint, chezmoi, devbox, neovim]
     if: always()
     runs-on: ubuntu-latest
     steps:

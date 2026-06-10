@@ -3,8 +3,8 @@
 {{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
-{{- $businessUse := env "BUSINESS_USE" | not | not -}}
-{{- $hasOp := lookPath "op" | not | not -}}
+{{- $businessUse := ne (env "BUSINESS_USE") "" -}}
+{{- $hasOp := ne (lookPath "op") "" -}}
 
 {{- $name := "" -}}
 {{- $email := "" -}}

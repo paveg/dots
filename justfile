@@ -26,7 +26,7 @@ lint:
     @echo "Checking zsh syntax..."
     @for file in dot_zshrc.tmpl dot_zshenv.tmpl; do \
         if [ -f "$file" ]; then \
-            sed 's/\{\{[^}]*\}\}//g' "$file" > /tmp/check.zsh; \
+            sed 's/{{{{[^}]*}}}}//g' "$file" > /tmp/check.zsh; \
             zsh -n /tmp/check.zsh && echo "✓ $file"; \
         fi \
     done

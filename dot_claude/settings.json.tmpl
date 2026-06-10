@@ -1,4 +1,7 @@
 {
+{{- if not .business_use }}
+  "model": "claude-fable-5[1m]",
+{{- end }}
   "permissions": {
     "allow": [
       "Bash(mysql:*)",

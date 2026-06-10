@@ -32,7 +32,7 @@
       "Bash(helm delete:*)",
       "Bash(helm upgrade:*)"
     ],
-{{- /* Destructive-command guards below overlap with dot_codex/rules/custom.rules.tmpl — when adding a pattern, update both. */ -}}
+{{- /* Destructive-command guards below overlap with dot_codex/rules/custom.rules.tmpl — when adding a pattern, update both. */}}
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm -rf /:*)",

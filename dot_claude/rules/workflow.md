@@ -28,6 +28,8 @@ alwaysApply: true
 | Planning, design, architecture, evaluation | Main session (fable/opus) | stay in main process |
 | Implementation from an approved plan | sonnet | `implementer` agent (`~/.claude/agents/`) |
 | Mechanical single-file edits, grunt work | haiku | `implementer` with `model: haiku` override |
+| First-pass diff screening (spec compliance) | sonnet | `spec-reviewer` agent (read-only); main session adjudicates its findings |
+| Adversarial claim verification | sonnet | `skeptic` agent (read-only); refutes audit findings / hypotheses before acting on them |
 | Exploration / research fan-out | Explore agent | read-only; return conclusions, not file dumps |
 
 - The dispatcher never implements what it will evaluate; the implementer never evaluates its own diff

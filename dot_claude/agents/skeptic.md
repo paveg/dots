@@ -7,6 +7,8 @@ description: >-
   diagnosis. Also usable in Workflow adversarial-verify stages via
   agentType: 'skeptic'. Read-only by construction.
 model: sonnet
+effort: high
+color: red
 tools: Bash, Glob, Grep, Read, WebFetch
 ---
 

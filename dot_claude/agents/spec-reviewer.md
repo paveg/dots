@@ -8,6 +8,7 @@ description: >-
   code, so generator-evaluator separation holds.
 model: sonnet
 effort: medium
+color: yellow
 tools: Bash, Glob, Grep, Read
 ---
 

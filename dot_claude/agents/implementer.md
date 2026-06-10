@@ -8,6 +8,8 @@ description: >-
   isolation: worktree for repo-mutating work. Override model to haiku for
   purely mechanical single-file edits.
 model: sonnet
+effort: high
+color: green
 tools: Bash, Glob, Grep, Read, Edit, Write, NotebookEdit, WebFetch
 ---
 

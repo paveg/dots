@@ -5,7 +5,7 @@
 # Requires:     git (for zinit clone)
 # Side-effects: set ZINIT_HOME, zinit clone (first run only), load plugins,
 #               call compinit, register many widgets
-# Load-order:   AFTER perf-flags, BEFORE options (options uses zinit)
+# Load-order:   AFTER perf-flags; provides zinit consumed by options.zsh and features/
 
 # =============================================================================
 # Zinit

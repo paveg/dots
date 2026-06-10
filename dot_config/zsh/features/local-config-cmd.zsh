@@ -1,3 +1,5 @@
+# local-config-cmd.zsh - edit/show per-machine config (~/.env.local, ~/.zshrc.local)
+# Provides:     local-env, local-zsh
 local-env() {
   local file="$HOME/.env.local"
   case "$1" in

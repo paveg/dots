@@ -1,3 +1,5 @@
+# dotfiles-helpers.zsh - print a cheatsheet of dotfiles locations, keybindings, and commands
+# Provides:     dots
 dots() {
   cat << 'EOF'
 ╭──────────────────────────────────────────────────────────────────╮

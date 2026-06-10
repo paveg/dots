@@ -136,6 +136,7 @@
     "**/.claude/rules/gh-pr-body.md",
     "**/.claude/rules/chezmoi.md",
     "**/.claude/rules/react.md",
+    "**/.claude/rules/browser-automation.md",
     "**/.claude/rules/drizzle.md",
     "**/.claude/rules/zero-cost-scaling.md"
   ],
@@ -164,6 +165,15 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/block-rot-comments.py"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__claude-in-chrome__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/browser-inject.sh"
           }
         ]
       },

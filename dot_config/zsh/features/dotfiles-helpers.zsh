@@ -39,6 +39,7 @@ dots() {
 
 🛠️  Commands
   repos        Jump to repository (ghq + fzf)
+  gcof         Switch git branch (fzf; local default, Ctrl-A/R filters)
   rgn          Live grep -> open in nvim (rg + fzf, Tab: multi-select)
   rub          Remove merged git branches
   lg           lazygit

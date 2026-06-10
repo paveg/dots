@@ -275,6 +275,7 @@ direnv allow
 |---------|-------------|
 | `dots` | **Show all dotfiles commands and keybindings** |
 | `repos` | ghq + fzf repository navigation |
+| `gcof` | Switch git branch with fzf (local default, Ctrl-A/R filters, commit-history preview) |
 | `rub` | Remove merged git branches |
 | `kctx` | Switch Kubernetes context (fzf) |
 | `kns` | Switch Kubernetes namespace (fzf) |

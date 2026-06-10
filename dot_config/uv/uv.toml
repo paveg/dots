@@ -3,3 +3,6 @@
 
 # Use only uv-managed Python installations (never use system Python)
 python-preference = "only-managed"
+
+# Avoid newly published packages until the release has aged.
+exclude-newer = "7 days"

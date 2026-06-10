@@ -66,140 +66,70 @@ return {
       -- LSP capabilities (for blink.cmp)
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      -- Setup servers using vim.lsp.config (Neovim 0.11+)
-      -- Lua
-      vim.lsp.config.lua_ls = {
-        capabilities = capabilities,
-        settings = {
-          Lua = {
-            runtime = { version = "LuaJIT" },
-            workspace = {
-              checkThirdParty = false,
-              library = { vim.env.VIMRUNTIME },
+      -- Server configs; capabilities are injected for all entries below.
+      local servers = {
+        bashls = { filetypes = { "sh", "bash", "zsh" } },
+        cssls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              analyses = { unusedparams = true },
+              staticcheck = true,
+              gofumpt = true,
             },
-            diagnostics = {
-              globals = { "vim" },
+          },
+        },
+        html = {},
+        jsonls = {
+          settings = {
+            json = {
+              schemas = require("schemastore").json.schemas(),
+              validate = { enable = true },
             },
-            completion = {
-              callSnippet = "Replace",
+          },
+        },
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = { version = "LuaJIT" },
+              workspace = {
+                checkThirdParty = false,
+                library = { vim.env.VIMRUNTIME },
+              },
+              diagnostics = { globals = { "vim" } },
+              completion = { callSnippet = "Replace" },
+            },
+          },
+        },
+        -- MoonBit (not managed by mason, uses system `moon lsp`)
+        moonbit_lsp = {
+          cmd = { "moon", "lsp" },
+          filetypes = { "moonbit" },
+          root_markers = { "moon.mod.json" },
+        },
+        pyright = {},
+        ruby_lsp = {},
+        rust_analyzer = {},
+        sorbet = {},
+        taplo = {},
+        terraformls = {},
+        ts_ls = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              schemaStore = { enable = false, url = "" },
+              schemas = require("schemastore").yaml.schemas(),
             },
           },
         },
       }
 
-      -- TypeScript
-      vim.lsp.config.ts_ls = {
-        capabilities = capabilities,
-      }
+      for name, config in pairs(servers) do
+        config.capabilities = capabilities
+        vim.lsp.config[name] = config
+      end
 
-      -- Go
-      vim.lsp.config.gopls = {
-        capabilities = capabilities,
-        settings = {
-          gopls = {
-            analyses = {
-              unusedparams = true,
-            },
-            staticcheck = true,
-            gofumpt = true,
-          },
-        },
-      }
-
-      -- Rust
-      vim.lsp.config.rust_analyzer = {
-        capabilities = capabilities,
-      }
-
-      -- Python
-      vim.lsp.config.pyright = {
-        capabilities = capabilities,
-      }
-
-      -- Ruby
-      vim.lsp.config.ruby_lsp = {
-        capabilities = capabilities,
-      }
-
-      -- Ruby (Sorbet for type checking)
-      vim.lsp.config.sorbet = {
-        capabilities = capabilities,
-      }
-
-      -- Bash/Zsh
-      vim.lsp.config.bashls = {
-        capabilities = capabilities,
-        filetypes = { "sh", "bash", "zsh" },
-      }
-
-      -- TOML
-      vim.lsp.config.taplo = {
-        capabilities = capabilities,
-      }
-
-      -- YAML
-      vim.lsp.config.yamlls = {
-        capabilities = capabilities,
-        settings = {
-          yaml = {
-            schemaStore = { enable = false, url = "" },
-            schemas = require("schemastore").yaml.schemas(),
-          },
-        },
-      }
-
-      -- JSON
-      vim.lsp.config.jsonls = {
-        capabilities = capabilities,
-        settings = {
-          json = {
-            schemas = require("schemastore").json.schemas(),
-            validate = { enable = true },
-          },
-        },
-      }
-
-      -- HTML
-      vim.lsp.config.html = {
-        capabilities = capabilities,
-      }
-
-      -- CSS
-      vim.lsp.config.cssls = {
-        capabilities = capabilities,
-      }
-
-      -- Terraform
-      vim.lsp.config.terraformls = {
-        capabilities = capabilities,
-      }
-
-      -- MoonBit (not managed by mason, uses system `moon lsp`)
-      vim.lsp.config.moonbit_lsp = {
-        cmd = { "moon", "lsp" },
-        filetypes = { "moonbit" },
-        root_markers = { "moon.mod.json" },
-        capabilities = capabilities,
-      }
-
-      -- Enable all configured servers
-      vim.lsp.enable({
-        "bashls",
-        "cssls",
-        "gopls",
-        "html",
-        "jsonls",
-        "lua_ls",
-        "moonbit_lsp",
-        "pyright",
-        "ruby_lsp",
-        "rust_analyzer",
-        "sorbet",
-        "taplo",
-        "terraformls",
-        "ts_ls",
-        "yamlls",
-      })
+      vim.lsp.enable(vim.tbl_keys(servers))
     end,
   },
 

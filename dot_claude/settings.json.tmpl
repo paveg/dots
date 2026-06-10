@@ -4,7 +4,8 @@
       "Bash(mysql:*)",
       "Bash(gh*)",
       "Bash(go*)",
-      "Bash(git worktree*)"
+      "Bash(git worktree*)",
+      "Read(**/.env.example)", "Read(**/.env.sample)", "Read(**/.env.template)"
     ],
     "ask": [
       "Bash(git clean:*)",
@@ -78,7 +79,23 @@
       "Write(**/secrets/**)",
       "Write(**/.ssh/*)",
       "Write(**/authorized_keys)",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql",
+      "Read(~/.ssh/**)", "Edit(~/.ssh/**)",
+      "Read(~/.aws/**)", "Edit(~/.aws/**)",
+      "Read(~/.gnupg/**)", "Edit(~/.gnupg/**)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.kube/config)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.netrc)", "Read(~/.pgpass)", "Read(~/.my.cnf)",
+      "Read(~/.npmrc)",
+      "Read(~/.config/gh/hosts.yml)",
+      "Read(~/.config/chezmoi/chezmoi.yaml)",
+      "Read(~/.terraform.d/credentials.tfrc.json)",
+      "Read(~/.zsh_history)",
+      "Read(~/.local/share/atuin/**)",
+      "Read(**/.env)", "Read(**/.env.*)",
+      "Read(**/*.pem)", "Read(**/*.key)", "Read(**/*.p12)", "Read(**/*.pfx)", "Read(**/*.keystore)", "Read(**/*.jks)",
+      "Read(**/credentials*.json)", "Read(**/*service-account*.json)", "Read(**/secrets.json)", "Read(**/secrets.yaml)", "Read(**/secrets.yml)"
     ],
     "defaultMode": "auto"
   },
@@ -149,6 +166,10 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/block-destructive-db.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/block-credential-read.sh"
           },
           {
             "type": "command",

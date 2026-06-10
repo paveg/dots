@@ -6,7 +6,7 @@ shell-emulator=true
 use-lockfile-v9=true
 
 # Supply chain security
-# Wait 3 days (72 hours) before installing new packages
+# Wait 7 days (10080 minutes) before installing new packages
 # This helps protect against supply chain attacks
 minimum-release-age=10080
 
@@ -37,10 +37,10 @@ color=always
 # Security
 engine-strict=true
 save-exact=true
+audit-level=high
 
 {{- if ne .npm_token "" }}
 
 # Auth (from 1Password)
 //registry.npmjs.org/:_authToken={{ .npm_token }}
 {{- end }}
-

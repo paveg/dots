@@ -42,48 +42,49 @@ deny() {
 }
 
 # ── Pattern matching ───────────────────────────────────────────────────────
-# HOME-prefixed path helper: matches ~, $HOME, or ${HOME} spellings.
-# Usage: home_path_re <suffix>  (suffix is ERE, no leading /)
-home() { printf '(~|\$HOME|\$\{HOME\})/%s' "$1"; }
+# Dotted paths are matched anywhere in the command, so ~/.ssh/,
+# $HOME/.ssh/, /Users/x/.ssh/, and ./.ssh/ spellings are all caught.
+# chezmoi sources use dot_/private_dot_ naming, which never contains the
+# dotted substring, so files in this repo do not false-positive.
 
 # 1. SSH directory
-[[ $cmd =~ $(home '\.ssh/') ]] && deny "$(home '.ssh/')"
+[[ $cmd =~ \.ssh/ ]] && deny ".ssh/"
 
 # 2. AWS credentials
-[[ $cmd =~ $(home '\.aws/') ]] && deny "$(home '.aws/')"
+[[ $cmd =~ \.aws/ ]] && deny ".aws/"
 
 # 3. GnuPG
-[[ $cmd =~ $(home '\.gnupg/') ]] && deny "$(home '.gnupg/')"
+[[ $cmd =~ \.gnupg/ ]] && deny ".gnupg/"
 
 # 4. gcloud config
-[[ $cmd =~ $(home '\.config/gcloud/') ]] && deny "$(home '.config/gcloud/')"
+[[ $cmd =~ \.config/gcloud/ ]] && deny ".config/gcloud/"
 
 # 5. kubeconfig
-[[ $cmd =~ $(home '\.kube/config') ]] && deny "$(home '.kube/config')"
+[[ $cmd =~ \.kube/config ]] && deny ".kube/config"
 
 # 6. Docker config
-[[ $cmd =~ $(home '\.docker/config\.json') ]] && deny "$(home '.docker/config.json')"
+[[ $cmd =~ \.docker/config\.json ]] && deny ".docker/config.json"
 
 # 7. Database / network password stores
-[[ $cmd =~ $(home '\.netrc') ]]   && deny "$(home '.netrc')"
-[[ $cmd =~ $(home '\.pgpass') ]]  && deny "$(home '.pgpass')"
-[[ $cmd =~ $(home '\.my\.cnf') ]] && deny "$(home '.my.cnf')"
+[[ $cmd =~ \.netrc ]]   && deny ".netrc"
+[[ $cmd =~ \.pgpass ]]  && deny ".pgpass"
+[[ $cmd =~ \.my\.cnf ]] && deny ".my.cnf"
 
 # 8. npm credentials
-[[ $cmd =~ $(home '\.npmrc') ]] && deny "$(home '.npmrc')"
+[[ $cmd =~ \.npmrc ]] && deny ".npmrc"
 
 # 9. GitHub CLI hosts file
-[[ $cmd =~ $(home '\.config/gh/hosts\.yml') ]] && deny "$(home '.config/gh/hosts.yml')"
+[[ $cmd =~ \.config/gh/hosts\.yml ]] && deny ".config/gh/hosts.yml"
 
 # 10. chezmoi config
-[[ $cmd =~ $(home '\.config/chezmoi/chezmoi\.yaml') ]] && deny "$(home '.config/chezmoi/chezmoi.yaml')"
+[[ $cmd =~ \.config/chezmoi/chezmoi\.yaml ]] && deny ".config/chezmoi/chezmoi.yaml"
 
 # 11. Terraform credentials
-[[ $cmd =~ $(home '\.terraform\.d/credentials') ]] && deny "$(home '.terraform.d/credentials')"
+[[ $cmd =~ \.terraform\.d/credentials ]] && deny ".terraform.d/credentials"
 
 # 12. Shell history / atuin history
-[[ $cmd =~ $(home '\.zsh_history') ]]           && deny "$(home '.zsh_history')"
-[[ $cmd =~ $(home '\.local/share/atuin/') ]]    && deny "$(home '.local/share/atuin/')"
+[[ $cmd =~ \.zsh_history ]]        && deny ".zsh_history"
+[[ $cmd =~ \.local/share/atuin/ ]] && deny ".local/share/atuin/"
 
 # 13. Bare SSH key filenames (anywhere in command)
 [[ $cmd =~ (^|[^a-zA-Z0-9_])(id_rsa|id_ed25519|id_ecdsa)([^a-zA-Z0-9_]|$) ]] \
@@ -102,7 +103,7 @@ cmd_stripped="${cmd_stripped//.env.template/}"
   && deny ".envrc (direnv config often exports secrets)"
 
 # 15. Certificate / key container formats
-[[ $cmd =~ \.(pem|p12|pfx|keystore|jks)(\ |$|\"|\'|;) ]] \
+[[ $cmd =~ \.(pem|p12|pfx|keystore|jks)([^a-zA-Z0-9_]|$) ]] \
   && deny ".pem/.p12/.pfx/.keystore/.jks file"
 
 # 16. Service account / secret files

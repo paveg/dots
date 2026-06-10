@@ -121,4 +121,31 @@ is_block "$out" || fail "should deny: security find-generic-password — got: $o
 out=$(run '{"tool_name":"Bash","tool_input":{"command":"cat .env.sample"}}')
 [[ -z $out ]] || fail "should allow: cat .env.sample — got: $out"
 
+# ────────────────────────────────────────────────────────
+# Prefix-bypass cases (absolute / relative spellings)
+# ────────────────────────────────────────────────────────
+
+# absolute path to ssh config
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"cat /Users/ryota/.ssh/config"}}')
+is_block "$out" || fail "should deny: cat /Users/ryota/.ssh/config — got: $out"
+
+# relative path to aws credentials
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"head ./.aws/credentials"}}')
+is_block "$out" || fail "should deny: head ./.aws/credentials — got: $out"
+
+# pipe immediately after .pem (no space before delimiter)
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"cat foo.pem|head -1"}}')
+is_block "$out" || fail "should deny: cat foo.pem|head -1 — got: $out"
+
+# zsh history under another home prefix
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"rg secret /home/user/.zsh_history"}}')
+is_block "$out" || fail "should deny: rg secret /home/user/.zsh_history — got: $out"
+
+# chezmoi source naming (dot_) lacks the dotted substring — must stay allowed
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"chezmoi execute-template < dot_npmrc.tmpl"}}')
+[[ -z $out ]] || fail "should allow: chezmoi execute-template < dot_npmrc.tmpl — got: $out"
+
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"ls private_dot_ssh/"}}')
+[[ -z $out ]] || fail "should allow: ls private_dot_ssh/ — got: $out"
+
 echo "all assertions passed"

@@ -21,12 +21,32 @@ alwaysApply: true
 - For complex problems, throw more compute at it via subagents
 - One tack per subagent for focused execution
 
+### Model Tiers
+
+| Role | Model | How |
+| :--- | :---- | :-- |
+| Planning, design, architecture, evaluation | Main session (fable/opus) | stay in main process |
+| Implementation from an approved plan | sonnet | `implementer` agent (`~/.claude/agents/`) |
+| Mechanical single-file edits, grunt work | haiku | `implementer` with `model: haiku` override |
+| First-pass diff screening (spec compliance) | sonnet | `spec-reviewer` agent (read-only); main session adjudicates its findings |
+| Adversarial claim verification | sonnet | `skeptic` agent (read-only); refutes audit findings / hypotheses before acting on them |
+| Exploration / research fan-out | Explore agent | read-only; return conclusions, not file dumps |
+
+- The dispatcher never implements what it will evaluate; the implementer never evaluates its own diff
+- On subscription plans (incl. Max), `sonnet[1m]` bills usage credits — for >200K-context tasks, split the task or escalate to `opus` (1M included) instead
+- Precondition: `CLAUDE_CODE_SUBAGENT_MODEL` must stay unset (it overrides every per-agent model choice)
+
 ### Subagent-Driven Development (default for implementation)
 
-- Once a plan exists, dispatch implementation via `Agent` with `isolation: "worktree"`
-- Main process stays as the evaluator (see `harness-engineering.md` generator-evaluator separation)
-- Brief subagents with relevant rules inline — they have no conversation history
-- After implementation, dispatch separate review subagents: spec compliance, then code quality
+- Once a plan exists, dispatch the `implementer` agent with `isolation: "worktree"` — its
+  system prompt carries workspace discipline, hard limits, and the reporting protocol, so
+  the brief only needs the task spec itself
+- Main session stays as the evaluator (see `harness-engineering.md` generator-evaluator separation);
+  it reviews diffs directly instead of spawning review subagents
+- Brief subagents with task-relevant context inline — they have no conversation history
+- After a worktree agent completes, verify placement: `git worktree list` + `git branch -v`
+  must show the main tree untouched and the feature branch at the agent's commits; repoint
+  with `git branch -f` if not
 - **Push and PR creation require explicit user confirmation** — including post-phase follow-ups (docs, cleanup, completion records). Prefer branch-protection enforcement over discipline.
 
 ### Worktree Location
@@ -76,21 +96,10 @@ When given a bug report: fix it without hand-holding, but **investigate before p
 - After 3 failed fix attempts on the same issue, **stop and re-plan** — do not try fix #4
 - Zero context switching required from the user throughout this process
 
-## Self-Improvement Loop
-
-- After ANY correction from the user: update tasks/lessons.md with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
-
 ## Task Management
 
-- **Plan First**: Write plan to tasks/todo.md with checkable items
-- **Verify Plan**: Check in before starting implementation
-- **Track Progress**: Mark items complete as you go
-- **Explain Changes**: High-level summary at each step
-- **Document Results**: Add review section to tasks/todo.md
-- **Capture Lessons**: Update tasks/lessons.md after corrections
+- Track multi-step work with the harness Task tools or plan-document checkboxes; check in before starting implementation
+- After any correction from the user, capture the pattern in persistent memory so it survives the session
 
 ## Rule Hygiene
 

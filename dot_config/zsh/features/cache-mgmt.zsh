@@ -1,7 +1,7 @@
 # cache-mgmt.zsh - clear/regenerate zsh init caches and benchmark startup
 # Provides:     zsh-clear-cache, zsh-update-cache, zsh-bench
 zsh-clear-cache() {
-  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "$ZSH_INIT_CACHE"
   rm -rf "${XDG_CACHE_HOME}/zsh/completions"
   rm -rf "${XDG_CACHE_HOME}/p10k"*
   rm -rf "${XDG_CACHE_HOME}/gitstatus"
@@ -12,7 +12,7 @@ zsh-clear-cache() {
 }
 
 zsh-update-cache() {
-  rm -rf "${XDG_CACHE_HOME}/zsh/init"
+  rm -rf "$ZSH_INIT_CACHE"
   rm -rf "${XDG_CACHE_HOME}/zsh/completions"
   rm -rf "${XDG_CACHE_HOME}/p10k"*
   rm -rf "${XDG_CACHE_HOME}/gitstatus"

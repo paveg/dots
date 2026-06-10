@@ -87,13 +87,13 @@ zinit light romkatv/powerlevel10k
 # =============================================================================
 # Tool initialization (turbo mode)
 # =============================================================================
-_zsh_cache="${XDG_CACHE_HOME}/zsh/init"
+_zsh_cache="$ZSH_INIT_CACHE"
 [[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
 
 # zoxide (turbo)
 _zinit_setup_zoxide() {
   if (( $+commands[zoxide] )); then
-    local _zoxide_cache="${XDG_CACHE_HOME}/zsh/init/zoxide.zsh"
+    local _zoxide_cache="$ZSH_INIT_CACHE/zoxide.zsh"
     [[ -f "$_zoxide_cache" ]] || zoxide init zsh > "$_zoxide_cache"
     source "$_zoxide_cache"
   fi
@@ -106,7 +106,7 @@ zinit wait"1" lucid light-mode for \
 # atuin (turbo) - shell history (load after fzf to override Ctrl+R)
 _zinit_setup_atuin() {
   if (( $+commands[atuin] )); then
-    local _atuin_cache="${XDG_CACHE_HOME}/zsh/init/atuin.zsh"
+    local _atuin_cache="$ZSH_INIT_CACHE/atuin.zsh"
     [[ -f "$_atuin_cache" ]] || atuin init zsh --disable-up-arrow > "$_atuin_cache"
     source "$_atuin_cache"
   fi
@@ -119,7 +119,7 @@ zinit wait"2" lucid light-mode for \
 # fzf (turbo)
 _zinit_setup_fzf() {
   if (( $+commands[fzf] )); then
-    local _fzf_cache="${XDG_CACHE_HOME}/zsh/init/fzf.zsh"
+    local _fzf_cache="$ZSH_INIT_CACHE/fzf.zsh"
     [[ -f "$_fzf_cache" ]] || fzf --zsh > "$_fzf_cache"
     source "$_fzf_cache"
 
@@ -154,7 +154,7 @@ zinit wait"1" lucid light-mode for \
 # direnv (turbo)
 _zinit_setup_direnv() {
   if (( $+commands[direnv] )); then
-    local _direnv_cache="${XDG_CACHE_HOME}/zsh/init/direnv.zsh"
+    local _direnv_cache="$ZSH_INIT_CACHE/direnv.zsh"
     [[ -f "$_direnv_cache" ]] || direnv hook zsh > "$_direnv_cache"
     source "$_direnv_cache"
   fi

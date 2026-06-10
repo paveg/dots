@@ -9,7 +9,7 @@
 # shellenv is cached; invalidated automatically when brew binary updates
 _brew_bin="/opt/homebrew/bin/brew"
 if [[ -x "$_brew_bin" ]]; then
-  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init/brew.zsh"
+  _brew_cache="$ZSH_INIT_CACHE/brew.zsh"
   if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
     mkdir -p "$(dirname "$_brew_cache")"
     "$_brew_bin" shellenv > "$_brew_cache"

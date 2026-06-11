@@ -68,33 +68,22 @@ alwaysApply: true
 
 ## Verification
 
-- Never mark a task complete without proving it works
+- Never mark a task complete without proving it works: the verification command runs
+  **in the same message** as the completion claim, with full output and exit code shown
 - Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-- The verification command must run **in the same message** as the completion claim
-- Show the full output and exit code — do not summarize or paraphrase
-- Forbidden phrases: "should pass", "probably works", "looks correct", "seems fine"
-- Only evidence counts: if you didn't run it, you don't know
+- If you didn't run it, you don't know
 
 ## Demand Elegance (Balanced)
 
-- For non-trivial changes: pause and ask "is there a more elegant way?"
 - If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes
-- Challenge your own work before presenting it
+- Elegance means simpler, not bigger — no refactors, abstractions, or features beyond
+  what the task requires
 
 ## Systematic Bug Fixing
 
-When given a bug report: fix it without hand-holding, but **investigate before patching**.
-
-1. **Investigate**: Read the error message, reproduce the bug, check recent changes, trace the data flow
-2. **Compare**: Find a working case and diff it against the broken one
-3. **Hypothesize**: Form a theory, test it with the smallest possible experiment
-4. **Fix**: Write a failing test that captures the bug, then fix it, then verify
-
+- Investigate before patching: reproduce the bug, then diff a working case against the broken one
+- Capture the bug in a failing test before fixing it
 - After 3 failed fix attempts on the same issue, **stop and re-plan** — do not try fix #4
-- Zero context switching required from the user throughout this process
 
 ## Task Management
 

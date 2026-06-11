@@ -16,9 +16,9 @@ You are helping a developer implement a new feature. Follow a systematic approac
 - **Generator-Evaluator separation**: implementation and quality assessment use different agents/contexts
 - **Sprint contracts**: agree on verifiable "done" criteria before writing code
 - **Scope discipline**: review only what changed
-- **Ask clarifying questions**: resolve all ambiguities before designing. Wait for user answers
+- **Ask clarifying questions**: resolve ambiguities before designing
 - **Understand before acting**: read and comprehend existing code patterns first
-- **Use TodoWrite**: track all progress throughout
+- **Track progress**: maintain a task list (TaskCreate/TaskUpdate) throughout
 
 ---
 
@@ -29,7 +29,7 @@ You are helping a developer implement a new feature. Follow a systematic approac
 Initial request: $ARGUMENTS
 
 **Actions**:
-1. Create todo list with all phases
+1. Create a task list with all phases
 2. If feature unclear, ask user for:
    - What problem are they solving?
    - What should the feature do?
@@ -43,7 +43,7 @@ Initial request: $ARGUMENTS
 **Goal**: Understand relevant existing code and patterns
 
 **Actions**:
-1. Launch 2-3 code-explorer agents in parallel. Each agent should:
+1. Launch 2-3 `Explore` agents in parallel. Each agent should:
    - Trace through the code comprehensively, focusing on abstractions, architecture, and control flow
    - Target a different aspect (similar features, architecture, UI patterns, etc.)
    - Return a list of 5-10 key files to read
@@ -56,8 +56,6 @@ Initial request: $ARGUMENTS
 ## Phase 3: Clarifying Questions
 
 **Goal**: Fill in gaps and resolve all ambiguities before designing
-
-**CRITICAL**: DO NOT SKIP this phase.
 
 **Actions**:
 1. Review codebase findings and original feature request
@@ -77,7 +75,7 @@ Initial request: $ARGUMENTS
    - Classify as **must-have** or **nice-to-have**
 2. For each criterion, state how it will be verified (automated test, manual check, command output)
 3. Present to user and iterate until agreed
-4. Record the contract in TodoWrite
+4. Record the contract in the task list
 
 **Example contract**:
 ```
@@ -97,7 +95,7 @@ Nice-to-have:
 **Goal**: Design implementation approach with trade-offs
 
 **Actions**:
-1. Launch 2-3 code-architect agents in parallel with different focuses:
+1. Launch 2-3 `Plan` agents in parallel with different focuses:
    - Minimal changes (smallest change, maximum reuse)
    - Clean architecture (maintainability, elegant abstractions)
    - Pragmatic balance (speed + quality)
@@ -112,18 +110,16 @@ Nice-to-have:
 
 **Goal**: Build the feature
 
-**DO NOT START WITHOUT USER APPROVAL**
-
 **Actions**:
-1. Wait for explicit user approval of architecture
+1. Implementation starts only after the user approves the architecture
 2. Break the implementation into bite-sized tasks (each completable in a few minutes):
    - Each task specifies exact files to modify, what to change, and how to verify
-   - Record tasks in TodoWrite
+   - Record tasks in the task list
 3. For each task:
-   - Launch a subagent with clear context (sprint contract, architecture, task spec)
+   - Dispatch the `implementer` agent with clear context (sprint contract, architecture, task spec)
    - Verify the task's output before moving to the next
 4. Follow codebase conventions strictly
-5. Update todos as you progress
+5. Update the task list as you progress
 
 ---
 
@@ -149,7 +145,7 @@ The evaluator agent should test behavior (run commands, check output), not just 
 **Goal**: Catch bugs, simplify code, ensure conventions
 
 **Actions**:
-1. Launch 2 code-reviewer agents scoped to changed files only (`git diff`):
+1. Launch 2 read-only reviewer agents (`spec-reviewer`, or general-purpose with review framing) scoped to changed files only (`git diff`):
    - Agent 1: bugs, logic errors, security (confidence >= 80)
    - Agent 2: project conventions, simplicity, DRY
 2. Triage findings:
@@ -167,7 +163,7 @@ The evaluator agent should test behavior (run commands, check output), not just 
 **Goal**: Document what was accomplished
 
 **Actions**:
-1. Mark all todos complete
+1. Mark all tasks complete
 2. Check sprint contract: mark each criterion as met/unmet
 3. Summarize:
    - What was built

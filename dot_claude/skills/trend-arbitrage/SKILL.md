@@ -5,6 +5,7 @@ description: |
   where search demand is high but quality supply is low (trend arbitrage).
   Use when: finding content gaps, keyword opportunities, niche research,
   analyzing whether a topic or idea is worth pursuing, or competitive gap analysis.
+argument-hint: <topic or idea>
 ---
 
 # Trend Arbitrage Skill

@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Harness Engineering
 
 ## Harness vs Guardrail
@@ -59,29 +55,4 @@ Push checks toward guardrails whenever a deterministic tool can do the job: **th
 - Record non-trivial technical decisions as ADRs (Architecture Decision Records)
 - Check for existing ADR directory (`docs/adr/`, `docs/decisions/`, `adr/`, etc.) and follow that convention. If none exists, recommend `docs/adr/`
 - Before making architectural choices, read existing ADRs for prior decisions and constraints
-- Write ADRs in English
-- File naming: `NNNN-short-description.md` (e.g., `0001-use-postgresql-over-sqlite.md`)
-ADR template:
-
-```markdown
-# ADR-NNNN: Title
-
-## Status
-Proposed | Accepted | Deprecated | Superseded by ADR-XXXX
-
-## Context
-What forces are at play? Why is this decision needed?
-
-## Decision
-What was decided and why this option over alternatives.
-
-## Consequences
-What becomes easier, what becomes harder. Both positive and negative.
-```
-
-## [Meta] Harness Simplification
-
-- Each guardrail encodes an assumption about what the model cannot do reliably
-- Periodically question whether a guardrail is still necessary
-- Remove ceremony that no longer prevents real failures
-- When a model upgrade lands, audit which guardrails were patching the old model's limits and drop the ones that no longer earn their cost
+- Write ADRs in English; file naming `NNNN-short-description.md`; sections: Status / Context / Decision / Consequences

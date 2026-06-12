@@ -1,3 +1,15 @@
+---
+name: zero-cost-scaling
+description: |
+  Zero-cost scaling patterns for personal/indie web apps that may go viral:
+  client-side processing (ONNX Runtime Web via WebAssembly/WebGPU), no user-data
+  storage, free static hosting (Cloudflare Workers), asset optimization, UI
+  simplicity as a feature.
+  Use when (1) designing or reviewing the architecture of a personal/indie web
+  app, (2) choosing hosting or infrastructure for a side project, (3) the user
+  asks how to keep infra cost at zero or survive viral traffic spikes.
+---
+
 # Zero-Cost Scaling Pattern
 
 When designing personal/indie web apps, especially those that may go viral:

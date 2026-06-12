@@ -1,6 +1,6 @@
 {
 {{- if not .business_use }}
-  "model": "claude-fable-5[1m]",
+  "advisorModel": "fable",
 {{- end }}
   "permissions": {
     "allow": [
@@ -85,11 +85,12 @@
     ],
     "defaultMode": "auto"
   },
-{{- if .business_use }}
   "env": {
-    "ANTHROPIC_BASE_URL": "https://api.inhouse-flugel.freee.co.jp/proxy/anthropic_pass_through"
-  },
+{{- if .business_use }}
+    "ANTHROPIC_BASE_URL": "https://api.inhouse-flugel.freee.co.jp/proxy/anthropic_pass_through",
 {{- end }}
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "statusLine": {
     "type": "command",
     "command": "bunx -y ccstatusline@latest",
@@ -138,11 +139,7 @@
   "language": "Follow the user's input language. Prioritize accuracy. Think step-by-step. Do not guess—ask or investigate when uncertain.",
   "claudeMdExcludes": [
     "**/.claude/rules/gh-pr-body.md",
-    "**/.claude/rules/chezmoi.md",
-    "**/.claude/rules/react.md",
-    "**/.claude/rules/browser-automation.md",
-    "**/.claude/rules/drizzle.md",
-    "**/.claude/rules/zero-cost-scaling.md"
+    "**/.claude/rules/browser-automation.md"
   ],
   "hooks": {
     "PreToolUse": [
@@ -162,10 +159,6 @@
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/rules-inject.sh"
-          },
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/block-rot-comments.py"

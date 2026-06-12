@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Workflow
 
 ## Planning
@@ -25,7 +21,8 @@ alwaysApply: true
 
 | Role | Model | How |
 | :--- | :---- | :-- |
-| Planning, design, architecture, evaluation | Main session (fable/opus) | stay in main process |
+| Planning, design, architecture, evaluation | Main session (opus; fable for the hardest) | stay in main process |
+| Mid-task escalation at decision points | advisor (fable) | `/advisor fable` — the advisor reads the live transcript and returns guidance |
 | Implementation from an approved plan | sonnet | `implementer` agent (`~/.claude/agents/`) |
 | Mechanical single-file edits, grunt work | haiku | `implementer` with `model: haiku` override |
 | First-pass diff screening (spec compliance) | sonnet | `spec-reviewer` agent (read-only); main session adjudicates its findings |
@@ -35,6 +32,12 @@ alwaysApply: true
 - The dispatcher never implements what it will evaluate; the implementer never evaluates its own diff
 - On subscription plans (incl. Max), `sonnet[1m]` bills usage credits — for >200K-context tasks, split the task or escalate to `opus` (1M included) instead
 - Precondition: `CLAUDE_CODE_SUBAGENT_MODEL` must stay unset (it overrides every per-agent model choice)
+- The advisor escalates up (approach choice, recurring errors, pre-completion checks) while
+  subagent tiers delegate down — they compose; an opus main with a fable advisor is a valid pair
+- The advisor runs without tools and only reads the transcript: useful for plans and risk
+  checks, but it does NOT satisfy generator-evaluator separation (the evaluator must test behavior)
+- Constraints: a fable main session accepts only `fable` as advisor; through a business LLM
+  gateway the advisor tool is not guaranteed to work
 
 ### Subagent-Driven Development (default for implementation)
 
@@ -82,35 +85,9 @@ alwaysApply: true
 ## Systematic Bug Fixing
 
 - Investigate before patching: reproduce the bug, then diff a working case against the broken one
-- Capture the bug in a failing test before fixing it
-- After 3 failed fix attempts on the same issue, **stop and re-plan** — do not try fix #4
+- Capture the bug in a failing test before fixing it (fix-loop limits: see `harness-engineering.md` Oscillation Guard)
 
 ## Task Management
 
 - Track multi-step work with the harness Task tools or plan-document checkboxes; check in before starting implementation
 - After any correction from the user, capture the pattern in persistent memory so it survives the session
-
-## Rule Hygiene
-
-Long instruction sets degrade model behavior — IFScale (arxiv 2507.11538) shows primacy bias kicks in around 150–200 instructions, and Chroma's context rot study confirms degradation across all 18 frontier models tested. The fix is volume discipline, not "just one more bullet."
-
-- Treat the always-loaded rule set in `~/.claude/rules/` as a budget capped near **150 effective instructions**
-- When near the cap, every new rule must come with a **proposed deletion or downgrade** of an existing one (grow-by-replace)
-- Project-specific rules (framework, ORM, deployment target) belong in the project's CLAUDE.md, not the global set
-- Detail-heavy or rarely-applicable rules should be `alwaysApply: false` so they load on demand
-- Periodically audit: which rules have not prevented a real failure in the last few months? Drop them
-
-## Escalation Ladder
-
-Where to place a new constraint, by violation history and reversibility:
-
-| Level | Location | When to use |
-| :---- | :------- | :---------- |
-| L1 | Mention in `CLAUDE.md` or task instructions | First occurrence; soft preference |
-| L2 | New/extended rule in `~/.claude/rules/*.md` | Same issue noticed twice or more |
-| L3 | `~/.claude/hooks/` (PreToolUse, Stop, etc.) | Repeated violation OR irreversible action (push --force, rm -rf, secret leak) |
-| L4 | Project CI / required check | Production impact, security, or compliance |
-
-- Skip levels when the action is irreversible — go straight to L3+ instead of trusting prose
-- Prefer machine-checkable enforcement (L3/L4) over instructions (L1/L2) whenever a deterministic check is possible
-- See `harness-engineering.md` for why this matches "the stronger the mechanical verification, the more autonomy"

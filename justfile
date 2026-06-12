@@ -46,13 +46,18 @@ lint-headers:
     @echo "✓ Headers OK!"
 
 # Run all checks
-test: lint lint-headers fmt-check test-hooks
+test: lint lint-headers fmt-check test-hooks test-skill-scripts
     @echo "✓ All checks passed!"
 
 # Run hook tests
 test-hooks:
     @echo "Running hook tests..."
     @bash tests/hooks/run-tests.sh
+
+# Run hermetic skill script tests (no network)
+test-skill-scripts:
+    @echo "Running skill script tests..."
+    @bash tests/skills/pr-monitor/run-tests.sh
 
 # Run skill fetcher tests
 test-skills:

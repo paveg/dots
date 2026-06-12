@@ -6,6 +6,19 @@ Language-independent formatting rules for Markdown output (responses, PR bodies,
   Markdown's ordered-list syntax (`1.` `2.`) render the numbering; don't type the numerals
   into the body text yourself.
 
+## Line breaks in prose
+
+Outside code, soft line breaks carry no meaning — renderers join them. Break
+only at semantically clean points; never mid-sentence to satisfy a column limit.
+
+- Japanese: GitHub joins soft breaks **with a half-width space**, so a
+  mid-sentence wrap injects a visible bogus space into the rendered text.
+  Write one paragraph per line; for long paragraphs, breaking after 。 is fine
+- List items: one item per line, no continuation-indent wrapping of Japanese
+- English may keep conventional ~80-column wrapping (space-join is lossless)
+- Where newlines DO matter, this rule does not apply: GitHub issue/PR comment
+  bodies (single newline renders as a break), tables, code blocks
+
 ## Diagrams: mermaid in artifacts, ASCII in chat
 
 Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs,

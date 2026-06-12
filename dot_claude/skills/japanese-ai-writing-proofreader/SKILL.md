@@ -135,10 +135,9 @@ Findings table (report mode) or applied-fix summary (fix mode):
 | Pass | 重要度 | 箇所 | Before → After |
 ```
 
-- 重要度: CRITICAL（意味が壊れている・事実が変わる）/ IMPORTANT（誤字・誤用・
-  文法ミス、および明確なAI臭）/ LOW（表記の好み）。Present CRITICAL and
-  IMPORTANT in the table. LOW: one aggregate line — count plus rule/kind names
-  only（「ほか LOW 2件（訳→わけ等の表記）」), no Before→After. This keeps
-  Pass 1 evidence visible without itemizing
+- 重要度: CRITICAL（意味が壊れている・事実が変わる）/ IMPORTANT（誤字・誤用・文法ミス、および明確なAI臭）/ LOW（表記の好み）。
+  Present CRITICAL and IMPORTANT in the table. LOW: one aggregate line —
+  count plus rule/kind names only（「ほか LOW 2件（訳→わけ等の表記）」),
+  no Before→After. This keeps Pass 1 evidence visible without itemizing
 - In fix mode, end with counts grouped by pass（textlint / AI臭 / 自然さ）and
   anything intentionally left alone (voice devices, quoted text)

@@ -63,9 +63,9 @@ For each ❌, exactly one of:
 2. **Downgrade** — rewrite as opinion/estimate（「実測で約〜だった」「〜と推定」）
    so it is no longer a falsifiable claim presented as fact
 3. **Delete** — if the claim carries no weight, cut it
-4. **Flag** — only for claims that genuinely require the user (実測値、金額の
-   公開可否、所属組織に関わる記述). Mark in the draft as `<!-- 要確認: ... -->`
-   and list them in the final report
+4. **Flag** — only for claims that genuinely require the user
+   (実測値、金額の公開可否、所属組織に関わる記述).
+   Mark in the draft as `<!-- 要確認: ... -->` and list them in the final report
 
 「たぶん合っている」は選択肢にない。Unverified claims do not ship as facts.
 

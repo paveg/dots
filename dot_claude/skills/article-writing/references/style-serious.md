@@ -1,30 +1,20 @@
 # Style Profile: Serious (キャラ控えめ)
 
-Same author, character devices removed. Use for technical deep-dives, external
-media (Zenn, company blog), or any article where the reader comes for the
-content, not the persona. Tone anchor: the funailog "Kubernetes The Hard Way"
-series — precise, hands-on, still human.
+Same author, character devices removed. Use for technical deep-dives, external media (Zenn, company blog), or any article where the reader comes for the content, not the persona. Tone anchor: the funailog "Kubernetes The Hard Way" series — precise, hands-on, still human.
 
-This profile is **style-personal minus the character devices**. The rhythm
-section is identical and is restated here so this file works standalone.
+This profile is **style-personal minus the character devices**. The rhythm section is identical and is restated here so this file works standalone.
 
 ## Identity
 
-です・ます調、一人称「僕」。手を動かした事実と数字で語る。感想は書いてよいが、
-装飾はしない。媒体・リポジトリの規約が調や一人称を規定している場合は
-そちらが常に優先（「私」「だ・である」等）— this profile then supplies only
-rhythm and structure.
+です・ます調、一人称「僕」。手を動かした事実と数字で語る。感想は書いてよいが、装飾はしない。媒体・リポジトリの規約が調や一人称を規定している場合はそちらが常に優先（「私」「だ・である」等）— this profile then supplies only rhythm and structure.
 
 ## Rhythm (same backbone as personal)
 
-- **Sentence-end variety**: never let the same ending run 3+ sentences.
-  Rotate です／ます／でした／ません／た。Noun stops are allowed for punch
-  （「地味だけど大事。」）but rarer than in the personal style.
+- **Sentence-end variety**: never let the same ending run 3+ sentences. Rotate です／ます／でした／ません／た。Noun stops are allowed for punch（「地味だけど大事。」）but rarer than in the personal style.
 - **Long-short contrast**: long explanation, then a short verdict.
   - 例:「`true` にすれば base64 化されて **YAML 1 ファイル完結**で持ち運べる。地味だけど大事。」
 - **Paragraph length**: 2-4 sentences. One-sentence paragraphs for emphasis only.
-- **Connectives**: ただ／ただし／そこで／つまり／一方で。No mechanical
-  「また」「さらに」 chains.
+- **Connectives**: ただ／ただし／そこで／つまり／一方で。No mechanical 「また」「さらに」 chains.
 - **Concrete numbers**: 所要時間、行数、バージョン、価格。見出しや表に出す。
   - 例:「Chapter 4-6 で 1.5 時間、Chapter 7-12 で 2.5 時間、合計 4 時間。」
 - **Bold sparingly**: 1 section ≈ 1 bolded key claim.
@@ -32,8 +22,7 @@ rhythm and structure.
 ## What stays from the author's voice
 
 - 体験ベースの語り: 詰まった箇所を隠さず、エラーメッセージごと載せる
-  - 例:「素直に systemd を叩いたんですが、`kube-apiserver` だけが
-    `activating (auto-restart)` ループに入って起動しません (無言で)。」
+  - 例:「素直に systemd を叩いたんですが、`kube-apiserver` だけが `activating (auto-restart)` ループに入って起動しません (無言で)。」
 - 率直なヘッジ: 「正直」「盛らずに言えば」「〜かなと思います」（連発しない）
 - 学びの一般化: ハマりを個別事象で終わらせず、横展開できる教訓に昇華する
   - 例:「`grep -iE "error|failed|cannot|no such"` を癖にするだけで突破速度が一気に上がります。」
@@ -57,9 +46,7 @@ rhythm and structure.
 - 手順記事は実行したコマンドと出力をそのまま載せる（再現可能性が信頼になる）
 - 比較・結果は Markdown 表。専門用語には脚注 `[^id]` + 公式リンク
 - まとめ: 学び・数字の振り返り + 次のアクション or 次回予告
-- 締めの一文: funailog 掲載なら「それでは、またね。」を維持してよい。
-  外部媒体ではニュートラルに（「参考になれば幸いです」等の定型は避け、
-  内容に即した一文で終える）
+- 締めの一文: funailog 掲載なら「それでは、またね。」を維持してよい。外部媒体ではニュートラルに（「参考になれば幸いです」等の定型は避け、内容に即した一文で終える）
 
 ## Verbatim excerpt (calibration sample)
 

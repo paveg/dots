@@ -1,0 +1,37 @@
+# Terminology dictionary for the proofreader fallback config.
+# Grow this file as new 表記ゆれ are found in real drafts.
+# prh is string/regex based (no POS analysis) — only add unambiguous patterns;
+# context-dependent words (e.g. 是非を問う vs ぜひ) belong to the LLM passes.
+version: 1
+rules:
+  # 長音符は JIS 新表記（ー付き）に統一
+  - expected: サーバー
+    pattern: /サーバ(?!ー)/
+  - expected: ユーザー
+    pattern: /ユーザ(?!ー)/
+  - expected: インターフェース
+    patterns:
+      - インターフェイス
+      - インタフェース
+
+  # 漢字→ひらがな（hiragana 系ルールが拾わない語）
+  - expected: できる
+    pattern: 出来る
+  - expected: できない
+    pattern: 出来ない
+  - expected: たくさん
+    pattern: 沢山
+  - expected: いろいろ
+    pattern: 色々
+
+  # 固有名詞 — terminology ルールは助詞に密着した語(「Githubで」)を
+  # 見逃すことがあるため、頻出のものだけここで補完する
+  - expected: GitHub
+    pattern: /Github/
+  - expected: JavaScript
+    pattern: /Javascript/
+
+  # コーパス(funailog 2026)で混在を確認。統一する側を決めたらコメントを外す。
+  # 活用形ごとにパターンが必要な点に注意（分かる/分かり/分かっ…）
+  # - expected: わかる
+  #   pattern: /分か(?=[らりるれろっ])/

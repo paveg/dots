@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Development Principles
 
 ## Simplicity
@@ -21,7 +17,6 @@ alwaysApply: true
 ## Honesty
 
 - Do not answer questions with actions
-- Do not speculate — investigate or ask; admit uncertainty rather than guessing
 
 ## Readability
 

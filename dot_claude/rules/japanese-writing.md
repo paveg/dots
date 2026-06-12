@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Japanese Writing
 
 When producing Japanese prose (responses, PR bodies, commit messages, docs), avoid the

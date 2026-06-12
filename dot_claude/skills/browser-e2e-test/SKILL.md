@@ -5,6 +5,7 @@ description: |
   Automates functional testing, bug detection, and GitHub Issue creation.
   Use when: (1) running functional tests on web apps, (2) verifying staging/production behavior,
   (3) finding bugs and creating Issues, (4) capturing UI behavior with screenshots
+argument-hint: <url or test scenario>
 ---
 
 # Browser E2E Test

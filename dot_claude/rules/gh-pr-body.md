@@ -1,7 +1,3 @@
----
-alwaysApply: false
----
-
 # `gh pr` body: never backslash-escape backticks
 
 ## Rule
@@ -25,7 +21,7 @@ gh pr view <N> --repo <owner>/<repo> --json body -q '.body' \
 
 ## When to include mermaid
 
-For PRs touching architecture, flows, state, or cross-system interactions: embed a mermaid diagram in the body. A diagram up front makes review faster than bulleted prose. Structural refactors should show before/after side-by-side. Diagram type by use case: see `mermaid-diagrams.md`.
+For PRs touching architecture, flows, state, or cross-system interactions: embed a mermaid diagram in the body. A diagram up front makes review faster than bulleted prose. Structural refactors should show before/after side-by-side (authoring rules: see `markdown-formatting.md`).
 
 ## How to apply
 

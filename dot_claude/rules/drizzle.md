@@ -1,3 +1,11 @@
+---
+paths:
+  - "**/schema.ts"
+  - "**/schema.tsx"
+  - "**/drizzle.config.*"
+  - "**/drizzle/**"
+---
+
 # Drizzle ORM
 
 ## Timestamps

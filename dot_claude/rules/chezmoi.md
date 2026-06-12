@@ -1,5 +1,6 @@
 ---
-alwaysApply: false
+paths:
+  - "**/.local/share/chezmoi/**"
 ---
 
 # chezmoi

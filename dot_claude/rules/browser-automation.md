@@ -1,9 +1,3 @@
----
-alwaysApply: false
-globs: []
-description: "Browser automation (chrome-in-claude) best practices"
----
-
 # Browser Automation
 
 - Prefer click-and-type over form_input (especially for textareas)

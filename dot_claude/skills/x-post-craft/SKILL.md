@@ -1,6 +1,7 @@
 ---
 name: x-post-craft
 description: Create viral X/Twitter posts based on the official X algorithm (Phoenix/Grok). Generates and improves posts optimized for maximum engagement. Use when (1) creating X posts for products, services, or information, (2) improving existing post drafts, (3) designing thread structures for long content.
+argument-hint: <topic or draft>
 ---
 
 # X Post Craft - Algorithm-Driven Post Creation

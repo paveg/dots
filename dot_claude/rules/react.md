@@ -1,7 +1,5 @@
 ---
-alwaysApply: false
-description: "React/JSX conventions for component design and hook usage"
-globs:
+paths:
   - "**/*.tsx"
   - "**/*.jsx"
 ---

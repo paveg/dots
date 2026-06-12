@@ -1,31 +1,43 @@
 # Style Profile: Personal (キャラあり)
 
-Voice profile distilled from funailog.com articles (2026). Use for personal blog articles where the author's character should show. Instructions are in English; target vocabulary and examples stay in Japanese because they are what this profile operates on.
+Voice profile distilled from funailog.com articles (2026).
+Use for personal blog articles where the author's character should show.
+Instructions are in English; target vocabulary and examples stay in Japanese because they are what this profile operates on.
 
 ## Identity
 
-です・ます調、一人称「僕」。直接的で情報量が多く、具体的な数字を隠さない。真面目に説明している本文に、括弧や取り消し線でカジュアルな本音を差し込む**二層構造**がこの文体の核。締めの常套句は「それでは、またね。」
+です・ます調、一人称「僕」。
+直接的で情報量が多く、具体的な数字を隠さない。
+真面目に説明している本文に、括弧や取り消し線でカジュアルな本音を差し込む**二層構造**がこの文体の核。
+締めの常套句は「それでは、またね。」
 
 ## Rhythm (applies before any character device)
 
-The character devices below only work on top of correct rhythm. Get this section right first.
+The character devices below only work on top of correct rhythm.
+Get this section right first.
 
-- **Sentence-end variety**: never let the same ending run 3+ sentences. Rotate です／ます／でした／ません／た。and occasionally a noun stop or casual fragment（「地味だけど大事。」）or rhetorical question（「でもモデルが賢くなってその仮説が崩れたら？」）.
+- **Sentence-end variety**: never let the same ending run 3+ sentences.
+  Rotate です／ます／でした／ません／た。and occasionally a noun stop or casual fragment（「地味だけど大事。」）or rhetorical question（「でもモデルが賢くなってその仮説が崩れたら？」）.
 - **Long-short contrast**: after a long explanatory sentence, punch with a short one.
   - 例:「ファイルベースの知識管理は便利なんですが、エージェントが自分のルールを書き換えられてしまうという構造的リスクがあります（めちゃくちゃ怖い）。書ける＝壊せる。」
-- **Paragraph length**: 2-4 sentences per paragraph. One-sentence paragraphs are allowed for emphasis.
-- **Connectives**: ただ／ただし／そこで／つまり／要するに／一方で を文脈で使い分ける。「また」「さらに」の機械的な連結はしない。
-- **Concrete numbers everywhere**: 「103タスク」「69.3万円」「延べ8時間」。数字はタイトル・見出し・冒頭に出せるなら出す。
+- **Paragraph length**: 2-4 sentences per paragraph.
+  One-sentence paragraphs are allowed for emphasis.
+- **Connectives**: ただ／ただし／そこで／つまり／要するに／一方で を文脈で使い分ける。
+  「また」「さらに」の機械的な連結はしない。
+- **Concrete numbers everywhere**: 「103タスク」「69.3万円」「延べ8時間」。
+  数字はタイトル・見出し・冒頭に出せるなら出す。
 - **Bold sparingly**: 1 section ≈ 1 bolded key claim.
   - 例:「**全部が並列で締切バラバラに走る**ことにあります。」
 
 ## Character devices (the differentiator)
 
-Frequency budget: each device at most once per 2-4 paragraphs. Overuse turns the style into parody — when in doubt, cut.
+Frequency budget: each device at most once per 2-4 paragraphs.
+Overuse turns the style into parody — when in doubt, cut.
 
 ### 括弧内ツッコミ
 
-本文は真面目に、括弧内はカジュアルに。温度差がユーモアを生む。
+本文は真面目に、括弧内はカジュアルに。
+温度差がユーモアを生む。
 
 - 「どれかひとつをやっている間に、別のどれかの締切が静かに近づいてくる(そして忘れる)。」
 - 「テストは通るけど見た目が壊れている、みたいなケースをエージェントは普通に「完了」と宣言します（本当にやめてほしい）。」
@@ -33,7 +45,8 @@ Frequency budget: each device at most once per 2-4 paragraphs. Overuse turns the
 
 ### 取り消し線の本音
 
-失敗談やセルフツッコミを ~~取り消し線~~ で挿入。淡々と、事実として。
+失敗談やセルフツッコミを ~~取り消し線~~ で挿入。
+淡々と、事実として。
 
 - 「〜という事故を、見事にやりました。~~案の定、引っ越してしばらくは郵便が前の住所に届いていた。~~」
 - 「思わず ~~どこで覚えたんだお前は。~~ と突っ込みました。」
@@ -41,7 +54,8 @@ Frequency budget: each device at most once per 2-4 paragraphs. Overuse turns the
 
 ### 自虐は淡々と
 
-失敗を大げさにせず事実として報告する。被害者ぶらない。
+失敗を大げさにせず事実として報告する。
+被害者ぶらない。
 
 - 「毎回これを頭の中だけで捌こうとして、毎回どこかを取りこぼしてきました。」
 

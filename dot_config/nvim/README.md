@@ -6,10 +6,12 @@
 
 | Key              | Action                        |
 | ---------------- | ----------------------------- |
-| `<leader>e`      | Toggle file explorer          |
+| `<leader>e`      | Open file explorer (oil)      |
+| `-`              | Open parent directory (oil)   |
 | `<leader>ff`     | Find files                    |
 | `<leader>fg`     | Live grep search              |
 | `<leader>fb`     | List buffers                  |
+| `<leader>fh`     | Help tags                     |
 | `<leader>fr`     | Recent files                  |
 | `<leader>fc`     | Git commits                   |
 | `<leader>fs`     | Git status                    |
@@ -43,6 +45,7 @@
 | `[d` / `]d`  | Prev/Next diagnostic   |
 | `<leader>d`  | Show diagnostic float  |
 | `<leader>q`  | Diagnostic list        |
+| `<leader>cf` | Format buffer (conform)|
 
 ## Git (gitsigns)
 
@@ -54,7 +57,7 @@
 | `<leader>hp` | Preview hunk    |
 | `<leader>hb` | Blame line      |
 
-## Copilot
+## Copilot (inline suggestions; chat is handled by Claude Code)
 
 | Key                | Action                   |
 | ------------------ | ------------------------ |
@@ -63,10 +66,6 @@
 | `Ctrl` + `End`     | Accept line              |
 | `Alt` + `]` / `[`  | Next/Prev suggestion     |
 | `Ctrl` + `]`       | Dismiss suggestion       |
-| `<leader>cc`       | Copilot Chat             |
-| `<leader>ce`       | Explain code (visual)    |
-| `<leader>cr`       | Review code (visual)     |
-| `<leader>cf`       | Fix code (visual)        |
 
 ## Comment
 
@@ -86,16 +85,16 @@
 | `ds{char}`         | Surround delete           |
 | `cs{old}{new}`     | Surround change           |
 
-## Completion
+## Completion (blink.cmp)
 
-| Key                  | Action                 |
-| -------------------- | ---------------------- |
-| `Ctrl` + `Space`     | Trigger completion     |
-| `Ctrl` + `n` / `p`   | Next/Prev item         |
-| `Tab` / `Shift+Tab`  | Navigate / Expand      |
-| `Enter`              | Confirm selection      |
-| `Ctrl` + `e`         | Abort completion       |
-| `Ctrl` + `b` / `f`   | Scroll docs            |
+| Key                  | Action                    |
+| -------------------- | ------------------------- |
+| `Ctrl` + `Space`     | Trigger completion        |
+| `Ctrl` + `n` / `p`   | Next/Prev item            |
+| `Tab` / `Shift+Tab`  | Snippet jump forward/back |
+| `Enter`              | Confirm selection         |
+| `Ctrl` + `e`         | Abort completion          |
+| `Ctrl` + `b` / `f`   | Scroll docs               |
 
 ## Text Objects (mini.ai)
 
@@ -116,13 +115,14 @@
 
 ## Plugins
 
-| Category   | Plugins                               |
-| ---------- | ------------------------------------- |
-| LSP        | mason, nvim-lspconfig, conform        |
-| Completion | nvim-cmp, LuaSnip, friendly-snippets  |
-| Navigation | telescope, nvim-tree                  |
-| Git        | gitsigns                              |
-| UI         | lualine, bufferline, noice, which-key |
-| Theme      | tokyonight (night)                    |
-| AI         | copilot, copilot-chat                 |
-| Syntax     | treesitter                            |
+| Category   | Plugins                                              |
+| ---------- | ---------------------------------------------------- |
+| LSP        | mason, nvim-lspconfig, conform                       |
+| Completion | blink.cmp                                            |
+| Navigation | telescope, oil                                       |
+| Git        | gitsigns                                             |
+| Editing    | Comment, nvim-surround, nvim-autopairs, todo-comments |
+| UI         | lualine, bufferline, noice, notify, which-key, indent-blankline |
+| Theme      | tokyonight (night)                                   |
+| AI         | copilot (inline only)                                |
+| Syntax     | treesitter, mini.ai                                  |

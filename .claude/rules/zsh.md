@@ -1,5 +1,7 @@
 ---
-paths: "dot_zsh*.tmpl"
+paths:
+  - "dot_zsh*.tmpl"
+  - "dot_config/zsh/**"
 ---
 
 # Zsh Configuration Rules
@@ -7,7 +9,8 @@ paths: "dot_zsh*.tmpl"
 ## Structure
 
 - `dot_zshenv.tmpl` - Environment variables only (loaded for all shells)
-- `dot_zshrc.tmpl` - Interactive shell config (aliases, functions, plugins)
+- `dot_zshrc.tmpl` - Interactive shell config; loads every `dot_config/zsh/` file via explicit `{{ include }}` lines (a new file there is a no-op until registered)
+- `dot_config/zsh/` layer (init/ features/ modules/, header convention): see docs/superpowers/specs/2026-04-26-zsh-restructure-design.md
 
 ## Syntax Checking
 

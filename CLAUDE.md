@@ -6,10 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) and [devbox](https://www.jetify.com/devbox). Files prefixed with `dot_` become dotfiles (e.g., `dot_zshrc.tmpl` → `~/.zshrc`).
 
+Every file in this repo is a deployment source by default: a new repo-level
+file (docs, configs, CI helpers — anything meant for the repo, not for `$HOME`)
+needs a matching entry in `.chezmoiignore`, or the next `chezmoi apply` deploys
+it into `$HOME`. This applies to any nested CLAUDE.md too — and a deployed
+`~/.claude/rules/CLAUDE.md` would even load as an always-on global rule.
+
 ## Commands
 
 ```bash
-just test        # Run all checks (lint + format)
+just test        # All checks: lint, zsh header lint, format, hook & skill-script tests (CI runs only a subset)
 just fmt         # Format all files (Lua, JSON)
 just fmt-check   # Check formatting without changes
 just lint        # Check zsh and lua syntax
@@ -70,6 +76,10 @@ Out of the waterfall (always Homebrew): GUI apps (`cask`), Mac App Store (`mas`)
 ## Authoring rules & skills
 
 Rules (`dot_claude/rules/`) and skills (`dot_claude/skills/`) added to this repo are written in **English**. Japanese is allowed only where nuance requires it — e.g. a skill `description`'s trigger phrases that the user types in Japanese, or a generated-output template whose reader is Japanese.
+
+Project-scoped rules live in repo-root `.claude/rules/` (`paths:`-scoped). The
+whole `.claude/` directory is gitignored, so a new file there needs `git add -f`
+— a plain `git add` silently does nothing.
 
 ## CI
 

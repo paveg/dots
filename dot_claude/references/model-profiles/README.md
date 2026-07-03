@@ -16,7 +16,7 @@ model-agnostic writing hygiene stays in the consuming skill.
 - `claude-md-layout` — designs directory-level CLAUDE.md
 - `empirical-prompt-tuning` — reviews/improves skills and prompts
 
-Both open by loading `~/.claude/references/model-profiles/<session-model>.md`. If
+Both open by loading `~/.claude/references/model-profiles/<session-model-id>.md`. If
 no exact match, fall back to the nearest same-family profile and note the gap.
 
 ## Updating (the anti-obsolescence contract)

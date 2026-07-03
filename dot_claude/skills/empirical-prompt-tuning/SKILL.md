@@ -15,8 +15,8 @@ Prompt quality is invisible to its author. The more "clear" a writer thinks some
 ## Before you start
 
 - Load `~/.claude/references/model-profiles/<session-model-id>.md` and apply its Remove / Rewrite / Keep guidance when judging and editing the target — it is where model-specific writing changes live. No profile match → fall back to the nearest same-family one and note the gap.
-- Dispatch executors and judges at the **session model** by default. Do not hardcode a model name in the target prompt; name a model only for a mechanical substep. A prompt pinned to today's model re-breaks on the next upgrade.
-- When the target is a skill, read it through the `skill-creator` (Anthropic official) methodology first — it names the structural defects to look for.
+- Dispatch executors and judges at the session model by default. Do not hardcode a model name in the target prompt; name a model only for a mechanical substep. A prompt pinned to today's model re-breaks on the next upgrade.
+- When the target is a skill, read it through the `skill-creator` (Anthropic official) methodology first — it names the structural defects to look for. If `skill-creator` is not available in this environment, read for the same defects manually: unclear trigger in `description`, missing prerequisites, steps that assume unstated context.
 
 ## Two modes
 
@@ -61,15 +61,15 @@ Read the frontmatter `description` and the body independently.
 
 Fix these two artifacts before dispatching any subagent:
 
-**Evaluation scenarios** (2–3):
+**Evaluation scenarios** (2–3 for the loop, plus 1 sealed hold-out):
 - 1 median-difficulty scenario representing typical real-world usage
 - 1–2 edge scenarios
+- 1 additional hold-out, sealed: never used during the loop, run once at convergence (see Stopping Criteria → Overfitting check) to detect overfitting. This is on top of the 2–3 loop scenarios, so the loop always keeps its minimum of 2.
 
 **Requirements checklist** (3–7 items per scenario):
 - Each item = a concrete verifiable requirement the output must satisfy
 - Tag at least 1 item `[critical]` per scenario
-- **Do not modify the checklist after fixing it** — accuracy = items satisfied / total items. The only permitted change is tightening (a stricter bar or a new item); if you tighten, re-run every scenario from scratch. Loosening the checklist to make a fix pass is the failure this rule exists to block.
-- Hold one scenario back as a sealed hold-out: do not use it during the loop; run it once at the end (Stopping Criteria) to detect overfitting to the loop scenarios.
+- Do not loosen the checklist after fixing it — accuracy = items satisfied / total items. The only permitted change is tightening (a stricter bar or a new item); if you tighten, re-run every scenario from scratch.
 
 ### Step 2 — Bias-Free Read
 
@@ -93,7 +93,7 @@ Record the following from the returned result:
 
 **Who judges** (the improver stays out of subjective scoring):
 - Mechanical criteria — tie pass/fail to a verification command (exit code / output string / diff). No model judgment.
-- Non-mechanical criteria — dispatch a separate judge subagent that sees only the deliverable and the criteria, never the target's diff, the iteration history, or the improvement intent. An improver who scores its own executor's output drifts toward leniency.
+- Non-mechanical criteria — dispatch a separate judge subagent that sees only the deliverable and the criteria, never the target's diff, the iteration history, or the improvement intent. An improver who scores its own executor's output drifts toward leniency. The executor's own ○ / × / partial from the Launch Contract report is provisional signal for these items; the judge's verdict is authoritative.
 - Persist each run's full transcript to a file; return only the fail list and confusion summary to the improver's context, not the whole log. Keep the eval set (scenarios, verification commands, per-iteration logs) in the repo alongside the target so a human can audit it later.
 
 **Caller-side measurements** (judgment rules are authoritative here — reference only this section):

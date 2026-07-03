@@ -1,4 +1,7 @@
 {
+{{- if .business_use }}
+  "enableArtifact": false,
+{{- end }}
 {{- if not .business_use }}
   "advisorModel": "opus",
 {{- end }}

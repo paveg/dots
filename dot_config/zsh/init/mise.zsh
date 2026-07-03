@@ -2,10 +2,10 @@
 # Provides:     PATH (mise shims), mise function
 # Requires:     mise (optional — no-op if absent)
 # Side-effects: cache and source the output of 'mise activate zsh'
-# Load-order:   AFTER homebrew (when mise is installed via brew), BEFORE auto-tmux
+# Load-order:   AFTER homebrew (when mise is installed via brew), BEFORE auto-mux
 
 # mise (runtime version manager) - early activation for tmux
-# Must be activated before auto_tmux to ensure tmux is in PATH
+# Must be activated before auto_mux to ensure the multiplexer is in PATH
 if command -v mise &>/dev/null; then
   _mise_cache="$ZSH_INIT_CACHE/mise.zsh"
   # Invalidate cache when mise version changes

@@ -10,7 +10,7 @@
 
 auto_mux() {
   # Skip if already inside a multiplexer (either one)
-  [[ -n "$TMUX" || -n "$HERDR_SESSION" || -n "$HERDR_PANE_ID" ]] && return 0
+  [[ -n "$TMUX" || -n "$HERDR_ENV" || -n "$HERDR_PANE_ID" ]] && return 0
   # Skip if not interactive
   [[ ! -o interactive ]] && return 0
   # Skip if explicitly disabled

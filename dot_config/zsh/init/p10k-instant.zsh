@@ -2,7 +2,7 @@
 # Provides:     none (initializes p10k internal state)
 # Requires:     ${XDG_CACHE_HOME}/p10k-instant-prompt-${USER}.zsh (no-op when absent on first run)
 # Side-effects: source the p10k instant prompt cache
-# Load-order:   AFTER auto-tmux, BEFORE plugins
+# Load-order:   AFTER auto-mux, BEFORE plugins
 
 # Powerlevel10k instant prompt
 # Enable instant prompt. Should stay close to the top of ~/.zshrc.

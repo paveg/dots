@@ -12,6 +12,17 @@ argument-hint: Path or name of the prompt/skill to tune (e.g., dot_claude/skills
 
 Prompt quality is invisible to its author. The more "clear" a writer thinks something is, the more likely a fresh executor stumbles on it. **The core of this skill: have a bias-free executor actually run the prompt, evaluate from both sides, and iterate until improvement plateaus.**
 
+## Before you start
+
+- Load `~/.claude/references/model-profiles/<session-model-id>.md` and apply its Remove / Rewrite / Keep guidance when judging and editing the target — it is where model-specific writing changes live. No profile match → fall back to the nearest same-family one and note the gap.
+- Dispatch executors and judges at the **session model** by default. Do not hardcode a model name in the target prompt; name a model only for a mechanical substep. A prompt pinned to today's model re-breaks on the next upgrade.
+- When the target is a skill, read it through the `skill-creator` (Anthropic official) methodology first — it names the structural defects to look for.
+
+## Two modes
+
+- **Light** (eval-free triage): for taking inventory across many prompts, or a first pass. Dispatch one reading-check subagent with the target body only (no execution) and ask where it would hesitate, what it would guess, what prerequisite is missing. Fix what that surfaces. Cheap; use it to decide which prompts earn the full loop.
+- **Full** (eval loop): the rest of this skill. Reserve for high-value or misbehaving prompts — one loop costs `scenarios × (execute + judge) × iterations` subagent launches.
+
 ## When to use
 
 - Immediately after creating or significantly revising a skill / slash command / task prompt
@@ -57,7 +68,8 @@ Fix these two artifacts before dispatching any subagent:
 **Requirements checklist** (3–7 items per scenario):
 - Each item = a concrete verifiable requirement the output must satisfy
 - Tag at least 1 item `[critical]` per scenario
-- **Do not modify the checklist after fixing it** — accuracy = items satisfied / total items
+- **Do not modify the checklist after fixing it** — accuracy = items satisfied / total items. The only permitted change is tightening (a stricter bar or a new item); if you tighten, re-run every scenario from scratch. Loosening the checklist to make a fix pass is the failure this rule exists to block.
+- Hold one scenario back as a sealed hold-out: do not use it during the loop; run it once at the end (Stopping Criteria) to detect overfitting to the loop scenarios.
 
 ### Step 2 — Bias-Free Read
 
@@ -78,6 +90,11 @@ Record the following from the returned result:
 **Executor self-report** (extracted from the subagent's report):
 - Unclear points / ambiguous wording
 - Discretionary fill-ins (decisions not covered by the instructions)
+
+**Who judges** (the improver stays out of subjective scoring):
+- Mechanical criteria — tie pass/fail to a verification command (exit code / output string / diff). No model judgment.
+- Non-mechanical criteria — dispatch a separate judge subagent that sees only the deliverable and the criteria, never the target's diff, the iteration history, or the improvement intent. An improver who scores its own executor's output drifts toward leniency.
+- Persist each run's full transcript to a file; return only the fail list and confusion summary to the improver's context, not the whole log. Keep the eval set (scenarios, verification commands, per-iteration logs) in the repo alongside the target so a human can audit it later.
 
 **Caller-side measurements** (judgment rules are authoritative here — reference only this section):
 - **Success/Failure**: SUCCESS (○) only if **all** `[critical]` items are ○. Any `[critical]` item that is × or partial = FAILURE (×). Binary only — no "partial success".
@@ -272,3 +289,5 @@ Record and present after each iteration:
 
 - `feature` — feature development with harness engineering. Same generator-evaluator separation principle applies
 - `interrupt` — background agent dispatch. Reference for how to structure subagent launch prompts
+- `claude-md-layout` — designs directory-level CLAUDE.md; use its with/without check to verify a moved convention still changes behavior
+- `references/model-profiles/` — the swappable per-model profile this skill loads in "Before you start"

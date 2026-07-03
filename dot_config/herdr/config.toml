@@ -1,0 +1,13 @@
+# herdr configuration — only deviations from `herdr --default-config` defaults
+
+[theme]
+name = "tokyo-night"
+
+[keys]
+# Match tmux prefix (dot_tmux.conf) so muscle memory carries over during the trial
+prefix = "ctrl+a"
+
+[experimental]
+# macOS: switch to ASCII input source while prefix mode is active, so prefix
+# commands register even when the Japanese IME is on (best-effort)
+switch_ascii_input_source_in_prefix = true

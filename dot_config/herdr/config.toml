@@ -7,6 +7,13 @@ name = "tokyo-night"
 # Match tmux prefix (dot_tmux.conf) so muscle memory carries over during the trial
 prefix = "ctrl+a"
 
+# prefix+u: extract URLs from the focused pane's scrollback, fzf-pick, open
+# (parity with tmux `bind u` in dot_tmux.conf)
+[[keys.command]]
+key = "prefix+u"
+type = "pane"
+command = "herdr-url-open"
+
 [experimental]
 # macOS: switch to ASCII input source while prefix mode is active, so prefix
 # commands register even when the Japanese IME is on (best-effort)

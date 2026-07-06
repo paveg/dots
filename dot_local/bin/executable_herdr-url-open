@@ -1,0 +1,23 @@
+#!/bin/zsh
+# Extract URLs from the invoking pane's scrollback, pick one with fzf, open it.
+# Bound to prefix+u in ~/.config/herdr/config.toml (herdr equivalent of the
+# tmux `bind u` in dot_tmux.conf). Runs inside a temporary herdr command pane;
+# HERDR_ACTIVE_PANE_ID is the pane that had focus when the key fired.
+set -u
+
+pane_id="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}"
+if [[ -z "$pane_id" ]]; then
+  print -u2 "herdr-url-open: no pane id (run from a herdr keybinding)"
+  exit 1
+fi
+
+urls=$(herdr pane read "$pane_id" --source recent-unwrapped --lines 5000 \
+  | grep -oE 'https?://[^[:space:]"<>()]+' | sort -u)
+
+if [[ -z "$urls" ]]; then
+  print "No URLs in pane scrollback."
+  sleep 1
+  exit 0
+fi
+
+print -r -- "$urls" | fzf --reverse | xargs -r open

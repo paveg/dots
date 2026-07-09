@@ -7,6 +7,15 @@ name = "tokyo-night"
 # Match tmux prefix (dot_tmux.conf) so muscle memory carries over during the trial
 prefix = "ctrl+a"
 
+# prefix+| : side-by-side split, matching tmux `bind | split-window -h` (herdr default: prefix+v).
+# Use the literal | — herdr only names grammar-conflicting keys (minus, plus); "pipe" is rejected.
+# The stacked split already matches: herdr split_horizontal = prefix+minus == tmux `bind -`.
+split_vertical = "prefix+|"
+
+# prefix+o: cycle focus to the next pane, matching tmux's built-in `prefix o`.
+# herdr binds one key per action, so this replaces the default prefix+tab.
+cycle_pane_next = "prefix+o"
+
 # prefix+u: extract URLs from the focused pane's scrollback, fzf-pick, open
 # (parity with tmux `bind u` in dot_tmux.conf)
 [[keys.command]]

@@ -56,13 +56,6 @@ Recovery: `env -u BUSINESS_USE chezmoi init --source ~/.local/share/chezmoi &&
 env -u BUSINESS_USE chezmoi apply`, then kill the tmux server and restart shells
 (inherited env survives `exec $SHELL -l`).
 
-### Configuration Directories
-
-- `dot_config/nvim/` - Neovim config (kickstart-based, uses lazy.nvim)
-- `dot_config/git/` - Git config with conditional includes for work/personal
-- `dot_config/ghostty/` - Terminal emulator config
-- `private_dot_ssh/` - SSH config (common settings only)
-
 ## Package Management Policy
 
 Personal (non-business) CLI tools follow an availability waterfall — use the first layer that provides the package:
@@ -80,11 +73,3 @@ Rules (`dot_claude/rules/`) and skills (`dot_claude/skills/`) added to this repo
 Project-scoped rules live in repo-root `.claude/rules/` (`paths:`-scoped). The
 whole `.claude/` directory is gitignored, so a new file there needs `git add -f`
 — a plain `git add` silently does nothing.
-
-## CI
-
-GitHub Actions runs on every push/PR to main:
-- Format check (stylua for Lua, JSON validation)
-- Lint (zsh syntax, lua syntax)
-- Chezmoi dry-run on Linux and macOS (both personal and business modes)
-- Neovim startup test

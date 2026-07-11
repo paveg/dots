@@ -67,26 +67,25 @@ Unverified claims do not ship as facts.
 Present the completed claims table to the user with counts (verified / fixed / downgraded / deleted / flagged).
 The draft does not proceed to proofreading until the table has no unresolved ❌.
 
-## 5. 公開可否スイープ（自宅インフラ・アカウントを扱う記事）
+## 5. Disclosure sweep (articles describing personal infra or accounts)
 
-ファクトチェックが「その記述は正しいか」なら、これは「その記述を公開してよいか」。
-自宅ネットワーク・自宅サーバ・スマートホーム・個人アカウントを書く記事に適用する。
-一般的な技術解説の記事でも、自宅の実設定・実アカウントに触れる箇所が1つでもあれば、その箇所だけ掃引する。
+Fact-check asks "is this true?"; this asks "should this be public?".
+Apply to articles about home networks, self-hosted servers, smart home, or personal accounts.
+Even in a general how-to, if a single passage touches real personal config or accounts, sweep just that passage.
 
-**判別の原則**: ブログ上の人格と、物理環境・実アカウント・物理的な居場所を結びつける識別子は、ブロードキャスト済み・既出でも伏せる。
-汎用的なブランド名・製品名は効果と労力で判断する（普及品を機械的に伏せない）。
-ただし物理セキュリティに直結するブランド（スマートロック等）は、普及品でも慎重側に倒す。
+**Redaction principle**: any identifier that ties the blog persona to a physical environment, real account, or physical location — redact it even if it is broadcast or already published.
+Generic brand/product names are a cost-vs-benefit call (don't reflexively hide common products); exception: brands tied to physical security (smart locks etc.) lean toward hiding even when common.
 
-スキャン対象と対応（本文テキストが対象。画像内の写り込みは §末尾の使い分けを参照）:
+Body text is the scan target (image content → Flag, see below):
 
-| 対象 | 例 | 対応 |
+| Target | Examples | Action |
 | :--- | :--- | :--- |
-| 認証情報 | パスフレーズ、実APIキー、トークン | 削除。明らかなダミー（`YOUR_API_KEY`・伏字済み）は対象外 |
-| SSID・ネットワーク名 | 実SSID名、SSID×セキュリティ方式の対応表 | プレースホルダに置換（例: 実名→`home`）。最弱SSIDを実名で名指ししない |
-| アドレス（論理） | 公開IP、グローバルIPv6の実値、MAC/BSSID | 削除、または `<公開IP>` 等に置換。内部サブネット（RFC1918: `10.x` / `172.16–31.x` / `192.168.x`）は低リスク・許容 |
-| 物理的な居場所（本文） | 住所、地名 | 物理セキュリティ上いちばん重い。削除・ぼかす。画像側（表札・窓外の風景・GPS）は下の Flag へ |
-| アカウント・所属 | 実名、メール、SNSハンドル、勤務先 | 著者本人の署名・公開プロフィールは対象外。第三者や非公開の所属は削除、判断が要れば Flag |
-| ホスト名・機器の識別子 | `Hub-Sesame` 等の識別子、シリアル | 本文にあれば置換（例: `<hostname>`）。ブランドは物理セキュリティの手がかり（スマートロック等は特に慎重に） |
+| 認証情報 | パスフレーズ、実APIキー、トークン | Delete. Skip obvious dummies（`YOUR_API_KEY`・伏字済み） |
+| SSID・ネットワーク名 | 実SSID名、SSID×セキュリティ方式の対応表 | Replace with a placeholder（実名→`home`）; never name the weakest SSID |
+| アドレス（論理） | 公開IP、グローバルIPv6の実値、MAC/BSSID | Delete or replace（`<公開IP>`）. Internal RFC1918（`10.x`/`172.16–31.x`/`192.168.x`）is low-risk — keep |
+| 物理的な居場所（本文） | 住所、地名 | Highest physical-security weight. Delete/blur. Image side（表札・窓外の風景・GPS）→ Flag |
+| アカウント・所属 | 実名、メール、SNSハンドル、勤務先 | Author's own byline/public profile is exempt; third-party or non-public affiliations → delete, or Flag if unsure |
+| ホスト名・機器の識別子 | `Hub-Sesame` 等の識別子、シリアル | Replace in body（例: `<hostname>`）. Brand is a physical-security hint (smart locks etc. — extra care) |
 
-- **置換 / 削除 / Flag の使い分け**: 本文テキストは置換か削除で直す。校正で完結しないものは本文に `<!-- 要確認: ... -->` を置き、最終レポートに列挙して人に委ねる。校正エージェントは画像の中身を判定・修正できない前提なので、**スクショを参照している箇所は、写り込みの有無を問わず一律 Flag**（表札・窓外の風景・GPS・機器の識別子などを人が確認・トリミング）。コーパス横断確認も Flag に回す
-- **横断確認**: 過去記事のコーパスがある場合のみ、伏せると決めた識別子が別記事で既出でないか確認する。既出でも、人格↔物理を結ぶ識別子（実SSID 等）なら新記事では伏せて拡散を止める。汎用ブランドが既に方々へ出ているだけなら追わない
+- **Replace / delete / Flag**: fix body text by replacing or deleting. Anything the proofread can't finish (redacting content inside an image, cross-article checks) → put `<!-- 要確認: ... -->` in the body and list it in the final report. The proofreader cannot judge or edit image content, so **any passage referencing a screenshot → Flag unconditionally**（表札・風景・GPS・機器識別子 for a human to check/crop）.
+- **Cross-article check**: only when a corpus of past articles is available, check whether an identifier you decided to hide is already published elsewhere. If it is, a persona↔physical linker (a real SSID etc.) still gets hidden in the new article to stop further spread; a generic brand already everywhere isn't worth chasing. No corpus → Flag.

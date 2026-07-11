@@ -74,7 +74,7 @@ Restructuring an outline is cheap; restructuring a draft is not.
 ## Phase 5: ファクトチェック＋公開可否 — GATE
 
 Follow `references/fact-check.md`: extract every verifiable claim, verify each against a primary source, resolve all failures (fix / downgrade / delete / flag).
-For articles describing personal infrastructure or accounts (自宅ネットワーク・自宅サーバ・スマートホーム), also run the 公開可否スイープ in that reference: scan for real identifiers (SSID・認証情報・公開IP・ホスト名・機器ブランド) and genericize or redact.
+For articles describing personal infrastructure or accounts (自宅ネットワーク・自宅サーバ・スマートホーム), also run the disclosure sweep (§5) in that reference: scan for real identifiers (SSID・認証情報・公開IP・ホスト名・機器ブランド) and genericize or redact.
 Present the claims table.
 **Do not proceed with unresolved items.**
 

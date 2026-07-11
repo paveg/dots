@@ -66,3 +66,26 @@ Unverified claims do not ship as facts.
 
 Present the completed claims table to the user with counts (verified / fixed / downgraded / deleted / flagged).
 The draft does not proceed to proofreading until the table has no unresolved ❌.
+
+## 5. Disclosure sweep (articles describing personal infra or accounts)
+
+Fact-check asks "is this true?"; this asks "should this be public?".
+Apply to articles about home networks, self-hosted servers, smart home, or personal accounts.
+Even in a general how-to, if a single passage touches real personal config or accounts, sweep just that passage.
+
+**Redaction principle**: any identifier that ties the blog persona to a physical environment, real account, or physical location — redact it even if it is broadcast or already published.
+Generic brand/product names are a cost-vs-benefit call (don't reflexively hide common products); exception: brands tied to physical security (smart locks etc.) lean toward hiding even when common.
+
+Body text is the scan target (image content → Flag, see below):
+
+| Target | Examples | Action |
+| :--- | :--- | :--- |
+| 認証情報 | パスフレーズ、実APIキー、トークン | Delete. Skip obvious dummies（`YOUR_API_KEY`・伏字済み） |
+| SSID・ネットワーク名 | 実SSID名、SSID×セキュリティ方式の対応表 | Replace with a placeholder（実名→`home`）; never name the weakest SSID |
+| アドレス（論理） | 公開IP、グローバルIPv6の実値、MAC/BSSID | Delete or replace（`<公開IP>`）. Internal RFC1918（`10.x`/`172.16–31.x`/`192.168.x`）is low-risk — keep |
+| 物理的な居場所（本文） | 住所、地名 | Highest physical-security weight. Delete/blur. Image side（表札・窓外の風景・GPS）→ Flag |
+| アカウント・所属 | 実名、メール、SNSハンドル、勤務先 | Author's own byline/public profile is exempt; third-party or non-public affiliations → delete, or Flag if unsure |
+| ホスト名・機器の識別子 | `Hub-Sesame` 等の識別子、シリアル | Replace in body（例: `<hostname>`）. Brand is a physical-security hint (smart locks etc. — extra care) |
+
+- **Replace / delete / Flag**: fix body text by replacing or deleting. Anything the proofread can't finish (redacting content inside an image, cross-article checks) → put `<!-- 要確認: ... -->` in the body and list it in the final report. The proofreader cannot judge or edit image content, so **any passage referencing a screenshot → Flag unconditionally**（表札・風景・GPS・機器識別子 for a human to check/crop）.
+- **Cross-article check**: only when a corpus of past articles is available, check whether an identifier you decided to hide is already published elsewhere. If it is, a persona↔physical linker (a real SSID etc.) still gets hidden in the new article to stop further spread; a generic brand already everywhere isn't worth chasing. No corpus → Flag.

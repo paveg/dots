@@ -93,6 +93,8 @@ This is where text that passes Pass 1-2 still reads AI-written:
 - **読点過多/過少**: 一文に読点4つ以上は分割を検討。読点ゼロの長文は補う
 - **情報の出し順**: conclusion buried at paragraph end, examples before the point they illustrate → lead with the load-bearing sentence
 - **翻訳調**: 「〜することによって」「〜という形で」「〜の方(ほう)」の多用 → 直接的な構文に組み替える
+- **未消化の専門用語・カタカナ英語**: English or loanword jargon a general reader stumbles on → replace with settled Japanese, or gloss on first use（ドロップ→配線・ケーブル、ネゴシエーション→つながる・リンクする、ラジオ→帯域、律速→ボトルネック・頭打ち、Traffic Rule→トラフィックルール）. Keep field-standard terms as-is（API・PoE・VLAN・SSID）. textlint cannot catch this — read for it manually
+- **初出の専門用語の導入**: don't start using a term in the body before its alias/definition appears — a VLAN labeled Default in a table, then called Trusted in prose with no bridge, reads as 唐突 → introduce on first use as「A（＝B、その役割）」
 
 ## Output
 

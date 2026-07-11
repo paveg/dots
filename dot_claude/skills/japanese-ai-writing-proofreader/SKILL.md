@@ -93,6 +93,8 @@ This is where text that passes Pass 1-2 still reads AI-written:
 - **読点過多/過少**: 一文に読点4つ以上は分割を検討。読点ゼロの長文は補う
 - **情報の出し順**: conclusion buried at paragraph end, examples before the point they illustrate → lead with the load-bearing sentence
 - **翻訳調**: 「〜することによって」「〜という形で」「〜の方(ほう)」の多用 → 直接的な構文に組み替える
+- **未消化の専門用語・カタカナ英語**: 一般読者がつまずく英語/直輸入カタカナ → 定着した日本語へ置換、または初出で言い換えを添える。例: ドロップ→配線・ケーブル、ネゴシエーション→つながる・リンクする、ラジオ（電波の意）→帯域、律速→ボトルネック・頭打ち、Traffic Rule→トラフィックルール。**その分野で定着済みの語（API・PoE・VLAN・SSID 等）はそのまま**。textlint は拾えない領域なので目視で拾う
+- **初出の専門用語の導入**: 表や前段で別名を出す前に本文でいきなり使い始めない（例: 表で Default と書いた VLAN を、本文で説明なく Trusted と呼ぶと「いきなり感」が出る）→ 初出で「A（＝B、その役割）」と橋渡しする
 
 ## Output
 

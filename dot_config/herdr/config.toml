@@ -1,5 +1,8 @@
 # herdr configuration — only deviations from `herdr --default-config` defaults
 
+# onboarding flow already completed
+onboarding = false
+
 [theme]
 name = "tokyo-night"
 
@@ -25,3 +28,10 @@ command = "herdr-url-open"
 # macOS: switch to ASCII input source while prefix mode is active, so prefix
 # commands register even when the Japanese IME is on (best-effort)
 switch_ascii_input_source_in_prefix = true
+pane_history = true
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+[ui.toast]
+delivery = "terminal"

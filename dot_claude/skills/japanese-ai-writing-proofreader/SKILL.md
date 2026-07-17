@@ -1,18 +1,20 @@
 ---
 name: japanese-ai-writing-proofreader
 description: >-
-  Proofread Japanese prose in three passes: textlint (mechanical), AI-smell
-  removal, and deep naturalness (sentence-end variety, rhythm, connectives).
-  Use when asked to 「校正して」「推敲して」「AI臭を消して」「自然な日本語にして」,
-  when polishing article drafts / PR bodies / docs written in Japanese, or as
-  the proofreading phase of the article-writing skill.
+  Proofread Japanese prose in four passes: textlint (mechanical), a
+  rhythm/statistics lint (sentence-length burstiness, paragraph uniformity,
+  antithesis repetition), AI-smell removal, and deep naturalness (sentence-end
+  variety, connectives). Use when asked to 「校正して」「推敲して」「AI臭を消して」
+  「自然な日本語にして」, when polishing article drafts / PR bodies / docs
+  written in Japanese, or as the proofreading phase of the article-writing
+  skill.
 argument-hint: <file or text to proofread>
 ---
 
 # Japanese AI-Writing Proofreader
 
-Three passes, mechanical first.
-The textlint pass exists because deterministic checks beat LLM judgment where both can do the job — run it before reading the text yourself, so your review starts from machine-verified ground.
+Four passes, mechanical first.
+The textlint and rhythm-lint passes exist because deterministic checks beat LLM judgment where both can do the job — run them before reading the text yourself, so your review starts from machine-verified ground.
 
 ## Mode
 
@@ -69,7 +71,22 @@ The fallback covers, beyond the two base presets: 表記ゆれ via the bundled `
 - An intentional passage that keeps tripping rules can be fenced with `<!-- textlint-disable [rule] -->` … `<!-- textlint-enable -->` (the `comments` filter).
   Use sparingly and prefer the narrow per-rule form — never weaken the config itself, and do not weaken a project's textlint config to make findings go away
 
-## Pass 2: AI-smell (the 5 categories)
+## Pass 2: rhythm & statistics lint
+
+Covers what textlint structurally cannot: sentence-length homogeneity (burstiness), paragraph-shape uniformity, zero 体言止め rate, negation→affirmation antithesis repetition（「〜ではなく…」）, morphology-based translationese, n-gram repetition, and lexical diversity. Thresholds are corpus-calibrated (137 human / 406 AI documents). Vendored from coji/natural-japanese — see `scripts/NOTICE.md`.
+
+```bash
+uv run ~/.claude/skills/japanese-ai-writing-proofreader/scripts/lint.py --json <file>
+```
+
+Add `--genre essay|tech|business` when the genre is clear — it switches to calibrated per-genre thresholds and reduces false positives. Dependencies (sudachipy) resolve automatically via PEP 723 inline metadata; no venv setup needed.
+
+- Findings are suspicions, not orders — apply the same 直す / 残す（理由） discipline as Pass 1
+- Exit code is 0 regardless of finding count (this is a lint, not a gate); 1 only on input errors
+- In fix mode, after applying fixes, re-run passing the previous JSON via `--baseline <prev.json>` — it classifies findings as resolved / new / persisting. Repeat until no new findings appear, then delete the intermediate JSON files
+- If `uv` is unavailable, skip this pass; Pass 4's manual checks are the fallback
+
+## Pass 3: AI-smell (the 5 categories)
 
 Aligned with `~/.claude/rules/japanese-writing.md`. Hunt each category explicitly:
 
@@ -80,19 +97,15 @@ Aligned with `~/.claude/rules/japanese-writing.md`. Hunt each category explicitl
 5. **冗長・受動**: 「することができる」→「できる」、「〜を行う」→ verb form, passive → active, dropped particles restored（「設定変更」→「設定を変更する」）
 
 This manual read is also where plain 誤字・誤用・文法ミス get caught — textlint misses many（「とゆう」等）.
-Report them under Pass 2 in the findings table.
+Report them under Pass 3 in the findings table.
 
-## Pass 3: Deep naturalness (what surface rules miss)
+## Pass 4: Deep naturalness (what surface rules miss)
 
-This is where text that passes Pass 1-2 still reads AI-written:
+This is where text that passes Pass 1-3 still reads AI-written. The dimensions Pass 2 now catches mechanically (文長の均質, 段落の均質, 接続詞の機械的連結, 翻訳調) are dropped from this list — this pass covers only what remains judgment-dependent:
 
 - **文末の単調**: same ending 3+ sentences in a row（です。です。です。）→ rotate でした／ません／た。／体言止め／問いかけ
-- **文長の均質**: equal-length sentences in a flat march → vary; place a short punch sentence after a long explanation
-- **接続詞の機械的連結**: paragraph after paragraph opening with 「また」「さらに」「次に」 → cut (juxtaposition often suffices) or vary（ただ／そこで／つまり／一方で）
-- **段落の均質**: every paragraph the same size → merge or split by content
 - **読点過多/過少**: 一文に読点4つ以上は分割を検討。読点ゼロの長文は補う
 - **情報の出し順**: conclusion buried at paragraph end, examples before the point they illustrate → lead with the load-bearing sentence
-- **翻訳調**: 「〜することによって」「〜という形で」「〜の方(ほう)」の多用 → 直接的な構文に組み替える
 - **未消化の専門用語・カタカナ英語**: English or loanword jargon a general reader stumbles on → replace with settled Japanese, or gloss on first use（ドロップ→配線・ケーブル、ネゴシエーション→つながる・リンクする、ラジオ→帯域、律速→ボトルネック・頭打ち、Traffic Rule→トラフィックルール）. Keep field-standard terms as-is（API・PoE・VLAN・SSID）. textlint cannot catch this — read for it manually
 - **初出の専門用語の導入**: don't start using a term in the body before its alias/definition appears — a VLAN labeled Default in a table, then called Trusted in prose with no bridge, reads as 唐突 → introduce on first use as「A（＝B、その役割）」
 
@@ -108,4 +121,4 @@ Findings table (report mode) or applied-fix summary (fix mode):
   Present CRITICAL and IMPORTANT in the table.
   LOW: one aggregate line — count plus rule/kind names only（「ほか LOW 2件（訳→わけ等の表記）」), no Before→After.
   This keeps Pass 1 evidence visible without itemizing
-- In fix mode, end with counts grouped by pass（textlint / AI臭 / 自然さ）and anything intentionally left alone (voice devices, quoted text)
+- In fix mode, end with counts grouped by pass（textlint / リズム・統計 / AI臭 / 自然さ）and anything intentionally left alone (voice devices, quoted text)

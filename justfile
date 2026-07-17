@@ -63,6 +63,7 @@ test-skill-scripts:
 test-skills:
     @echo "Running skill fetcher tests..."
     @bash tests/skills/equity-decision/run-tests.sh
+    @bash tests/skills/japanese-ai-writing-proofreader/run-tests.sh
 
 # Install formatter tools
 install:

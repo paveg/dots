@@ -52,6 +52,18 @@ Avoid placing `:` right after a clause that ends in a predicate (verb/adjective)
 - No subject–predicate disagreement
 - Unify terminology within a document（「サーバ／サーバー」 etc.）
 
+## 6. Rhythm (measured)
+
+Rhythm, not vocabulary, is now the strongest measured AI signal (corpus: 137 human /
+406 AI docs — coji/natural-japanese).
+
+- Vary sentence length deliberately; place a short punch sentence among long ones.
+  Uniform sentence length is the top signal
+- Don't shape every paragraph identically (e.g. exactly 3-4 sentences each)
+- Occasional 体言止め is human (humans ~60% of docs, AI ~0%); use it occasionally in
+  essays/blogs, sparingly in formal tech docs
+- Don't repeat the 「〜ではなく…」 antithesis pattern (3+ times per document reads as AI)
+
 ## Scope
 
 - Applies to Japanese that Claude outputs

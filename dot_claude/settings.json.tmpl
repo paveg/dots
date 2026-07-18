@@ -152,6 +152,9 @@
     "textlint": {
       "command": "textlint",
       "args": ["--mcp"]
+    },
+    "1password": {
+      "command": "1password-mcp"
     }
   },
 {{- end }}
@@ -176,6 +179,10 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/gh-pr-inject.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/block-unsigned-commits.sh"
           }
         ]
       },

@@ -15,9 +15,10 @@ if [[ -z "$SSH_AUTH_SOCK" && -z "$SSH_TTY" ]]; then
   local sock
   sock=$(launchctl getenv SSH_AUTH_SOCK)
 
-  # Fallback: Find listener socket safely (restricted to current user)
+  # Fallback: Find listener socket safely (restricted to current user).
+  # launchd sockets live under /var/run, not /private/tmp.
   if [[ ! -S "$sock" ]]; then
-    sock=$(find /private/tmp/com.apple.launchd.* -name Listeners -user "$USER" -type s 2>/dev/null | head -1)
+    sock=$(find /var/run/com.apple.launchd.*(N) -name Listeners -user "$USER" -type s 2>/dev/null | head -1)
   fi
 
   [[ -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"

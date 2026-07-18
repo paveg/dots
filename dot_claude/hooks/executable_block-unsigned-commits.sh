@@ -3,11 +3,16 @@
 #
 # Why: commit.gpgsign=true is the contract; when 1Password signing fails
 # (locked app, headless SSH / Remote Control session without a forwarded
-# agent), the tempting fallback is `--no-gpg-sign`, which silently ships
-# unsigned commits. Failing loudly here turns that into a visible decision.
+# agent), the tempting fallback is `--no-gpg-sign` or turning gpgsign off,
+# which silently ships unsigned commits. Failing loudly here turns that
+# into a visible decision.
 #
-# Heredoc bodies are stripped before matching so a commit message or PR body
-# that merely mentions the flags does not trigger the guard.
+# Threat model is the model's own lazy fallback, not a determined adversary.
+# Heredoc bodies and quoted strings are stripped before matching so prose
+# that merely mentions the flags (commit messages, PR bodies, grep patterns)
+# does not trigger the guard. Known accepted gaps: flags hidden by variable
+# concatenation, line continuations, GIT_CONFIG_PARAMETERS, or quoting the
+# flag itself.
 #
 # Reads Claude Code hook JSON from stdin; emits JSON on stdout when blocking.
 
@@ -16,21 +21,29 @@ set -euo pipefail
 cmd=$(jq -r '.tool_input.command // ""')
 [[ -n $cmd ]] || exit 0
 
-[[ $cmd == *git* ]] || exit 0
-
 cmd_code=$(printf '%s\n' "$cmd" | awk '
-  inhd { if ($0 == delim) inhd = 0; next }
+  inhd {
+    line = $0
+    if (dash) sub(/^\t+/, "", line)
+    if (line == delim) inhd = 0
+    next
+  }
   match($0, /<<-?[[:space:]]*['\''"]?[A-Za-z_][A-Za-z_0-9]*/) {
-    delim = substr($0, RSTART, RLENGTH)
+    op = substr($0, RSTART, RLENGTH)
+    dash = (op ~ /^<<-/)
+    delim = op
     sub(/<<-?[[:space:]]*['\''"]?/, "", delim)
     inhd = 1
     print
     next
   }
   { print }
-')
+' | sed -E "s/'[^']*'//g" | sed -E 's/"[^"]*"//g')
 
-if [[ $cmd_code == *--no-gpg-sign* || $cmd_code == *gpgsign=false* ]]; then
+# Only guard commands that invoke git as a word (not .github, .gitignore).
+grep -qE '(^|[^[:alnum:]_])git([^[:alnum:]_]|$)' <<<"$cmd_code" || exit 0
+
+if grep -qE -e '--no-gpg-sign|gpgsign[[:space:]=]+false' <<<"$cmd_code"; then
   reason="Unsigned commits are blocked (commit.gpgsign=true is the contract).
 
 Signing usually fails here because 1Password is unreachable:

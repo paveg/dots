@@ -18,11 +18,15 @@ prefix = "ctrl+a"
 split_vertical = "prefix+|"
 
 # prefix+u: extract URLs from the focused pane's scrollback, fzf-pick, open
-# (parity with tmux `bind u` in dot_tmux.conf)
+# (parity with tmux `bind u` in dot_tmux.conf). Popup keeps the tiled layout
+# intact; HERDR_ACTIVE_PANE_ID still points at the pane that had focus.
 [[keys.command]]
 key = "prefix+u"
-type = "pane"
+type = "popup"
 command = "herdr-url-open"
+description = "open URL from scrollback"
+width = "80%"
+height = "80%"
 
 [experimental]
 # macOS: switch to ASCII input source while prefix mode is active, so prefix
@@ -32,6 +36,7 @@ pane_history = true
 
 [ui]
 show_agent_labels_on_pane_borders = true
+hide_tab_bar_when_single_tab = true
 
 [ui.toast]
 delivery = "terminal"

@@ -14,7 +14,6 @@ Host *
   AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
   UseKeychain yes
-  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 {{- end }}
   ForwardAgent yes
   ForwardX11 no
@@ -25,3 +24,11 @@ Host *
   ServerAliveCountMax 5
   # Use xterm-256color for compatibility (most servers lack Ghostty terminfo)
   SetEnv TERM=xterm-256color
+{{- if eq .chezmoi.os "darwin" }}
+
+# 1Password agent only in local sessions; in SSH sessions the forwarded agent
+# (SSH_AUTH_SOCK) must win so requests are authorized on the client device.
+# https://www.1password.dev/ssh/agent/forwarding#remote-workstation
+Match host * exec "test -z $SSH_TTY"
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+{{- end }}

@@ -194,6 +194,13 @@ _zinit_setup_completions() {
     source "$_just_comp"
   fi
 
+  # herdr
+  if (( $+commands[herdr] )); then
+    local _herdr_comp="$cache_dir/_herdr"
+    [[ -f "$_herdr_comp" ]] || herdr completion zsh > "$_herdr_comp"
+    source "$_herdr_comp"
+  fi
+
   # mise
   if (( $+commands[mise] )); then
     local _mise_comp="$cache_dir/_mise"

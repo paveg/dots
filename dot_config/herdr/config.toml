@@ -28,11 +28,27 @@ description = "open URL from scrollback"
 width = "80%"
 height = "80%"
 
+# prefix+m: fd-find a Markdown file under the focused pane's cwd, fzf-pick,
+# view in glowm (inline Mermaid via Kitty graphics). Uses type = "pane", not
+# "popup": popups are session-modal overlays that do not composite Kitty
+# graphics, so glowm's Mermaid images never paint there. A temporary pane
+# shares the normal pane render path where graphics work.
+[[keys.command]]
+key = "prefix+m"
+type = "pane"
+command = "herdr-md-open"
+description = "preview Markdown with glowm"
+
 [experimental]
 # macOS: switch to ASCII input source while prefix mode is active, so prefix
 # commands register even when the Japanese IME is on (best-effort)
 switch_ascii_input_source_in_prefix = true
 pane_history = true
+# Render Kitty graphics inside panes (mermaid images via glowm, snacks.image
+# in nvim, kitten icat). Requires a Kitty graphics-capable outer terminal
+# (Ghostty). Upstream still tracks Ghostty flicker/size-query bugs — if images
+# reload in a loop or render 0-sized, turn this back off.
+kitty_graphics = true
 
 [ui]
 show_agent_labels_on_pane_borders = true

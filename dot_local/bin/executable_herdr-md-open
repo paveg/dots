@@ -1,0 +1,25 @@
+#!/bin/zsh
+# fd-find Markdown files under the focused pane's cwd, pick one with fzf, view
+# it in glowm (inline Mermaid via Kitty graphics). Bound to prefix+m in
+# ~/.config/herdr/config.toml. Runs inside a temporary herdr command pane;
+# HERDR_ACTIVE_PANE_ID is the pane that had focus when the key fired.
+set -u
+
+pane_id="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}"
+if [[ -z "$pane_id" ]]; then
+  print -u2 "herdr-md-open: no pane id (run from a herdr keybinding)"
+  exit 1
+fi
+
+# Prefer where the foreground process actually is; fall back to the shell cwd.
+cwd=$(herdr pane get "$pane_id" 2>/dev/null \
+  | jq -r '.result.pane | .foreground_cwd // .cwd // empty')
+if [[ -z "$cwd" || ! -d "$cwd" ]]; then
+  print -u2 "herdr-md-open: could not resolve pane cwd"
+  exit 1
+fi
+
+file=$(fd --type f --extension md --extension markdown --hidden \
+  --exclude .git . "$cwd" | fzf --reverse --prompt "glowm> ") || exit 0
+
+[[ -n "$file" ]] && glowm "$file"

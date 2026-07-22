@@ -4,8 +4,8 @@
 
 Sections in this file fall into two categories:
 
-- **[Harness]** Pre-design — shapes how the agent runs *before* it acts
-- **[Guardrail]** Post-verification — detects deviation *after* the agent acts
+- **[Harness]** Pre-design — shapes how the agent runs _before_ it acts
+- **[Guardrail]** Post-verification — detects deviation _after_ the agent acts
 
 Harness is a design decision; guardrail is a mechanical check. Separating "is this pre-design or post-verification?" prevents rule bloat.
 
@@ -15,11 +15,9 @@ Push checks toward guardrails whenever a deterministic tool can do the job: **th
 
 - Never self-assess quality of your own output as the final verdict
 - When reviewing code you wrote, launch a separate agent that did not participate in generation
-- When the main session only planned and subagents generated, the main session is a valid
-  evaluator — no extra review subagent needed
+- When the main session only planned and subagents generated, the main session is a valid evaluator — no extra review subagent needed
 - The evaluator should test behavior, not read implementation to form its judgment
-- Subagent reports are hypotheses, not facts: verify load-bearing claims against primary
-  sources (run the commands, read the files) before acting on them
+- Subagent reports are hypotheses, not facts: verify load-bearing claims against primary sources (run the commands, read the files) before acting on them
 
 ## [Harness] Sprint Contracts
 

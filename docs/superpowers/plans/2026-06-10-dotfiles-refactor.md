@@ -9,6 +9,7 @@
 **Tech Stack:** chezmoi Go templates, zsh, GitHub Actions, just, Lua (lazy.nvim), bash test harness.
 
 **Conventions for every task:**
+
 - Commit messages: conventional commits (`refactor(...): ...`), body ends with `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 - Never run `chezmoi apply`. Dry-run only.
 - Verification output must be shown in full with exit codes; "should pass" is forbidden.
@@ -18,6 +19,7 @@
 ### Task 1: zsh cleanup (branch `refactor/zsh-cleanup`)
 
 **Files:**
+
 - Modify: `dot_config/zsh/init/xdg.zsh` (add `ZSH_INIT_CACHE`)
 - Modify: `dot_config/zsh/init/homebrew.zsh.tmpl:12`, `dot_config/zsh/init/mise.zsh:10`, `dot_config/zsh/init/plugins.zsh:90,96,109,122,157`, `dot_config/zsh/features/cache-mgmt.zsh:3,14`
 - Modify: `dot_config/zsh/init/plugins.zsh` (header line), `dot_config/zsh/modules/bun.zsh:11`
@@ -90,6 +92,7 @@ export ZSH_INIT_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init"
 ```
 
 Replace the 9 hardcoded occurrences:
+
 - `init/homebrew.zsh.tmpl:12`: `_brew_cache="$ZSH_INIT_CACHE/brew.zsh"`
 - `init/mise.zsh:10`: `_mise_cache="$ZSH_INIT_CACHE/mise.zsh"`
 - `init/plugins.zsh:90`: `_zsh_cache="$ZSH_INIT_CACHE"`
@@ -126,6 +129,7 @@ Measure the same `zsh -i -c exit` timing on `main` first for the baseline.
 ### Task 2: CI / template cleanup (branch `refactor/ci-templates`)
 
 **Files:**
+
 - Modify: `.github/workflows/test.yml:132-216`
 - Modify: `.chezmoi.yaml.tmpl:6-7`
 - Modify: `justfile:29`
@@ -135,64 +139,64 @@ Measure the same `zsh -i -c exit` timing on `main` first for the baseline.
 Replace both jobs (lines 132–216) with a single job. The curl installer works on both OSes; install to `$HOME/.local/bin` to avoid sudo:
 
 ```yaml
-  chezmoi:
-    name: Chezmoi (${{ matrix.os }}, ${{ matrix.env_name }})
-    needs: changes
-    if: needs.changes.outputs.chezmoi == 'true'
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        include:
-          - business_use: ''
-            env_name: personal
-          - business_use: '1'
-            env_name: business
-    steps:
-      - uses: actions/checkout@v4
+chezmoi:
+  name: Chezmoi (${{ matrix.os }}, ${{ matrix.env_name }})
+  needs: changes
+  if: needs.changes.outputs.chezmoi == 'true'
+  runs-on: ${{ matrix.os }}
+  strategy:
+    matrix:
+      os: [ubuntu-latest, macos-latest]
+      include:
+        - business_use: ""
+          env_name: personal
+        - business_use: "1"
+          env_name: business
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Install chezmoi
-        run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+    - name: Install chezmoi
+      run: |
+        sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Setup test config (provide prompted values)
-        run: |
-          mkdir -p ~/.config/chezmoi
-          cat > ~/.config/chezmoi/chezmoi.yaml << 'EOF'
-          data:
-            name: "Test User"
-            email: "test@example.com"
-            work_email: "test@work.example.com"
-          EOF
+    - name: Setup test config (provide prompted values)
+      run: |
+        mkdir -p ~/.config/chezmoi
+        cat > ~/.config/chezmoi/chezmoi.yaml << 'EOF'
+        data:
+          name: "Test User"
+          email: "test@example.com"
+          work_email: "test@work.example.com"
+        EOF
 
-      - name: Test chezmoi init (dry-run)
-        env:
-          BUSINESS_USE: ${{ matrix.business_use }}
-        run: |
-          echo "Testing chezmoi template expansion..."
-          chezmoi init --source="${PWD}" --dry-run --verbose
+    - name: Test chezmoi init (dry-run)
+      env:
+        BUSINESS_USE: ${{ matrix.business_use }}
+      run: |
+        echo "Testing chezmoi template expansion..."
+        chezmoi init --source="${PWD}" --dry-run --verbose
 
-      - name: Verify template expansion
-        env:
-          BUSINESS_USE: ${{ matrix.business_use }}
-        run: |
-          chezmoi init --source="${PWD}"
-          chezmoi managed | head -20
-          chezmoi cat ~/.config/git/config || true
+    - name: Verify template expansion
+      env:
+        BUSINESS_USE: ${{ matrix.business_use }}
+      run: |
+        chezmoi init --source="${PWD}"
+        chezmoi managed | head -20
+        chezmoi cat ~/.config/git/config || true
 ```
 
-CAUTION — matrix semantics: `os: [...]` × `include: [...]` must expand to 4 jobs (2 os × 2 env). With a bare `include` alongside an `os` axis, GitHub *adds* keys to existing combinations only if they don't conflict; the safe form is two axes:
+CAUTION — matrix semantics: `os: [...]` × `include: [...]` must expand to 4 jobs (2 os × 2 env). With a bare `include` alongside an `os` axis, GitHub _adds_ keys to existing combinations only if they don't conflict; the safe form is two axes:
 
 ```yaml
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        env_name: [personal, business]
-        include:
-          - env_name: personal
-            business_use: ''
-          - env_name: business
-            business_use: '1'
+matrix:
+  os: [ubuntu-latest, macos-latest]
+  env_name: [personal, business]
+  include:
+    - env_name: personal
+      business_use: ""
+    - env_name: business
+      business_use: "1"
 ```
 
 Use this two-axis form. Search the rest of test.yml for references to job ids `chezmoi-linux` / `chezmoi-macos` (e.g. in a final `needs:` aggregation job) and update them to `chezmoi`.
@@ -236,6 +240,7 @@ All four must succeed. Note: `chezmoi init --dry-run` without apply does not tou
 ### Task 3: hook sync + test coverage (branch `refactor/hook-tests`)
 
 **Files:**
+
 - Modify: `dot_claude/settings.json.tmpl` (deny block), `dot_codex/rules/custom.rules.tmpl` (top comment)
 - Modify: `tests/hooks/block-rot-comments.test.sh`
 
@@ -298,6 +303,7 @@ BUSINESS_USE=1 chezmoi init --source="$PWD" --dry-run >/dev/null && echo busines
 ### Task 4: nvim lsp.lua table-driven servers (branch `refactor/nvim-lsp`)
 
 **Files:**
+
 - Modify: `dot_config/nvim/lua/plugins/lsp.lua:69-203`
 
 - [ ] **Step 1: replace the 16 `vim.lsp.config.X = ...` blocks and the `vim.lsp.enable` list**
@@ -389,6 +395,7 @@ Expected: `just test` exits 0; headless boot exits clean with no Lua errors ment
 ### Task 5: skills/rules light cleanup (branch `refactor/claude-rules`)
 
 **Files:**
+
 - Delete: `dot_claude/rules/browser-automation.md`
 - Modify: `dot_claude/skills/x-post-craft/SKILL.md:102,144` (headings)
 

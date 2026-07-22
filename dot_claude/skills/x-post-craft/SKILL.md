@@ -16,34 +16,32 @@ Create high-engagement X/Twitter posts based on insights from X's public algorit
 
 X's algorithm predicts engagement probabilities and weights them into a final score:
 
-| Positive Signal | Description | Weight |
-|----------------|-------------|--------|
-| `dwell_time` | Time spent reading | Very High |
-| `favorite` | Like | High |
-| `retweet` | Repost | High |
-| `reply` | Reply | High |
-| `quote` | Quote post | High |
-| `share` / `share_via_dm` / `copy_link` | Share actions | Medium-High |
-| `follow_author` | Follow | Medium |
-| `profile_click` | Profile visit | Medium |
-| `vqv` | Video quality view (30s+) | Video only |
+| Positive Signal                        | Description               | Weight      |
+| -------------------------------------- | ------------------------- | ----------- |
+| `dwell_time`                           | Time spent reading        | Very High   |
+| `favorite`                             | Like                      | High        |
+| `retweet`                              | Repost                    | High        |
+| `reply`                                | Reply                     | High        |
+| `quote`                                | Quote post                | High        |
+| `share` / `share_via_dm` / `copy_link` | Share actions             | Medium-High |
+| `follow_author`                        | Follow                    | Medium      |
+| `profile_click`                        | Profile visit             | Medium      |
+| `vqv`                                  | Video quality view (30s+) | Video only  |
 
-| Negative Signal | Description | Impact |
-|----------------|-------------|--------|
-| `not_interested` | Not interested | Negative |
-| `block_author` | Block | Strong Negative |
-| `mute_author` | Mute | Strong Negative |
-| `report` | Report | Strong Negative |
+| Negative Signal  | Description    | Impact          |
+| ---------------- | -------------- | --------------- |
+| `not_interested` | Not interested | Negative        |
+| `block_author`   | Block          | Strong Negative |
+| `mute_author`    | Mute           | Strong Negative |
+| `report`         | Report         | Strong Negative |
 
 ### Author Diversity Penalty
 
-Same author's consecutive posts get score decay.
-→ **Quality over quantity** - one great post beats multiple mediocre ones
+Same author's consecutive posts get score decay. → **Quality over quantity** - one great post beats multiple mediocre ones
 
 ### In-Network vs Out-of-Network
 
-Reaching non-followers requires higher scores.
-→ **Universal value** spreads better than niche content
+Reaching non-followers requires higher scores. → **Universal value** spreads better than niche content
 
 ---
 
@@ -79,15 +77,16 @@ From collected info:
 
 Minimum 3 patterns:
 
-| Pattern | Characteristic |
-|---------|---------------|
-| A: Classic | Clear value, easy to read |
-| B: Hook-Heavy | Strong opening, curiosity gap |
+| Pattern               | Characteristic                  |
+| --------------------- | ------------------------------- |
+| A: Classic            | Clear value, easy to read       |
+| B: Hook-Heavy         | Strong opening, curiosity gap   |
 | C: Discussion-Starter | Strong opinion, invites replies |
 
 ### Step 4: Algorithm Explanation
 
 For each variation:
+
 - Why this structure increases score
 - Which signals it targets
 - Potential risks and mitigations
@@ -112,31 +111,31 @@ Collect user preference, refine final version
 
 ### Hook Patterns
 
-| Pattern | Example | Goal |
-|---------|---------|------|
-| Number Impact | "5 things I learned after 10 years in tech" | Specificity builds trust |
-| Contrarian | "Everything you know about X is wrong" | Triggers discussion |
-| Empathy | "Struggling with X? Here's what worked" | Target identification |
-| Conclusion First | "Bottom line: You should do X" | Clarity |
-| Story | "Yesterday something happened that changed my view" | Curiosity |
+| Pattern          | Example                                             | Goal                     |
+| ---------------- | --------------------------------------------------- | ------------------------ |
+| Number Impact    | "5 things I learned after 10 years in tech"         | Specificity builds trust |
+| Contrarian       | "Everything you know about X is wrong"              | Triggers discussion      |
+| Empathy          | "Struggling with X? Here's what worked"             | Target identification    |
+| Conclusion First | "Bottom line: You should do X"                      | Clarity                  |
+| Story            | "Yesterday something happened that changed my view" | Curiosity                |
 
 ### Character Guidelines
 
-| Format | Recommended Length | Reason |
-|--------|-------------------|--------|
-| Single (short) | 100-140 chars | Easy to RT |
-| Single (medium) | 200-280 chars | Value + completion |
-| Thread post 1 | ~140 chars | Hook focus |
-| Thread post 2+ | 200-280 chars | Expand content |
+| Format          | Recommended Length | Reason             |
+| --------------- | ------------------ | ------------------ |
+| Single (short)  | 100-140 chars      | Easy to RT         |
+| Single (medium) | 200-280 chars      | Value + completion |
+| Thread post 1   | ~140 chars         | Hook focus         |
+| Thread post 2+  | 200-280 chars      | Expand content     |
 
 ### Visual Asset Recommendations
 
-| Asset Type | Algorithm Effect |
-|------------|-----------------|
-| Infographic | dwell_time+, share+ |
-| Screenshot | Credibility, specificity |
-| Video (30s+) | vqv_score activation |
-| Image carousel | photo_expand+ |
+| Asset Type     | Algorithm Effect         |
+| -------------- | ------------------------ |
+| Infographic    | dwell_time+, share+      |
+| Screenshot     | Credibility, specificity |
+| Video (30s+)   | vqv_score activation     |
+| Image carousel | photo_expand+            |
 
 ---
 
@@ -209,7 +208,9 @@ For improving existing drafts:
 
 ### A: Classic
 ```
+
 (post text)
+
 ```
 **Algorithm Analysis**: [why this structure scores well]
 **Target Signals**: favorite, retweet, dwell_time
@@ -245,12 +246,16 @@ For improving existing drafts:
 
 ### 1/5 (Hook)
 ```
+
 (hook post)
+
 ```
 
 ### 2/5 (Context)
 ```
+
 (context post)
+
 ```
 
 ...
@@ -333,10 +338,10 @@ Q8: Output language?
 
 ## Language Support
 
-**Skill documentation**: English
-**Output language**: User-specified (default: match user's input language)
+**Skill documentation**: English **Output language**: User-specified (default: match user's input language)
 
 When generating posts:
+
 - Adapt hook patterns to target language conventions
 - Consider character limits (Japanese ~140 chars = ~70 words in English)
 - Use culturally appropriate expressions and references

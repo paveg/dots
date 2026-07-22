@@ -30,6 +30,7 @@ Prompt quality is invisible to its author. The more "clear" a writer thinks some
 - When hardening high-value instructions (frequently used skills, automation-critical prompts)
 
 Do NOT use for:
+
 - One-shot throwaway prompts (evaluation cost outweighs benefit)
 - Cases where the goal is reflecting the author's subjective style preference, not improving success rate
 
@@ -37,10 +38,10 @@ Do NOT use for:
 
 This skill applies to **both** scopes equally. The evaluation workflow is identical; only the file location differs.
 
-| Scope | Typical paths | Examples |
-|---|---|---|
+| Scope                     | Typical paths                                                                | Examples                                                       |
+| ------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | **Global** (`~/.claude/`) | `~/.claude/skills/*/SKILL.md`, `~/.claude/rules/*.md`, `~/.claude/CLAUDE.md` | Reusable skills shared across all repos, global behavior rules |
-| **Project** (repo-local) | `CLAUDE.md`, `docs/adr/*.md`, inline task prompts, CI prompt snippets | Project-specific instructions, ADRs with embedded prompts |
+| **Project** (repo-local)  | `CLAUDE.md`, `docs/adr/*.md`, inline task prompts, CI prompt snippets        | Project-specific instructions, ADRs with embedded prompts      |
 
 When tuning a global prompt, consider that it will run across many different project contexts — design scenarios that span 2–3 representative project types, not just the repo where you noticed the problem.
 
@@ -62,11 +63,13 @@ Read the frontmatter `description` and the body independently.
 Fix these two artifacts before dispatching any subagent:
 
 **Evaluation scenarios** (2–3 for the loop, plus 1 sealed hold-out):
+
 - 1 median-difficulty scenario representing typical real-world usage
 - 1–2 edge scenarios
 - 1 additional hold-out, sealed: never used during the loop, run once at convergence (see Stopping Criteria → Overfitting check) to detect overfitting. This is on top of the 2–3 loop scenarios, so the loop always keeps its minimum of 2.
 
 **Requirements checklist** (3–7 items per scenario):
+
 - Each item = a concrete verifiable requirement the output must satisfy
 - Tag at least 1 item `[critical]` per scenario
 - Do not loosen the checklist after fixing it — accuracy = items satisfied / total items. The only permitted change is tightening (a stricter bar or a new item); if you tighten, re-run every scenario from scratch.
@@ -88,15 +91,18 @@ Pass the subagent a prompt following the **Subagent Launch Contract** below. The
 Record the following from the returned result:
 
 **Executor self-report** (extracted from the subagent's report):
+
 - Unclear points / ambiguous wording
 - Discretionary fill-ins (decisions not covered by the instructions)
 
 **Who judges** (the improver stays out of subjective scoring):
+
 - Mechanical criteria — tie pass/fail to a verification command (exit code / output string / diff). No model judgment.
 - Non-mechanical criteria — dispatch a separate judge subagent that sees only the deliverable and the criteria, never the target's diff, the iteration history, or the improvement intent. An improver who scores its own executor's output drifts toward leniency. The executor's own ○ / × / partial from the Launch Contract report is provisional signal for these items; the judge's verdict is authoritative.
 - Persist each run's full transcript to a file; return only the fail list and confusion summary to the improver's context, not the whole log. Keep the eval set (scenarios, verification commands, per-iteration logs) in the repo alongside the target so a human can audit it later.
 
 **Caller-side measurements** (judgment rules are authoritative here — reference only this section):
+
 - **Success/Failure**: SUCCESS (○) only if **all** `[critical]` items are ○. Any `[critical]` item that is × or partial = FAILURE (×). Binary only — no "partial success".
 - **Accuracy**: % of checklist items satisfied. ○ = 1.0, × = 0.0, partial = 0.5. Sum divided by total items.
 - **Step count**: `tool_uses` from Agent tool's usage metadata (include Read / Grep — no exclusions)
@@ -109,6 +115,7 @@ Requirements checklist must contain **at least 1 `[critical]` item** (0 items ma
 ### Step 5 — Apply Diff
 
 Apply the minimal fix that addresses one theme of unclear points. Scope per iteration:
+
 - **1 theme per iteration** (related micro-fixes count as 1 theme; unrelated fixes go to the next iter)
 - Before applying: state which checklist item / judgment criterion this fix satisfies (axis names and judgment criteria are different — map to the criterion text, not the axis label)
 - **Edit the chezmoi source** (`~/.local/share/chezmoi/dot_claude/`), never `~/.claude/` directly. After editing, confirm with the user before running `chezmoi apply`.
@@ -122,6 +129,7 @@ Increase parallelism when improvement is not plateauing.
 ### Step 7 — Convergence Check
 
 Stop when **both** of the following hold for **2 consecutive iterations**:
+
 - No new unclear points
 - All quantitative thresholds met (see "Stopping Criteria")
 
@@ -131,15 +139,15 @@ For high-value prompts: require 3 consecutive iterations.
 
 ## Evaluation Axes
 
-| Axis | Source | Meaning |
-|---|---|---|
-| Success/Failure | Caller measures | Minimum bar |
-| Accuracy | Caller measures | Degree of partial success |
-| Step count | `tool_uses` metadata | Proxy for wasted effort |
-| Duration | `duration_ms` metadata | Proxy for cognitive load |
-| Retry count | Executor self-report | Signal of ambiguity |
-| Unclear points | Executor self-report | Qualitative improvement material |
-| Discretionary fill-ins | Executor self-report | Surfacing implicit spec |
+| Axis                   | Source                 | Meaning                          |
+| ---------------------- | ---------------------- | -------------------------------- |
+| Success/Failure        | Caller measures        | Minimum bar                      |
+| Accuracy               | Caller measures        | Degree of partial success        |
+| Step count             | `tool_uses` metadata   | Proxy for wasted effort          |
+| Duration               | `duration_ms` metadata | Proxy for cognitive load         |
+| Retry count            | Executor self-report   | Signal of ambiguity              |
+| Unclear points         | Executor self-report   | Qualitative improvement material |
+| Discretionary fill-ins | Executor self-report   | Surfacing implicit spec          |
 
 **Weighting**: qualitative (unclear points, fill-ins) is primary; quantitative (time, steps) is supplementary. Chasing only time reduction causes the prompt to become too sparse.
 
@@ -217,6 +225,7 @@ If dispatching a new subagent is not possible (already running as a subagent, Ta
 ## Stopping Criteria
 
 **Convergence (stop)**: all of the following hold for 2 consecutive iterations:
+
 - New unclear points: 0
 - Accuracy improvement vs. previous iter: ≤ +3 percentage points
 - Step count change vs. previous iter: ≤ ±10%
@@ -263,16 +272,16 @@ Record and present after each iteration:
 
 ## Red Flags
 
-| Rationalization | Reality |
-|---|---|
-| "Reading it myself is the same thing" | You cannot objectively read text you just wrote. Always dispatch a new subagent. |
-| "One scenario is enough" | Single scenarios overfit. Minimum 2, ideally 3. |
-| "Zero unclear points once means we're done" | Could be chance. Require 2 consecutive iterations. |
-| "Let me fix multiple unclear points at once" | You won't know what worked. 1 theme per iteration. |
+| Rationalization                                          | Reality                                                                                                                    |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| "Reading it myself is the same thing"                    | You cannot objectively read text you just wrote. Always dispatch a new subagent.                                           |
+| "One scenario is enough"                                 | Single scenarios overfit. Minimum 2, ideally 3.                                                                            |
+| "Zero unclear points once means we're done"              | Could be chance. Require 2 consecutive iterations.                                                                         |
+| "Let me fix multiple unclear points at once"             | You won't know what worked. 1 theme per iteration.                                                                         |
 | "Related micro-fixes should each be their own iteration" | Opposite trap. 1 theme = semantic unit. 2–3 related micro-fixes belong in 1 iter. Over-splitting explodes iteration count. |
-| "Metrics look good, ignore qualitative feedback" | Time reduction alone is a sign of over-pruning. Qualitative is primary. |
-| "Rewriting is faster" | Correct after 3+ iterations of no progress. Before that, it's avoidance. |
-| "Reuse the same subagent" | It learned from the previous run. Dispatch fresh every iteration. |
+| "Metrics look good, ignore qualitative feedback"         | Time reduction alone is a sign of over-pruning. Qualitative is primary.                                                    |
+| "Rewriting is faster"                                    | Correct after 3+ iterations of no progress. Before that, it's avoidance.                                                   |
+| "Reuse the same subagent"                                | It learned from the previous run. Dispatch fresh every iteration.                                                          |
 
 ---
 

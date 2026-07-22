@@ -1,5 +1,4 @@
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Growth Stock Checks
 

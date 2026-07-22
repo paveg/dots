@@ -26,12 +26,14 @@ Turn a Phase 5 Verdict + Phase 3 valuation into a concrete, rule-based buy plan:
 ## Order mechanics
 
 ### JP (单元 = 100 shares)
+
 - **Check the 単元 cost first**: price × 100. Many quality names cost ¥0.5M–2.7M per 単元 — too big for a satellite. State this explicitly.
 - If the 単元 exceeds the per-name budget → use **単元未満株** (SBI = S株 / 楽天 = かぶミニ) to size in ¥, not in 100-share blocks.
 - **単元未満株 caveat**: usually no true 指値 (executed 成行 at next session's open; some brokers offer limited real-time). So for fractional, the "limit" is implemented as a **price alert → manual 成行 when touched**. Say so; don't promise a 指値 that the venue can't place.
 - True 指値 / 逆指値 (auto stop-loss) only work on full 単元. Use 逆指値 for stops only when buying 単元.
 
 ### US
+
 - Fractional shares + GTC limit orders are broadly available; stop-limit for exits.
 
 ## Sizing output

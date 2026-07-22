@@ -29,6 +29,7 @@ You are helping a developer implement a new feature. Follow a systematic approac
 Initial request: $ARGUMENTS
 
 **Actions**:
+
 1. Create a task list with all phases
 2. If feature unclear, ask user for:
    - What problem are they solving?
@@ -43,6 +44,7 @@ Initial request: $ARGUMENTS
 **Goal**: Understand relevant existing code and patterns
 
 **Actions**:
+
 1. Launch 2-3 `Explore` agents in parallel. Each agent should:
    - Trace through the code comprehensively, focusing on abstractions, architecture, and control flow
    - Target a different aspect (similar features, architecture, UI patterns, etc.)
@@ -58,6 +60,7 @@ Initial request: $ARGUMENTS
 **Goal**: Fill in gaps and resolve all ambiguities before designing
 
 **Actions**:
+
 1. Review codebase findings and original feature request
 2. Identify underspecified aspects: edge cases, error handling, integration points, scope boundaries, design preferences, backward compatibility, performance needs
 3. Present all questions to user in a clear, organized list
@@ -70,6 +73,7 @@ Initial request: $ARGUMENTS
 **Goal**: Agree on concrete "done" criteria before any design or implementation
 
 **Actions**:
+
 1. Propose acceptance criteria based on the feature request and clarified requirements:
    - Each criterion must be verifiable (testable assertion, observable behavior, or command output)
    - Classify as **must-have** or **nice-to-have**
@@ -78,6 +82,7 @@ Initial request: $ARGUMENTS
 4. Record the contract in the task list
 
 **Example contract**:
+
 ```
 Must-have:
 - [ ] User can create a new project from the dashboard (verify: click through UI)
@@ -95,6 +100,7 @@ Nice-to-have:
 **Goal**: Design implementation approach with trade-offs
 
 **Actions**:
+
 1. Launch 2-3 `Plan` agents in parallel with different focuses:
    - Minimal changes (smallest change, maximum reuse)
    - Clean architecture (maintainability, elegant abstractions)
@@ -111,6 +117,7 @@ Nice-to-have:
 **Goal**: Build the feature
 
 **Actions**:
+
 1. Implementation starts only after the user approves the architecture
 2. Break the implementation into bite-sized tasks (each completable in a few minutes):
    - Each task specifies exact files to modify, what to change, and how to verify
@@ -128,6 +135,7 @@ Nice-to-have:
 **Goal**: Verify the implementation against sprint contract criteria
 
 **Actions**:
+
 1. Run the test suite. Fix failures before proceeding
 2. Launch an evaluator agent (separate from implementation context) to:
    - Check each acceptance criterion from the sprint contract
@@ -145,6 +153,7 @@ The evaluator agent should test behavior (run commands, check output), not just 
 **Goal**: Catch bugs, simplify code, ensure conventions
 
 **Actions**:
+
 1. Launch 2 read-only reviewer agents (`spec-reviewer`, or general-purpose with review framing) scoped to changed files only (`git diff`):
    - Agent 1: bugs, logic errors, security (confidence >= 80)
    - Agent 2: project conventions, simplicity, DRY
@@ -163,6 +172,7 @@ The evaluator agent should test behavior (run commands, check output), not just 
 **Goal**: Document what was accomplished
 
 **Actions**:
+
 1. Mark all tasks complete
 2. Check sprint contract: mark each criterion as met/unmet
 3. Summarize:

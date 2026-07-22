@@ -20,60 +20,60 @@
 
 ### Created (new files)
 
-| Path | Lines (est.) | Header |
-|------|-------------|--------|
-| `dot_config/zsh/init/xdg.zsh` | ~6 | required |
-| `dot_config/zsh/init/homebrew.zsh.tmpl` | ~18 | required |
-| `dot_config/zsh/init/terminal.zsh` | ~12 | required |
-| `dot_config/zsh/init/perf-flags.zsh` | ~5 | required |
-| `dot_config/zsh/init/mise.zsh` | ~13 | required |
-| `dot_config/zsh/init/auto-tmux.zsh.tmpl` | ~50 | required |
-| `dot_config/zsh/init/p10k-instant.zsh` | ~6 | required |
-| `dot_config/zsh/modules/ssh-agent.zsh.tmpl` | ~32 | required |
-| `dot_config/zsh/modules/bun.zsh` | ~9 | required |
-| `dot_config/zsh/modules/pnpm.zsh` | ~8 | required |
-| `dot_config/zsh/modules/vite-plus.zsh` | ~5 | required |
-| `dot_config/zsh/modules/cf-cli.zsh` | ~5 | required |
-| `dot_config/zsh/modules/telemetry.zsh.tmpl` | ~22 | required |
-| `dot_config/zsh/modules/local-config.zsh` | ~10 | required |
-| `dot_config/zsh/modules/p10k-config.zsh` | ~6 | required |
-| `dot_config/zsh/features/ghq-fzf.zsh` | ~80 | required |
-| `dot_config/zsh/features/branch-cleanup.zsh` | ~16 | optional |
-| `dot_config/zsh/features/kube.zsh` | ~50 | optional |
-| `dot_config/zsh/features/rgn.zsh` | ~50 | required |
-| `dot_config/zsh/features/devbox-brew.zsh` | ~30 | optional |
-| `dot_config/zsh/features/profiling.zsh` | ~5 | optional |
-| `dot_config/zsh/features/dotenv-auto.zsh` | ~30 | required |
-| `dot_config/zsh/features/cache-mgmt.zsh` | ~25 | optional |
-| `dot_config/zsh/features/dotfiles-helpers.zsh` | ~80 | optional |
-| `dot_config/zsh/features/local-config-cmd.zsh` | ~70 | optional |
-| `dot_config/zsh/features/documentation.zsh` | ~13 | optional |
+| Path                                           | Lines (est.) | Header   |
+| ---------------------------------------------- | ------------ | -------- |
+| `dot_config/zsh/init/xdg.zsh`                  | ~6           | required |
+| `dot_config/zsh/init/homebrew.zsh.tmpl`        | ~18          | required |
+| `dot_config/zsh/init/terminal.zsh`             | ~12          | required |
+| `dot_config/zsh/init/perf-flags.zsh`           | ~5           | required |
+| `dot_config/zsh/init/mise.zsh`                 | ~13          | required |
+| `dot_config/zsh/init/auto-tmux.zsh.tmpl`       | ~50          | required |
+| `dot_config/zsh/init/p10k-instant.zsh`         | ~6           | required |
+| `dot_config/zsh/modules/ssh-agent.zsh.tmpl`    | ~32          | required |
+| `dot_config/zsh/modules/bun.zsh`               | ~9           | required |
+| `dot_config/zsh/modules/pnpm.zsh`              | ~8           | required |
+| `dot_config/zsh/modules/vite-plus.zsh`         | ~5           | required |
+| `dot_config/zsh/modules/cf-cli.zsh`            | ~5           | required |
+| `dot_config/zsh/modules/telemetry.zsh.tmpl`    | ~22          | required |
+| `dot_config/zsh/modules/local-config.zsh`      | ~10          | required |
+| `dot_config/zsh/modules/p10k-config.zsh`       | ~6           | required |
+| `dot_config/zsh/features/ghq-fzf.zsh`          | ~80          | required |
+| `dot_config/zsh/features/branch-cleanup.zsh`   | ~16          | optional |
+| `dot_config/zsh/features/kube.zsh`             | ~50          | optional |
+| `dot_config/zsh/features/rgn.zsh`              | ~50          | required |
+| `dot_config/zsh/features/devbox-brew.zsh`      | ~30          | optional |
+| `dot_config/zsh/features/profiling.zsh`        | ~5           | optional |
+| `dot_config/zsh/features/dotenv-auto.zsh`      | ~30          | required |
+| `dot_config/zsh/features/cache-mgmt.zsh`       | ~25          | optional |
+| `dot_config/zsh/features/dotfiles-helpers.zsh` | ~80          | optional |
+| `dot_config/zsh/features/local-config-cmd.zsh` | ~70          | optional |
+| `dot_config/zsh/features/documentation.zsh`    | ~13          | optional |
 
 ### Renamed/moved (content unchanged or minor)
 
-| From | To |
-|------|-----|
+| From                               | To                                |
+| ---------------------------------- | --------------------------------- |
 | `dot_config/zsh/split/options.zsh` | `dot_config/zsh/init/options.zsh` |
 | `dot_config/zsh/split/plugins.zsh` | `dot_config/zsh/init/plugins.zsh` |
-| `dot_config/zsh/split/aliases.zsh` | `dot_config/zsh/aliases.zsh` |
-| `dot_config/zsh/split/atcoder.zsh` | `dot_config/zsh/atcoder.zsh` |
+| `dot_config/zsh/split/aliases.zsh` | `dot_config/zsh/aliases.zsh`      |
+| `dot_config/zsh/split/atcoder.zsh` | `dot_config/zsh/atcoder.zsh`      |
 
 ### Deleted
 
-| Path | Reason |
-|------|--------|
-| `dot_config/zsh/split/` (全体) | 責務分散後は不要 |
-| `dot_config/zsh/split/wt-interactive.zsh` | worktree 機能廃止 |
-| `dot_config/zsh/split/functions.zsh` | features/ に分解後 |
+| Path                                      | Reason             |
+| ----------------------------------------- | ------------------ |
+| `dot_config/zsh/split/` (全体)            | 責務分散後は不要   |
+| `dot_config/zsh/split/wt-interactive.zsh` | worktree 機能廃止  |
+| `dot_config/zsh/split/functions.zsh`      | features/ に分解後 |
 
 ### Modified
 
-| Path | 変更概要 |
-|------|----------|
-| `dot_zshrc.tmpl` | 250 → ~70 行のオーケストレータに縮小 |
-| `dot_tmux.conf` | line 105 の `bind g` 削除 |
-| `.chezmoiignore` | `split/atcoder.zsh` → `atcoder.zsh` パス更新 |
-| `justfile` | `lint-headers` ターゲット追加、`test` から呼ぶ |
+| Path             | 変更概要                                       |
+| ---------------- | ---------------------------------------------- |
+| `dot_zshrc.tmpl` | 250 → ~70 行のオーケストレータに縮小           |
+| `dot_tmux.conf`  | line 105 の `bind g` 削除                      |
+| `.chezmoiignore` | `split/atcoder.zsh` → `atcoder.zsh` パス更新   |
+| `justfile`       | `lint-headers` ターゲット追加、`test` から呼ぶ |
 
 ---
 
@@ -82,6 +82,7 @@
 **Why:** 変更前の zsh 状態をスナップショット化。後続タスク完了時に「期待外の差分」がないことを差分比較で検証する。
 
 **Files:**
+
 - Create: `/tmp/zsh-baseline-functions.txt`
 - Create: `/tmp/zsh-baseline-env.txt`
 - Create: `/tmp/zsh-baseline-aliases.txt`
@@ -110,7 +111,7 @@ zsh -i -c 'env | grep -E "^(XDG_|HOMEBREW_|PNPM_HOME|MISE_|TERM)" | sort' > /tmp
 cat /tmp/zsh-baseline-env.txt
 ```
 
-Expected: XDG_*, HOMEBREW_*, PNPM_HOME, TERM などが列挙される。
+Expected: XDG*\*, HOMEBREW*\*, PNPM_HOME, TERM などが列挙される。
 
 - [ ] **Step 0.4: 起動時間ベースラインを記録**
 
@@ -126,6 +127,7 @@ Expected: 各行に `zsh -i -c exit  0.04s user ...` 形式のタイムが出る
 ## Task 1: worktree 機能の廃止
 
 **Files:**
+
 - Modify: `dot_config/zsh/split/functions.zsh` (worktree 関連 12 関数を削除)
 - Delete: `dot_config/zsh/split/wt-interactive.zsh`
 - Modify: `dot_tmux.conf` (line 105 の `bind g` 削除)
@@ -241,6 +243,7 @@ EOF
 **Why:** 後続タスクで init/, modules/, features/ を作る前に、既存の split/options.zsh / plugins.zsh / aliases.zsh / atcoder.zsh を最終配置に移しておくことで、dot_zshrc.tmpl の include パス書き換えが 1 回で済む。
 
 **Files:**
+
 - Move: `dot_config/zsh/split/options.zsh` → `dot_config/zsh/init/options.zsh`
 - Move: `dot_config/zsh/split/plugins.zsh` → `dot_config/zsh/init/plugins.zsh`
 - Move: `dot_config/zsh/split/aliases.zsh` → `dot_config/zsh/aliases.zsh`
@@ -274,6 +277,7 @@ Expected: `functions.zsh` のみ残る。
 `dot_zshrc.tmpl` の以下を編集:
 
 Before (line 131-137):
+
 ```
 {{ include "dot_config/zsh/split/plugins.zsh" }}
 {{ include "dot_config/zsh/split/options.zsh" }}
@@ -285,6 +289,7 @@ Before (line 131-137):
 ```
 
 After:
+
 ```
 {{ include "dot_config/zsh/init/plugins.zsh" }}
 {{ include "dot_config/zsh/init/options.zsh" }}
@@ -298,6 +303,7 @@ After:
 (`functions.zsh` は次タスクで分解するのでまだ split/ パスのまま)
 
 確認:
+
 ```bash
 grep -nE 'split/(options|plugins|aliases|atcoder)' dot_zshrc.tmpl
 ```
@@ -309,16 +315,19 @@ Expected: マッチなし。
 `.chezmoiignore` の line 49:
 
 Before:
+
 ```
 .config/zsh/split/atcoder.zsh
 ```
 
 After:
+
 ```
 .config/zsh/atcoder.zsh
 ```
 
 確認:
+
 ```bash
 grep -nE 'zsh/(split/)?atcoder' .chezmoiignore
 ```
@@ -332,6 +341,7 @@ just lint && chezmoi diff
 ```
 
 Expected:
+
 - lint 成功
 - chezmoi diff は **ファイル移動の差分のみ** (`~/.config/zsh/split/{options,plugins,aliases,atcoder}.zsh` の削除と `~/.config/zsh/init/{options,plugins}.zsh` `~/.config/zsh/{aliases,atcoder}.zsh` の作成)
 - **`~/.zshrc` の生成内容は変わらないこと** を確認（`chezmoi diff ~/.zshrc` で確認可能、または diff 全体に `~/.zshrc` の差分が含まれていないこと）
@@ -380,6 +390,7 @@ EOF
 **Why:** 起動シーケンス（順序クリティカル）の各セクションを `init/` 配下の独立ファイルに切り出す。`{{ include }}` で同じ順番に並べることで、生成される `~/.zshrc` の内容は不変。
 
 **Files:**
+
 - Create: `dot_config/zsh/init/xdg.zsh`
 - Create: `dot_config/zsh/init/homebrew.zsh.tmpl`
 - Create: `dot_config/zsh/init/terminal.zsh`
@@ -559,6 +570,7 @@ fi
 最初のセクション（profiling、line 1-4）は `dot_zshrc.tmpl` に残す。
 
 確認:
+
 ```bash
 grep -nE 'XDG_CONFIG_HOME=|brew shellenv|TERM=xterm-ghostty|DISABLE_MAGIC_FUNCTIONS|mise activate|auto_tmux\(\)|p10k-instant-prompt' dot_zshrc.tmpl
 ```
@@ -572,6 +584,7 @@ just lint && chezmoi diff
 ```
 
 Expected:
+
 - lint 成功
 - chezmoi diff は **新規ファイル作成の差分のみ** (`~/.config/zsh/init/*.zsh` 群の追加)
 - **`~/.zshrc` の生成内容は変わらないこと** を確認（diff に `~/.zshrc` 自体の差分が含まれていないこと）
@@ -606,6 +619,7 @@ EOF
 ## Task 4: dot_zshrc.tmpl から modules/ セクションを抽出
 
 **Files:**
+
 - Create: `dot_config/zsh/modules/ssh-agent.zsh.tmpl`
 - Create: `dot_config/zsh/modules/bun.zsh`
 - Create: `dot_config/zsh/modules/pnpm.zsh`
@@ -766,6 +780,7 @@ export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"
 - Powerlevel10k configuration block → `{{ include "dot_config/zsh/modules/p10k-config.zsh" }}`
 
 確認:
+
 ```bash
 grep -nE 'SSH_AUTH_SOCK|_bun|PNPM_HOME=|vite-plus/env|_cf.zsh|CLAUDE_CODE_ENABLE_TELEMETRY|env.local|p10k.zsh' dot_zshrc.tmpl
 ```
@@ -779,6 +794,7 @@ just lint && chezmoi diff
 ```
 
 Expected:
+
 - lint 成功
 - chezmoi diff は **新規ファイル作成の差分のみ** (`~/.config/zsh/modules/*.zsh` 群の追加)
 - **`~/.zshrc` の生成内容は変わらないこと** を確認
@@ -816,6 +832,7 @@ EOF
 **Why:** `functions.zsh` (現状 ~450 行、worktree 削除済み) を 11 ドメイン別ファイルに分割する。各ファイルは独立した機能カテゴリで、内部のグローバル変数共有はファイル内に閉じる。
 
 **Files:**
+
 - Create: 11 files under `dot_config/zsh/features/`
 - Delete: `dot_config/zsh/split/functions.zsh`
 - Delete: `dot_config/zsh/split/` (空になるため)
@@ -849,10 +866,12 @@ Expected: マッチなし。
 `dot_config/zsh/features/branch-cleanup.zsh`:
 
 `functions.zsh` から以下を切り出す:
+
 - `PROTECTED_BRANCHES` 変数定義
 - `rub()` 関数
 
 確認:
+
 ```bash
 grep -rn 'PROTECTED_BRANCHES\|rub()' dot_config/zsh/ | grep -v features/branch-cleanup.zsh
 ```
@@ -864,6 +883,7 @@ Expected: マッチなし。
 `dot_config/zsh/features/profiling.zsh`:
 
 `functions.zsh` から:
+
 - `zprofiler()` (1 行)
 - `zshtime()` (1 行)
 
@@ -872,6 +892,7 @@ Expected: マッチなし。
 `dot_config/zsh/features/local-config-cmd.zsh`:
 
 `functions.zsh` から:
+
 - `local-env()` 関数
 - `local-zsh()` 関数
 
@@ -882,6 +903,7 @@ Expected: マッチなし。
 `dot_config/zsh/features/documentation.zsh`:
 
 `functions.zsh` から:
+
 - `vdoc()` 関数
 
 - [ ] **Step 5.6: dotfiles-helpers.zsh を作成**
@@ -889,6 +911,7 @@ Expected: マッチなし。
 `dot_config/zsh/features/dotfiles-helpers.zsh`:
 
 `functions.zsh` から:
+
 - `dots()` 関数 (chezmoi ヘルパ)
 
 - [ ] **Step 5.7: cache-mgmt.zsh を作成**
@@ -896,6 +919,7 @@ Expected: マッチなし。
 `dot_config/zsh/features/cache-mgmt.zsh`:
 
 `functions.zsh` から:
+
 - `zsh-clear-cache()`
 - `zsh-update-cache()`
 - `zsh-bench()`
@@ -905,10 +929,12 @@ Expected: マッチなし。
 `dot_config/zsh/features/dotenv-auto.zsh`:
 
 `functions.zsh` から:
+
 - `_auto_dotenv()` 関数
 - `add-zsh-hook precmd _auto_dotenv` (関連 hook 登録があれば)
 
 確認:
+
 ```bash
 grep -n 'add-zsh-hook.*_auto_dotenv\|chpwd_functions.*_auto_dotenv' dot_config/zsh/features/dotenv-auto.zsh
 ```
@@ -920,6 +946,7 @@ Expected: マッチあり (hook 登録が含まれている)。
 `dot_config/zsh/features/kube.zsh`:
 
 `functions.zsh` から:
+
 - `kctx()`
 - `kns()`
 - `kinfo()`
@@ -929,11 +956,13 @@ Expected: マッチあり (hook 登録が含まれている)。
 `dot_config/zsh/features/rgn.zsh`:
 
 `functions.zsh` から:
+
 - `rgn()` 関数
 - `_rgn_widget()` 関数
 - `zle -N _rgn_widget` と関連 bindkey (元コードの最寄りの bindkey 行)
 
 確認:
+
 ```bash
 grep -n 'zle -N _rgn_widget\|bindkey.*_rgn' dot_config/zsh/features/rgn.zsh
 ```
@@ -945,6 +974,7 @@ Expected: 両方マッチ。
 `dot_config/zsh/features/devbox-brew.zsh`:
 
 `functions.zsh` から:
+
 - `devbox()` ラッパ関数
 - `brewbundle()` 関数
 
@@ -971,11 +1001,13 @@ Expected: `No such file or directory` または該当ディレクトリなし。
 `dot_zshrc.tmpl` 内の以下の行:
 
 Before:
+
 ```
 {{ include "dot_config/zsh/split/functions.zsh" }}
 ```
 
 After (11 個の include に置換):
+
 ```
 {{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
 {{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
@@ -991,6 +1023,7 @@ After (11 個の include に置換):
 ```
 
 確認:
+
 ```bash
 grep -nE 'split/' dot_zshrc.tmpl
 ```
@@ -1004,6 +1037,7 @@ just lint && chezmoi diff
 ```
 
 Expected:
+
 - lint 成功
 - chezmoi diff は **`~/.config/zsh/split/functions.zsh` の削除 + `~/.config/zsh/features/*.zsh` 群の追加** のみ
 - **`~/.zshrc` の生成内容は変わらないこと** を確認
@@ -1052,6 +1086,7 @@ EOF
 **Why:** Task 3〜5 で各セクションが include に置換された結果、`dot_zshrc.tmpl` は冗長な分割コメントを抱えている可能性がある。最終形に整える。
 
 **Files:**
+
 - Modify: `dot_zshrc.tmpl`
 
 - [ ] **Step 6.1: dot_zshrc.tmpl の最終形を確認**
@@ -1144,6 +1179,7 @@ just lint && chezmoi diff
 ```
 
 Expected:
+
 - lint 成功
 - chezmoi diff は **空** または **`~/.zshrc` のコメント・空白行整理のみ**（Task 6 はオーケストレータ整形のため、生成内容に実質的な差分は出ないはず）
 
@@ -1178,6 +1214,7 @@ git diff --stat dot_zshrc.tmpl
 ```
 
 差分がある場合のみ:
+
 ```bash
 git add dot_zshrc.tmpl
 git commit -m "$(cat <<'EOF'
@@ -1200,6 +1237,7 @@ EOF
 **Why:** 副作用あるファイル (init/, modules/, 副作用ある features/) に `# Provides:` `# Requires:` `# Side-effects:` `# Load-order:` ヘッダを付与する。grep で「危険なファイル」を一括検索可能にする。
 
 **Files:**
+
 - Modify: 全 `init/` ファイル (9 個)
 - Modify: 全 `modules/` ファイル (8 個)
 - Modify: 副作用ある `features/` ファイル: `ghq-fzf.zsh`, `rgn.zsh`, `dotenv-auto.zsh`
@@ -1461,6 +1499,7 @@ EOF
 ## Task 8: justfile に lint-headers ターゲット追加
 
 **Files:**
+
 - Modify: `justfile`
 
 - [ ] **Step 8.1: justfile に lint-headers ターゲット追加**
@@ -1483,11 +1522,13 @@ lint-headers:
 `test` ターゲットの依存に追加:
 
 Before:
+
 ```just
 test: lint fmt-check test-hooks
 ```
 
 After:
+
 ```just
 test: lint lint-headers fmt-check test-hooks
 ```
@@ -1511,6 +1552,7 @@ just lint-headers
 Expected: exit code 非ゼロ、`✗ dot_config/zsh/init/xdg.zsh: missing '# Provides:' header` と表示。
 
 復元:
+
 ```bash
 mv dot_config/zsh/init/xdg.zsh.bak dot_config/zsh/init/xdg.zsh
 just lint-headers
@@ -1570,6 +1612,7 @@ wc -l dot_config/zsh/init/*.zsh* dot_config/zsh/modules/*.zsh* dot_config/zsh/fe
 ```
 
 Expected:
+
 - `dot_zshrc.tmpl` ≤ 70 行
 - `init/`, `modules/`, `features/` 各ファイル ≤ 120 行 (ただし `init/plugins.zsh` は ~220 行で例外、spec で許容)
 
@@ -1702,20 +1745,20 @@ EOF
 
 Spec coverage check (mapping spec sections → tasks):
 
-| Spec section | Implementing task |
-|--------------|-------------------|
-| ディレクトリ構造 (`init/`/`modules/`/`features/`) | Task 3, 4, 5 |
-| dot_zshrc.tmpl 縮小形 (~70 行) | Task 6 |
-| ヘッダ規約 (副作用ありファイル) | Task 7 |
-| CI lint-headers | Task 8 |
-| worktree 廃止 | Task 1 |
-| split/ 上位移動 | Task 2 |
-| .chezmoiignore パス更新 | Task 2 (Step 2.4) |
-| 副作用ホットスポット 5 件 | Task 1 (tmux bind g), Task 2 (.chezmoiignore), Task 5 (`_GHQ_CACHE`, `PROTECTED_BRANCHES`), 暗黙対応 (`le`/`lz` abbr) |
-| マイグレーション順序 (8 ステップ) | Task 1〜8 |
-| 検証チェックリスト (10 項目) | Task 9 (各 Step が 1 項目に対応) |
-| Done 条件 (12 項目) | Task 9 で全項目チェック |
-| ロールバック計画 | プラン外 (常に有効) |
+| Spec section                                      | Implementing task                                                                                                     |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| ディレクトリ構造 (`init/`/`modules/`/`features/`) | Task 3, 4, 5                                                                                                          |
+| dot_zshrc.tmpl 縮小形 (~70 行)                    | Task 6                                                                                                                |
+| ヘッダ規約 (副作用ありファイル)                   | Task 7                                                                                                                |
+| CI lint-headers                                   | Task 8                                                                                                                |
+| worktree 廃止                                     | Task 1                                                                                                                |
+| split/ 上位移動                                   | Task 2                                                                                                                |
+| .chezmoiignore パス更新                           | Task 2 (Step 2.4)                                                                                                     |
+| 副作用ホットスポット 5 件                         | Task 1 (tmux bind g), Task 2 (.chezmoiignore), Task 5 (`_GHQ_CACHE`, `PROTECTED_BRANCHES`), 暗黙対応 (`le`/`lz` abbr) |
+| マイグレーション順序 (8 ステップ)                 | Task 1〜8                                                                                                             |
+| 検証チェックリスト (10 項目)                      | Task 9 (各 Step が 1 項目に対応)                                                                                      |
+| Done 条件 (12 項目)                               | Task 9 で全項目チェック                                                                                               |
+| ロールバック計画                                  | プラン外 (常に有効)                                                                                                   |
 
 Placeholder scan: 「TBD」「TODO」「implement later」「fill in details」なし — 確認済み。
 

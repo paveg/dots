@@ -1,7 +1,6 @@
 # ipo-decision skill — Design (v1)
 
-Date: 2026-06-03
-Status: Approved (design), pending spec review → writing-plans
+Date: 2026-06-03 Status: Approved (design), pending spec review → writing-plans
 
 ## Purpose
 
@@ -66,13 +65,13 @@ Append an IPO deep-dive menu (需給再計算 / ロックアップ解除スケ�
 ## Supply/demand rubric (`ipo-supply-demand-rubric.md`)
 
 Threshold-based scoring (the IPO analogue of `dcf-rubric.md`):
+
 - 吸収額: 小型 (<¥100億)=需給良 / 中型 (¥100–500億)=中立 / 大型 (>¥500億)=需給重
 - 売出比率: 高 (既存株主の換金主体)=ネガ
 - 親会社/VC/創業者の放出: 全株売出=強ネガ; 残存保有大+ロックアップ=ポジ
 - ロックアップ: 期間 (90/180日) と解除価格条件 (例 1.5倍) の有無
 - オーバーアロットメント / グリーンシューオプションの規模
-- 公開価格の対類似企業ディスカウント有無 (割安設定=初値プレミアム期待)
-→ Combine into a directional 公募割れリスクレベル. Document is guidance, not a hard formula; the memo states which factors drove the level.
+- 公開価格の対類似企業ディスカウント有無 (割安設定=初値プレミアム期待) → Combine into a directional 公募割れリスクレベル. Document is guidance, not a hard formula; the memo states which factors drove the level.
 
 ## IPO-specific fail-loud rules
 

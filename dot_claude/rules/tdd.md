@@ -17,14 +17,14 @@
 
 ## Common Rationalizations to Reject
 
-| Excuse | Why it's wrong |
-| :----- | :------------- |
-| "This is too simple to test" | Simple code breaks too. The test takes 30 seconds to write |
-| "I'll write tests after" | A test that has never failed proves nothing about your code |
-| "I'll keep the existing code as reference" | You will adapt it. That IS test-after development |
-| "I already tested it manually" | Ad-hoc verification ≠ systematic regression coverage |
-| "TDD will slow me down" | Debugging without tests is slower. Always |
-| "This is different because…" | It's not. Start over with a failing test |
+| Excuse                                     | Why it's wrong                                              |
+| :----------------------------------------- | :---------------------------------------------------------- |
+| "This is too simple to test"               | Simple code breaks too. The test takes 30 seconds to write  |
+| "I'll write tests after"                   | A test that has never failed proves nothing about your code |
+| "I'll keep the existing code as reference" | You will adapt it. That IS test-after development           |
+| "I already tested it manually"             | Ad-hoc verification ≠ systematic regression coverage        |
+| "TDD will slow me down"                    | Debugging without tests is slower. Always                   |
+| "This is different because…"               | It's not. Start over with a failing test                    |
 
 ## Exceptions
 

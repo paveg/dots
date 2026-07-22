@@ -26,17 +26,20 @@ Delegate a task to a background agent running in an isolated git worktree. Your 
 ## Phase 2: Launch Background Agent
 
 Launch an Agent with these parameters:
+
 - `isolation: "worktree"` — runs in a fresh worktree copy
 - `run_in_background: true` — does not block the main session
 - `description` — short summary (3-5 words)
 
 The agent prompt MUST include:
+
 - The full task description
 - Instruction to: implement the fix, make atomic commits, push the branch, create a PR via `gh pr create`
 - Instruction to keep changes minimal and focused
 - The base branch to target for the PR (usually `main`)
 
 Example agent prompt structure:
+
 ```
 You are working in an isolated git worktree. Your task:
 
@@ -55,6 +58,7 @@ Steps:
 ## Phase 3: Confirm & Continue
 
 After launching the agent:
+
 1. Tell the user the background task is running
 2. Mention the branch name for reference
 3. Remind them they'll be notified when it completes
@@ -62,5 +66,6 @@ After launching the agent:
 5. **Resume the previous conversation context** — the whole point is zero interruption
 
 When the background agent completes:
+
 - Report the PR URL to the user
 - Suggest cleanup: `wt rm {name}` or let the worktree auto-cleanup

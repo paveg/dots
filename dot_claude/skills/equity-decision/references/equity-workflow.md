@@ -1,5 +1,4 @@
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Individual Stock Workflow — 5 Phase Template
 
@@ -7,9 +6,10 @@ When the skill is invoked with an individual stock ticker (US or JP), fill this 
 
 ## Template
 
-````markdown
+```markdown
 # {Company Name} ({TICKER}) — Purchase Memo
-*Generated: {YYYY-MM-DD} | Last close: {currency}{price} ({30d %} ↑↓)*
+
+_Generated: {YYYY-MM-DD} | Last close: {currency}{price} ({30d %} ↑↓)_
 
 > Research summary only — not investment advice.
 
@@ -18,42 +18,42 @@ When the skill is invoked with an individual stock ticker (US or JP), fill this 
 {Two- or three-sentence business description, ≤80 chars per sentence}
 
 | Segment | % of revenue (FY{N}) | YoY growth |
-|---|---|---|
-| {Seg 1} | {%} | {%} |
-| {Seg 2} | {%} | {%} |
-| {Seg 3} | {%} | {%} |
+| ------- | -------------------- | ---------- |
+| {Seg 1} | {%}                  | {%}        |
+| {Seg 2} | {%}                  | {%}        |
+| {Seg 3} | {%}                  | {%}        |
 
 Customer concentration: {one line — top customer %, top-5 %, or "not disclosed"}
 
 ## 2. Fundamentals (3y trend)
 
-| Metric | FY-2 | FY-1 | FY (TTM) | Comment |
-|---|---|---|---|---|
-| Revenue ({currency}) | … | … | … | CAGR {%} |
-| Gross / Operating / Net margin | … | … | … | {trend} |
-| FCF margin | … | … | … | {SBC-adjusted? yes/no} |
-| ROIC | … | … | … | {vs WACC} |
-| Net debt / EBITDA | … | … | … | {trend} |
-| Diluted share count Δ | … | … | … | {SBC dilution rate %} |
+| Metric                         | FY-2 | FY-1 | FY (TTM) | Comment                |
+| ------------------------------ | ---- | ---- | -------- | ---------------------- |
+| Revenue ({currency})           | …    | …    | …        | CAGR {%}               |
+| Gross / Operating / Net margin | …    | …    | …        | {trend}                |
+| FCF margin                     | …    | …    | …        | {SBC-adjusted? yes/no} |
+| ROIC                           | …    | …    | …        | {vs WACC}              |
+| Net debt / EBITDA              | …    | …    | …        | {trend}                |
+| Diluted share count Δ          | …    | …    | …        | {SBC dilution rate %}  |
 
 ## 3. Valuation
 
 **Multiples (vs sector median)**:
 
-| | This | Sector median | Gap |
-|---|---|---|---|
-| PER (TTM) | … | … | +{%} |
-| PSR | … | … | +{%} |
-| EV / EBITDA | … | … | +{%} |
-| EV / FCF | … | … | +{%} |
+|             | This | Sector median | Gap  |
+| ----------- | ---- | ------------- | ---- |
+| PER (TTM)   | …    | …             | +{%} |
+| PSR         | …    | …             | +{%} |
+| EV / EBITDA | …    | …             | +{%} |
+| EV / FCF    | …    | …             | +{%} |
 
 **DCF (5y + terminal)** — guardrails per `dcf-rubric.md`:
 
 | Scenario | 売上 CAGR | Terminal g | WACC | Fair value / share |
-|---|---|---|---|---|
-| Bear | … | … | … | {currency}{value} |
-| Base | … | … | … | {currency}{value} |
-| Bull | … | … | … | {currency}{value} |
+| -------- | --------- | ---------- | ---- | ------------------ |
+| Bear     | …         | …          | …    | {currency}{value}  |
+| Base     | …         | …          | …    | {currency}{value}  |
+| Bull     | …         | …          | …    | {currency}{value}  |
 
 → Current {currency}{price} is in the **{bear/base/bull}** range. Upside +{%}, downside −{%}.
 
@@ -68,28 +68,29 @@ Customer concentration: {one line — top customer %, top-5 %, or "not disclosed
 ## 5. Verdict
 
 **Thesis (why buy now)**:
+
 1. {claim grounded in Phase 2 or 3 data}
 2. {claim}
 3. {claim}
 
 **Invalidation (these would break the thesis)**:
+
 1. {testable KPI — e.g., "Q3 で Data Center YoY が +30% を下回る"}
 2. {testable KPI}
 3. {testable KPI}
 
-**Verdict**: {Buy / Watch / Pass}
-**Suggested sizing**: {Small <2% / Medium 2–5% / Large >5%} of portfolio
-**Time horizon**: {6mo / 1–3y / 5y+}
+**Verdict**: {Buy / Watch / Pass} **Suggested sizing**: {Small <2% / Medium 2–5% / Large >5%} of portfolio **Time horizon**: {6mo / 1–3y / 5y+}
 
 ---
 
 深掘りする？
-  1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
-  2. risks #N をフィリングから根拠引用つきで再構成
-  3. 競合 X 社との指標横並び比較
-  4. 直近 3 四半期の earnings call 言及トピック差分
-  5. KPI モニタを 5 つに絞り込む
-````
+
+1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
+2. risks #N をフィリングから根拠引用つきで再構成
+3. 競合 X 社との指標横並び比較
+4. 直近 3 四半期の earnings call 言及トピック差分
+5. KPI モニタを 5 つに絞り込む
+```
 
 ## Filling rules
 

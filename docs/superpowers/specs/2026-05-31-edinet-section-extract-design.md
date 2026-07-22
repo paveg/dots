@@ -1,12 +1,13 @@
 # Design: EDINET 有報セクション自動抽出
 
-*Date: 2026-05-31 | Target: `~/.claude/skills/equity-decision/scripts/fetch_edinet.py` + workflow docs*
+_Date: 2026-05-31 | Target: `~/.claude/skills/equity-decision/scripts/fetch_edinet.py` + workflow docs_
 
 ## Problem
 
 `fetch_edinet.py` は書類インデックス（有報の docID + URL）を返すところまでしか自動化されておらず、有報本文の「訴訟事件等」「監査の状況」は人手で取得・解析する必要がある。equity-decision memo の Phase 4 で `⚖️ Regulation/litigation` と `📚 Accounting` が `数字取得失敗` のまま残る原因。
 
 加えて2つの隣接課題:
+
 - `TARGET_TYPES = ("120","140")` の `140`（四半期報告書）は2024年の開示制度改正で廃止済み。早期 break 条件を満たせず常に400日フル探索になり遅い。
 - `op` がツールシェル（非対話）で認証できず、キー取得が手動 `!` に依存していた。
 
@@ -34,6 +35,7 @@
 ### B. 抽出パイプライン
 
 実物調査（OLC 第65期 S100VY55）で確定した事実:
+
 - 監査 → 専用要素 `jpcrp_cor:AuditsTextBlock`（「(3)【監査の状況】…」）が存在。
 - 訴訟 → 専用 TextBlock は**存在しない**。`訴訟|係争|損害賠償` は `BusinessRisksTextBlock` 等に一般言及として散在するのみ。
 - → ラベル linkbase parsing は不要。要素 local-name 直指定＋キーワードスキャンで足りる。
@@ -46,9 +48,16 @@
 6. de-tag は `lxml.html.fromstring(text).text_content()` ＋空白正規化。
 7. 出力:
    ```json
-   {"docID": "...", "sections": {
-     "audit": {"element": "AuditsTextBlock", "found": true, "text": "..."},
-     "litigation": {"found": true, "matches": [{"element": "BusinessRisksTextBlock", "snippet": "..."}]}}}
+   {
+     "docID": "...",
+     "sections": {
+       "audit": { "element": "AuditsTextBlock", "found": true, "text": "..." },
+       "litigation": {
+         "found": true,
+         "matches": [{ "element": "BusinessRisksTextBlock", "snippet": "..." }]
+       }
+     }
+   }
    ```
    監査要素が無ければ `audit.found=false, text=null`。訴訟ヒット無しは `litigation.found=false, matches=[]`（memo は「重大な係争の個別開示なし」と扱う）。
 

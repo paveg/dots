@@ -15,6 +15,7 @@ paths:
 ## Syntax Checking
 
 Chezmoi templates break zsh syntax checking. CI removes template syntax before checking:
+
 ```bash
 sed 's/{{[^}]*}}//g' file.tmpl > /tmp/check.zsh && zsh -n /tmp/check.zsh
 ```

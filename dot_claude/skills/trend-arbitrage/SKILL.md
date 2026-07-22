@@ -10,24 +10,21 @@ argument-hint: <topic or idea>
 
 # Trend Arbitrage Skill
 
-Find "Volume: High / Difficulty: Low" gaps in any market and turn them into
-actionable content or product strategies. Based on the methodology of identifying
-demand-supply mismatches before competitors notice them.
+Find "Volume: High / Difficulty: Low" gaps in any market and turn them into actionable content or product strategies. Based on the methodology of identifying demand-supply mismatches before competitors notice them.
 
 ## Core Concept
 
 Trend Arbitrage = Finding topics where **search demand is growing** but **quality supply is scarce**.
 
 Three conditions must ALL be true:
+
 1. **Breakout** — Search volume rising sharply in recent months
 2. **Information Gap** — Top results are outdated, thin, or user-generated (Q&A sites, forums)
 3. **High Intent** — Searchers want to solve a problem, buy something, or learn a specific skill
 
 ## Initial Classification
 
-Before starting any phase, use `ask_user_input` to classify the opportunity type unless
-the user has already made it clear. This determines which discovery methods, validation
-criteria, and strategy templates to use.
+Before starting any phase, use `ask_user_input` to classify the opportunity type unless the user has already made it clear. This determines which discovery methods, validation criteria, and strategy templates to use.
 
 **Always ask upfront:**
 
@@ -44,8 +41,7 @@ criteria, and strategy templates to use.
    - Medium play (1-3 months to build)
    - Long-term bet (3-12 months, bigger moat)
 
-The answers shape every subsequent phase — discovery sources, validation criteria,
-strategy templates, and execution plans all differ by type.
+The answers shape every subsequent phase — discovery sources, validation criteria, strategy templates, and execution plans all differ by type.
 
 ## Workflow Overview
 
@@ -67,22 +63,26 @@ Read `references/phases.md` for the detailed procedure of each phase.
 **Methods by type** (use web_search for all):
 
 ### Content gaps:
+
 1. Google Trends exploration — rising queries in the niche
 2. Community pain points — Reddit, forums, Q&A sites with repeated unanswered questions
 3. Supply-side audit — search results dominated by outdated/thin content
 
 ### App/Tool gaps:
+
 1. "I wish there was an app for..." signals — Reddit, X/Twitter, Hacker News, Product Hunt comments
 2. Existing tool complaints — App Store/Play Store reviews with recurring frustration patterns
 3. Technology accessibility gaps — powerful tech (AI, APIs) that lacks a simple UI wrapper
 4. Adjacent tool search — what tools exist in adjacent markets but not this one?
 
 ### Service gaps:
+
 1. Hiring pain signals — "looking for [role]" posts with complaints about cost/quality/speed
 2. Process pain — "how do I [task]" where answers are complex and people clearly want someone to do it for them
 3. Freelancer marketplace gaps — Fiverr/Upwork categories with low ratings or sparse supply
 
 ### Product gaps:
+
 1. Curation demand — "best [resources] for [niche]" with no definitive answer
 2. Template/framework demand — "how to [process]" where a reusable template would save time
 3. Data gaps — frequently asked questions requiring research that nobody has packaged
@@ -103,33 +103,26 @@ Validation criteria shift by opportunity type:
 
 ### For Content gaps:
 
-**Demand Score (1-5)**: Based on search volume and community interest
-**Supply Score (1-5, inverted)**: Based on quality/freshness of existing content
-**Intent Score (1-5)**: From casual browsing (1) to purchase-ready (5)
+**Demand Score (1-5)**: Based on search volume and community interest **Supply Score (1-5, inverted)**: Based on quality/freshness of existing content **Intent Score (1-5)**: From casual browsing (1) to purchase-ready (5)
 
 ### For App/Tool gaps:
 
-**Demand Score (1-5)**: Based on how many people are asking for this tool, workaround complexity
-**Supply Score (1-5, inverted)**: Based on existing tools' quality, UX, and pricing gaps
-**Feasibility Score (1-5)**: Can the user realistically build this? (replaces Intent for apps)
+**Demand Score (1-5)**: Based on how many people are asking for this tool, workaround complexity **Supply Score (1-5, inverted)**: Based on existing tools' quality, UX, and pricing gaps **Feasibility Score (1-5)**: Can the user realistically build this? (replaces Intent for apps)
 
 ### For Service gaps:
 
-**Demand Score (1-5)**: Based on hiring posts, freelancer marketplace activity, complaint volume
-**Supply Score (1-5, inverted)**: Based on existing service providers' quality, speed, pricing
-**Margin Score (1-5)**: Is the willingness-to-pay high enough for sustainable solo delivery?
+**Demand Score (1-5)**: Based on hiring posts, freelancer marketplace activity, complaint volume **Supply Score (1-5, inverted)**: Based on existing service providers' quality, speed, pricing **Margin Score (1-5)**: Is the willingness-to-pay high enough for sustainable solo delivery?
 
 ### For Product gaps:
 
-**Demand Score (1-5)**: Based on how often people search for / ask about this resource
-**Supply Score (1-5, inverted)**: Does a good version of this product already exist?
-**Packaging Score (1-5)**: How easily can scattered information be packaged into a sellable unit?
+**Demand Score (1-5)**: Based on how often people search for / ask about this resource **Supply Score (1-5, inverted)**: Does a good version of this product already exist? **Packaging Score (1-5)**: How easily can scattered information be packaged into a sellable unit?
 
 **Arbitrage Score** = Metric1 × Metric2 × Metric3 (max 125)
 
 Produce a validation report. Read `references/validation-template.md` for the format.
 
 **Thresholds**:
+
 - Score ≥ 60: Strong GO — prioritize immediately
 - Score 30-59: Conditional — worth pursuing if you have domain expertise
 - Score < 30: PASS — not enough edge
@@ -140,16 +133,17 @@ Produce a validation report. Read `references/validation-template.md` for the fo
 
 Determine the optimal **format** based on the gap type:
 
-| Gap Type | Best Format | Example |
-|----------|-------------|---------|
-| No comprehensive guide exists | Long-form article/guide | "Complete Guide to X" |
-| Info is scattered across forums | Curated resource list | "Internet Pipes" style |
-| Existing tools are too complex | Simple tool/template | PhotoAI model |
-| No localized version exists | Localized adaptation | JapanDrop-style newsletter |
-| Information changes frequently | Newsletter/subscription | Milk Road model |
-| People need ongoing help | Community or service | Designjoy model |
+| Gap Type                        | Best Format             | Example                    |
+| ------------------------------- | ----------------------- | -------------------------- |
+| No comprehensive guide exists   | Long-form article/guide | "Complete Guide to X"      |
+| Info is scattered across forums | Curated resource list   | "Internet Pipes" style     |
+| Existing tools are too complex  | Simple tool/template    | PhotoAI model              |
+| No localized version exists     | Localized adaptation    | JapanDrop-style newsletter |
+| Information changes frequently  | Newsletter/subscription | Milk Road model            |
+| People need ongoing help        | Community or service    | Designjoy model            |
 
 Strategy output must include:
+
 1. **Positioning statement**: "For [audience] who [pain point], this is [format] that [unique value]"
 2. **Content angle**: What specific angle differentiates from existing content
 3. **Monetization path**: How this becomes revenue (ads, product, affiliate, service, subscription)
@@ -164,29 +158,27 @@ Strategy output must include:
 Output a week-by-week plan:
 
 **Week 1: Foundation**
+
 - Keyword list (primary + long-tail)
 - Content outline or product spec
 - Distribution channel selection
 
 **Week 2-3: Creation**
+
 - Content/product creation milestones
 - Draft → Review → Publish pipeline
 
 **Week 4: Launch & Measure**
+
 - Distribution plan (SEO, social, community seeding)
 - Metrics tracking setup
 - Iteration triggers (when to double down vs pivot)
 
-If the user's project context is known (e.g., JapanDrop, Tuck), tailor the execution plan
-to fit their existing infrastructure and tech stack.
+If the user's project context is known (e.g., JapanDrop, Tuck), tailor the execution plan to fit their existing infrastructure and tech stack.
 
 ## Usage Modes
 
-**Quick scan**: User says "find opportunities in [niche]" → Classify, then run Phase 1 only
-**Full analysis**: User says "analyze [specific topic/idea]" → Classify, then run Phase 2 + 3
-**End-to-end**: User says "find and plan a new project" → Classify, then run all 4 phases
-**Validation only**: User says "is [topic/app idea] worth pursuing?" → Classify, then Phase 2 only
-**Recon**: User says "what gaps exist in [market]?" → Classify all 4 types, run Phase 1 across types
+**Quick scan**: User says "find opportunities in [niche]" → Classify, then run Phase 1 only **Full analysis**: User says "analyze [specific topic/idea]" → Classify, then run Phase 2 + 3 **End-to-end**: User says "find and plan a new project" → Classify, then run all 4 phases **Validation only**: User says "is [topic/app idea] worth pursuing?" → Classify, then Phase 2 only **Recon**: User says "what gaps exist in [market]?" → Classify all 4 types, run Phase 1 across types
 
 ## Important Principles
 

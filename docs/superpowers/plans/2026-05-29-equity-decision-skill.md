@@ -5,12 +5,14 @@
 **Goal:** Build a Claude Code skill `equity-decision` that produces a 1-page purchase memo for a US or JP stock when invoked with a ticker, walking 5 phases (business → fundamentals → valuation → risks → verdict) and ending with deep-dive options.
 
 **Architecture:**
+
 - chezmoi-managed source at `dot_claude/skills/equity-decision/`, deploys to `~/.claude/skills/equity-decision/`
 - SKILL.md as entry; phase templates and rubrics in `references/`; data fetchers as PEP 723 standalone Python scripts in `scripts/`
 - Adapted from anthropics/financial-services (Apache 2.0) but using only free data (SEC EDGAR, EDINET, Yahoo Finance, NYU Damodaran)
 - v1 covers Phase A (skeleton, hand-fill) + Phase B (fetchers, automated). ETF (Phase C) and polish (Phase D) deferred
 
 **Tech Stack:**
+
 - Markdown for skill content (SKILL.md, references)
 - Python 3.11+ via `uv run` (PEP 723 inline metadata) — no `devbox add`, no global pip
 - Fetcher deps: `yfinance`, `requests`, `beautifulsoup4`
@@ -68,6 +70,7 @@ End-state: Claude can be invoked as `/equity-decision NVDA`, will hand-fill the 
 ### Task 1: Create the SKILL.md entry
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/SKILL.md`
 
 - [ ] **Step 1: Write SKILL.md with frontmatter and routing**
@@ -90,26 +93,28 @@ Produces a structured purchase memo for an individual stock (US or JP). Adapted 
 
 ## Inputs
 
-| Form | Example | Routing |
-|---|---|---|
-| US ticker | `NVDA`, `AAPL` | `^[A-Z]{1,5}$` → EDGAR + Yahoo Finance |
-| JP code | `7203`, `9984` | `^\d{4}$` → EDINET + Yahoo Finance (Japan) |
-| URL | `https://www.sec.gov/.../10-K.htm` | Read page; infer symbol; route per above |
-| Mixed | `NVDA "DC 売上の頭打ちが気になる"` | Use the extra string as a hypothesis to test in Phase 5 |
-| Flag | `--ja 9434` | Force JP routing for ambiguous 4-digit |
-| Flag | `--no-cache NVDA` | Skip 24h cache, refetch |
+| Form      | Example                            | Routing                                                 |
+| --------- | ---------------------------------- | ------------------------------------------------------- |
+| US ticker | `NVDA`, `AAPL`                     | `^[A-Z]{1,5}$` → EDGAR + Yahoo Finance                  |
+| JP code   | `7203`, `9984`                     | `^\d{4}$` → EDINET + Yahoo Finance (Japan)              |
+| URL       | `https://www.sec.gov/.../10-K.htm` | Read page; infer symbol; route per above                |
+| Mixed     | `NVDA "DC 売上の頭打ちが気になる"` | Use the extra string as a hypothesis to test in Phase 5 |
+| Flag      | `--ja 9434`                        | Force JP routing for ambiguous 4-digit                  |
+| Flag      | `--no-cache NVDA`                  | Skip 24h cache, refetch                                 |
 
 ## Output
 
 A single markdown memo of 100–200 lines, matching `references/equity-workflow.md` exactly. After the memo, always append:
-
 ```
+
 深掘りする？
-  1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
-  2. risks #N をフィリングから根拠引用つきで再構成
-  3. 競合 X 社との指標横並び比較
-  4. 直近 3 四半期の earnings call 言及トピック差分
-  5. KPI モニタを 5 つに絞り込む
+
+1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
+2. risks #N をフィリングから根拠引用つきで再構成
+3. 競合 X 社との指標横並び比較
+4. 直近 3 四半期の earnings call 言及トピック差分
+5. KPI モニタを 5 つに絞り込む
+
 ```
 
 ## Workflow
@@ -135,6 +140,7 @@ This skill produces research summaries, not investment advice. Verify all number
 - [ ] **Step 2: Smoke-check the frontmatter parses**
 
 Run:
+
 ```bash
 python3 -c "
 import yaml, sys
@@ -164,13 +170,13 @@ git commit -m "feat(skills): scaffold equity-decision SKILL.md"
 ### Task 2: Write the individual-stock 5-phase workflow reference
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/references/equity-workflow.md`
 
 - [ ] **Step 1: Write the template**
 
-```markdown
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+````markdown
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Individual Stock Workflow — 5 Phase Template
 
@@ -180,7 +186,8 @@ When the skill is invoked with an individual stock ticker (US or JP), fill this 
 
 ```markdown
 # {Company Name} ({TICKER}) — Purchase Memo
-*Generated: {YYYY-MM-DD} | Last close: {currency}{price} ({30d %} ↑↓)*
+
+_Generated: {YYYY-MM-DD} | Last close: {currency}{price} ({30d %} ↑↓)_
 
 > Research summary only — not investment advice.
 
@@ -189,42 +196,42 @@ When the skill is invoked with an individual stock ticker (US or JP), fill this 
 {Two- or three-sentence business description, ≤80 chars per sentence}
 
 | Segment | % of revenue (FY{N}) | YoY growth |
-|---|---|---|
-| {Seg 1} | {%} | {%} |
-| {Seg 2} | {%} | {%} |
-| {Seg 3} | {%} | {%} |
+| ------- | -------------------- | ---------- |
+| {Seg 1} | {%}                  | {%}        |
+| {Seg 2} | {%}                  | {%}        |
+| {Seg 3} | {%}                  | {%}        |
 
 Customer concentration: {one line — top customer %, top-5 %, or "not disclosed"}
 
 ## 2. Fundamentals (3y trend)
 
-| Metric | FY-2 | FY-1 | FY (TTM) | Comment |
-|---|---|---|---|---|
-| Revenue ({currency}) | … | … | … | CAGR {%} |
-| Gross / Operating / Net margin | … | … | … | {trend} |
-| FCF margin | … | … | … | {SBC-adjusted? yes/no} |
-| ROIC | … | … | … | {vs WACC} |
-| Net debt / EBITDA | … | … | … | {trend} |
-| Diluted share count Δ | … | … | … | {SBC dilution rate %} |
+| Metric                         | FY-2 | FY-1 | FY (TTM) | Comment                |
+| ------------------------------ | ---- | ---- | -------- | ---------------------- |
+| Revenue ({currency})           | …    | …    | …        | CAGR {%}               |
+| Gross / Operating / Net margin | …    | …    | …        | {trend}                |
+| FCF margin                     | …    | …    | …        | {SBC-adjusted? yes/no} |
+| ROIC                           | …    | …    | …        | {vs WACC}              |
+| Net debt / EBITDA              | …    | …    | …        | {trend}                |
+| Diluted share count Δ          | …    | …    | …        | {SBC dilution rate %}  |
 
 ## 3. Valuation
 
 **Multiples (vs sector median)**:
 
-| | This | Sector median | Gap |
-|---|---|---|---|
-| PER (TTM) | … | … | +{%} |
-| PSR | … | … | +{%} |
-| EV / EBITDA | … | … | +{%} |
-| EV / FCF | … | … | +{%} |
+|             | This | Sector median | Gap  |
+| ----------- | ---- | ------------- | ---- |
+| PER (TTM)   | …    | …             | +{%} |
+| PSR         | …    | …             | +{%} |
+| EV / EBITDA | …    | …             | +{%} |
+| EV / FCF    | …    | …             | +{%} |
 
 **DCF (5y + terminal)** — guardrails per `dcf-rubric.md`:
 
 | Scenario | 売上 CAGR | Terminal g | WACC | Fair value / share |
-|---|---|---|---|---|
-| Bear | … | … | … | {currency}{value} |
-| Base | … | … | … | {currency}{value} |
-| Bull | … | … | … | {currency}{value} |
+| -------- | --------- | ---------- | ---- | ------------------ |
+| Bear     | …         | …          | …    | {currency}{value}  |
+| Base     | …         | …          | …    | {currency}{value}  |
+| Bull     | …         | …          | …    | {currency}{value}  |
 
 → Current {currency}{price} is in the **{bear/base/bull}** range. Upside +{%}, downside −{%}.
 
@@ -239,28 +246,30 @@ Customer concentration: {one line — top customer %, top-5 %, or "not disclosed
 ## 5. Verdict
 
 **Thesis (why buy now)**:
+
 1. {claim grounded in Phase 2 or 3 data}
 2. {claim}
 3. {claim}
 
 **Invalidation (these would break the thesis)**:
+
 1. {testable KPI — e.g., "Q3 で Data Center YoY が +30% を下回る"}
 2. {testable KPI}
 3. {testable KPI}
 
-**Verdict**: {Buy / Watch / Pass}
-**Suggested sizing**: {Small <2% / Medium 2–5% / Large >5%} of portfolio
-**Time horizon**: {6mo / 1–3y / 5y+}
+**Verdict**: {Buy / Watch / Pass} **Suggested sizing**: {Small <2% / Medium 2–5% / Large >5%} of portfolio **Time horizon**: {6mo / 1–3y / 5y+}
 
 ---
 
 深掘りする？
-  1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
-  2. risks #N をフィリングから根拠引用つきで再構成
-  3. 競合 X 社との指標横並び比較
-  4. 直近 3 四半期の earnings call 言及トピック差分
-  5. KPI モニタを 5 つに絞り込む
+
+1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
+2. risks #N をフィリングから根拠引用つきで再構成
+3. 競合 X 社との指標横並び比較
+4. 直近 3 四半期の earnings call 言及トピック差分
+5. KPI モニタを 5 つに絞り込む
 ```
+````
 
 ## Filling rules
 
@@ -271,14 +280,15 @@ Customer concentration: {one line — top customer %, top-5 %, or "not disclosed
   - **Buy**: thesis grounded, current price in bear or base range, no Tier-1 risks active
   - **Watch**: thesis interesting but waiting on a catalyst or price → "what specifically would trigger?"
   - **Pass**: thesis weak, valuation in bull range, or ≥1 unmitigated Tier-1 risk
-```
+
+````
 
 - [ ] **Step 2: Quick lint — check the file is valid markdown with 5 numbered sections**
 
 Run:
 ```bash
 grep -E "^## [1-5]\." /Users/ryota/.local/share/chezmoi/dot_claude/skills/equity-decision/references/equity-workflow.md
-```
+````
 
 Expected: 5 lines matching `## 1.` through `## 5.`
 
@@ -295,13 +305,13 @@ git commit -m "feat(skills): equity-decision 5-phase workflow template"
 ### Task 3: Write the DCF rubric
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/references/dcf-rubric.md`
 
 - [ ] **Step 1: Write the rubric**
 
 ```markdown
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # DCF Rubric — Defaults and Guardrails
 
@@ -309,15 +319,15 @@ Used by Phase 3 of `equity-workflow.md`. The skill produces a 3-scenario DCF (Be
 
 ## Inputs and defaults
 
-| Input | Default | Guardrail |
-|---|---|---|
-| Forecast horizon | 5 years | Fixed |
-| Revenue CAGR (Bear / Base / Bull) | sector median × {0.5 / 1.0 / 1.5} | ±50% around base; cap at 30% even for hyper-growth |
-| Operating margin (steady state) | average of last 3y | ±5pp from history unless step-change argued |
-| Tax rate | 25% (US) / 30% (JP) | Override only if disclosed effective rate ≠ statutory ≥ 5pp |
-| WACC | 8% (US large-cap) / 7% (US tech) / 6% (JP large-cap) | ±2pp; cite source in memo if outside |
-| Terminal growth | 2.5% | Hard cap 3.5%; never exceed long-term GDP+1 |
-| Net debt | from latest 10-Q / 短信 | Use book value; flag if off-balance-sheet ≥ 10% of market cap |
+| Input                             | Default                                              | Guardrail                                                     |
+| --------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
+| Forecast horizon                  | 5 years                                              | Fixed                                                         |
+| Revenue CAGR (Bear / Base / Bull) | sector median × {0.5 / 1.0 / 1.5}                    | ±50% around base; cap at 30% even for hyper-growth            |
+| Operating margin (steady state)   | average of last 3y                                   | ±5pp from history unless step-change argued                   |
+| Tax rate                          | 25% (US) / 30% (JP)                                  | Override only if disclosed effective rate ≠ statutory ≥ 5pp   |
+| WACC                              | 8% (US large-cap) / 7% (US tech) / 6% (JP large-cap) | ±2pp; cite source in memo if outside                          |
+| Terminal growth                   | 2.5%                                                 | Hard cap 3.5%; never exceed long-term GDP+1                   |
+| Net debt                          | from latest 10-Q / 短信                              | Use book value; flag if off-balance-sheet ≥ 10% of market cap |
 
 ## Method (skill internal)
 
@@ -357,13 +367,13 @@ git commit -m "feat(skills): equity-decision DCF rubric with guardrails"
 ### Task 4: Write growth-stock checks
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/references/growth-stock-checks.md`
 
 - [ ] **Step 1: Write the checks file**
 
 ```markdown
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Growth Stock Checks
 
@@ -385,12 +395,14 @@ Extra checks to run during Phase 2 (Fundamentals) when the company is high-growt
 ## Rule of 40 (SaaS)
 
 For SaaS or recurring-revenue businesses: **Revenue growth % + FCF margin % ≥ 40**.
+
 - Above 40 → healthy. Above 60 → exceptional.
 - Below 40 → either growth or profitability needs to improve.
 
 ## NRR (Net Revenue Retention)
 
 If disclosed (most SaaS companies report it):
+
 - **<100%**: churn problem.
 - **100–110%**: stable.
 - **110–130%**: healthy land-and-expand.
@@ -399,6 +411,7 @@ If disclosed (most SaaS companies report it):
 ## TAM Reality Check
 
 When the company quotes a TAM:
+
 - Is the TAM defined per-product or per-market-vertical? (Per-product is more credible.)
 - What's the **current penetration** (revenue / TAM)? At <5%, runway is real. At >25%, growth is decelerating soon.
 - Cross-check TAM against an independent estimate (e.g., a sector analyst report).
@@ -406,6 +419,7 @@ When the company quotes a TAM:
 ## Working Capital Tricks
 
 Watch for revenue growth that doesn't translate to FCF:
+
 - DSO (Days Sales Outstanding) climbing year over year → channel stuffing or quality of revenue declining.
 - Inventory turns falling → product not selling through.
 - Deferred revenue declining despite reported growth → real growth slowing.
@@ -424,13 +438,13 @@ git commit -m "feat(skills): equity-decision growth-stock checks reference"
 ### Task 5: Write the risk taxonomy
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/references/risk-taxonomy.md`
 
 - [ ] **Step 1: Write the file**
 
 ```markdown
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Risk Taxonomy — 5 Axes
 
@@ -479,9 +493,10 @@ Source: 10-K Item 1 (Customers), segment notes, 有報「販売の状況」.
 ## How to write the memo line
 
 For each axis in Phase 4, write a single line in this shape:
-
 ```
+
 {emoji} **{Axis}**: {Active/Latent/Inactive} — {specific reason with number}.
+
 ```
 
 Examples:
@@ -503,13 +518,13 @@ git commit -m "feat(skills): equity-decision risk taxonomy reference"
 ### Task 6: Write the data-sources reference
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/references/data-sources.md`
 
 - [ ] **Step 1: Write the file**
 
 ```markdown
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Data Sources
 
@@ -519,15 +534,14 @@ Free, retail-accessible sources used by the skill. Each source includes the URL 
 
 ### SEC EDGAR
 
-- **Company ticker → CIK map** (one-time fetch, cache yearly):
-  `GET https://www.sec.gov/files/company_tickers.json`
+- **Company ticker → CIK map** (one-time fetch, cache yearly): `GET https://www.sec.gov/files/company_tickers.json`
 - **Latest filings index**: `GET https://data.sec.gov/submissions/CIK{cik_10digit}.json`
-- **Filing body**: assembled from the recent filings index (returns `accessionNumber`, `primaryDocument`):
-  `GET https://www.sec.gov/Archives/edgar/data/{cik}/{accession_no_dashes}/{primary_document}`
+- **Filing body**: assembled from the recent filings index (returns `accessionNumber`, `primaryDocument`): `GET https://www.sec.gov/Archives/edgar/data/{cik}/{accession_no_dashes}/{primary_document}`
 - **User-Agent required**: SEC blocks requests without a UA. Use `User-Agent: <name> <email>`.
 - **Rate limit**: 10 requests/second across all SEC endpoints.
 
 Key forms:
+
 - `10-K`: annual report → Phase 1 (Item 1, 1A), Phase 4 (Item 1A, 3, 9A)
 - `10-Q`: quarterly → updated balance sheet for Phase 2
 - `8-K`: material events → check for Item 4.02 (restatements), Item 5.02 (auditor change)
@@ -602,6 +616,7 @@ git commit -m "feat(skills): equity-decision data-sources reference"
 ### Task 7: Write the user-facing README
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/README.md`
 
 - [ ] **Step 1: Write the README**
@@ -614,14 +629,10 @@ A Claude Code skill that produces a structured purchase memo for an individual s
 > Not investment advice. Outputs are research summaries.
 
 ## Quick start
-
 ```
-/equity-decision NVDA                                # US ticker
-/equity-decision 7203                                # JP code (Toyota)
-/equity-decision NVDA "DC growth slowing"            # ticker + hypothesis
-/equity-decision https://www.sec.gov/.../10-K.htm    # URL
-/equity-decision --ja 9434                           # Force JP routing
-/equity-decision --no-cache NVDA                     # Skip 24h cache
+
+/equity-decision NVDA # US ticker /equity-decision 7203 # JP code (Toyota) /equity-decision NVDA "DC growth slowing" # ticker + hypothesis /equity-decision https://www.sec.gov/.../10-K.htm # URL /equity-decision --ja 9434 # Force JP routing /equity-decision --no-cache NVDA # Skip 24h cache
+
 ```
 
 The skill emits a 100–200 line memo covering business, fundamentals (3-year trend), valuation (multiples + DCF), risks (5 axes), and a verdict (Buy/Watch/Pass + sizing + horizon). The memo ends with five deep-dive options you can pick from in the next turn.
@@ -642,17 +653,10 @@ The skill emits a 100–200 line memo covering business, fundamentals (3-year tr
 ## Files
 
 ```
-SKILL.md                       # skill entry, routing, output rules
-references/equity-workflow.md  # the 5-phase template (this is what gets filled)
-references/dcf-rubric.md       # WACC / growth / terminal defaults & guardrails
-references/growth-stock-checks.md  # SBC, NRR, Rule of 40
-references/risk-taxonomy.md    # 5 axes Active/Latent/Inactive scoring
-references/data-sources.md     # EDGAR / EDINET / Yahoo / Damodaran query notes
-scripts/fetch_yahoo.py         # `uv run scripts/fetch_yahoo.py NVDA`
-scripts/fetch_edgar.py         # `uv run scripts/fetch_edgar.py NVDA`
-scripts/fetch_edinet.py        # `uv run scripts/fetch_edinet.py 7203`
-scripts/industry_medians.py    # `uv run scripts/industry_medians.py software`
-```
+
+SKILL.md # skill entry, routing, output rules references/equity-workflow.md # the 5-phase template (this is what gets filled) references/dcf-rubric.md # WACC / growth / terminal defaults & guardrails references/growth-stock-checks.md # SBC, NRR, Rule of 40 references/risk-taxonomy.md # 5 axes Active/Latent/Inactive scoring references/data-sources.md # EDGAR / EDINET / Yahoo / Damodaran query notes scripts/fetch_yahoo.py # `uv run scripts/fetch_yahoo.py NVDA` scripts/fetch_edgar.py # `uv run scripts/fetch_edgar.py NVDA` scripts/fetch_edinet.py # `uv run scripts/fetch_edinet.py 7203` scripts/industry_medians.py # `uv run scripts/industry_medians.py software`
+
+````
 
 ## Smoke-test the fetchers
 
@@ -663,10 +667,11 @@ cd ~/.claude/skills/equity-decision
 uv run scripts/fetch_yahoo.py NVDA  | jq '.summary'
 uv run scripts/fetch_edgar.py NVDA  | jq '.filings[0]'
 uv run scripts/fetch_edinet.py 7203 | jq '.docs[0]'
-```
+````
 
 Expected: each returns a JSON object with the documented shape (see each script's docstring).
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
@@ -674,7 +679,7 @@ Expected: each returns a JSON object with the documented shape (see each script'
 cd /Users/ryota/.local/share/chezmoi
 git add dot_claude/skills/equity-decision/README.md
 git commit -m "docs(skills): equity-decision user-facing README"
-```
+````
 
 ---
 
@@ -685,6 +690,7 @@ This is a manual step — no automated test, just a check that Claude can use th
 - [ ] **Step 1: chezmoi apply (with user confirmation)**
 
 Confirm with user first (per chezmoi rule). Then:
+
 ```bash
 chezmoi diff | head -50
 # user reviews
@@ -699,11 +705,13 @@ Open a new Claude Code session in any project. Confirm `/equity-decision` is lis
 - [ ] **Step 3: Run the smoke test**
 
 In the new session:
+
 ```
 /equity-decision NVDA
 ```
 
 Expected:
+
 - Claude reads `references/equity-workflow.md`
 - Asks the user (or attempts to recall from training) for numbers since no fetchers yet
 - Emits a memo following the 5-phase structure
@@ -727,6 +735,7 @@ End-state: `/equity-decision NVDA` runs `scripts/fetch_yahoo.py NVDA` (and EDGAR
 ### Task 9: Add a pytest harness under tests/skills
 
 **Files:**
+
 - Create: `tests/skills/equity-decision/conftest.py`
 - Create: `tests/skills/equity-decision/run-tests.sh`
 - Modify: `justfile` (add `test-skills` recipe)
@@ -734,6 +743,7 @@ End-state: `/equity-decision NVDA` runs `scripts/fetch_yahoo.py NVDA` (and EDGAR
 - [ ] **Step 1: Create the conftest**
 
 `tests/skills/equity-decision/conftest.py`:
+
 ```python
 """Shared fixtures for equity-decision fetcher tests."""
 import sys
@@ -758,6 +768,7 @@ def jp_tickers() -> list[str]:
 - [ ] **Step 2: Create the runner script**
 
 `tests/skills/equity-decision/run-tests.sh`:
+
 ```bash
 #!/usr/bin/env bash
 # Test runner for dot_claude/skills/equity-decision/scripts/*.py
@@ -773,6 +784,7 @@ uv run --with pytest --with requests-mock --with yfinance --with beautifulsoup4 
 - [ ] **Step 3: Add `test-skills` recipe to justfile**
 
 In `justfile`, append:
+
 ```makefile
 # Run skill fetcher tests
 test-skills:
@@ -782,6 +794,7 @@ test-skills:
 - [ ] **Step 4: Verify the harness wires up (no tests yet, no assertions)**
 
 Create an empty `tests/skills/equity-decision/test_smoke.py`:
+
 ```python
 def test_harness_loads():
     """Trivial: confirms pytest can be invoked via the runner."""
@@ -789,6 +802,7 @@ def test_harness_loads():
 ```
 
 Run:
+
 ```bash
 cd /Users/ryota/.local/share/chezmoi
 just test-skills
@@ -808,6 +822,7 @@ git commit -m "test(skills): add pytest harness for equity-decision fetchers"
 ### Task 10: `fetch_yahoo.py` — write the failing test
 
 **Files:**
+
 - Create: `tests/skills/equity-decision/test_fetch_yahoo.py`
 
 - [ ] **Step 1: Write the failing test**
@@ -886,6 +901,7 @@ Expected: `3 failed` (script doesn't exist yet).
 ### Task 11: `fetch_yahoo.py` — implement and pass
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/scripts/fetch_yahoo.py`
 
 - [ ] **Step 1: Implement**
@@ -1007,6 +1023,7 @@ git commit -m "feat(skills): fetch_yahoo.py — Yahoo Finance quote/summary fetc
 ### Task 12: `fetch_edgar.py` — write the failing test
 
 **Files:**
+
 - Create: `tests/skills/equity-decision/test_fetch_edgar.py`
 
 - [ ] **Step 1: Write the failing test**
@@ -1074,6 +1091,7 @@ Expected: `2 failed`.
 ### Task 13: `fetch_edgar.py` — implement and pass
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/scripts/fetch_edgar.py`
 
 - [ ] **Step 1: Implement**
@@ -1205,6 +1223,7 @@ git commit -m "feat(skills): fetch_edgar.py — SEC EDGAR filings fetcher"
 ### Task 14: `fetch_edinet.py` — write the failing test
 
 **Files:**
+
 - Create: `tests/skills/equity-decision/test_fetch_edinet.py`
 
 - [ ] **Step 1: Write the failing test**
@@ -1272,6 +1291,7 @@ Expected: `2 failed`.
 ### Task 15: `fetch_edinet.py` — implement and pass
 
 **Files:**
+
 - Create: `dot_claude/skills/equity-decision/scripts/fetch_edinet.py`
 
 - [ ] **Step 1: Implement**
@@ -1397,30 +1417,32 @@ git commit -m "feat(skills): fetch_edinet.py — EDINET 有報/短信 fetcher"
 ### Task 16: Update SKILL.md to reference the fetchers
 
 **Files:**
+
 - Modify: `dot_claude/skills/equity-decision/SKILL.md`
 
 - [ ] **Step 1: Add a "Data fetchers" section after "## Workflow"**
 
 Find:
+
 ```markdown
 ## Fail-loud rules
 ```
 
 Insert before it:
+
 ```markdown
 ## Data fetchers
 
 Run these from `~/.claude/skills/equity-decision/scripts/` via `uv run`:
 
-| When | Command | Returns |
-|---|---|---|
-| US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA` | quote, PE/PSR, market cap, TTM revenue/FCF |
-| US ticker → recent filings | `uv run scripts/fetch_edgar.py NVDA` | latest 10-K, 10-Q, 5 × 8-K (with URLs) |
-| JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203` | same shape, auto `.T` suffix |
-| JP code → EDINET filings | `uv run scripts/fetch_edinet.py 7203` | latest 有報 + 四半期報告書 (with URLs) |
+| When                          | Command                               | Returns                                    |
+| ----------------------------- | ------------------------------------- | ------------------------------------------ |
+| US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA`  | quote, PE/PSR, market cap, TTM revenue/FCF |
+| US ticker → recent filings    | `uv run scripts/fetch_edgar.py NVDA`  | latest 10-K, 10-Q, 5 × 8-K (with URLs)     |
+| JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203`  | same shape, auto `.T` suffix               |
+| JP code → EDINET filings      | `uv run scripts/fetch_edinet.py 7203` | latest 有報 + 四半期報告書 (with URLs)     |
 
 Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr contains "数字取得失敗: ..." — propagate that text into the memo, do not invent numbers.
-
 ```
 
 - [ ] **Step 2: Commit**
@@ -1453,6 +1475,7 @@ uv run scripts/fetch_edinet.py 7203 | jq '.docs | map(.docTypeCode)'
 ```
 
 Expected:
+
 - Yahoo: a valid price and PE for both tickers
 - EDGAR: a list including at least "10-K" and "10-Q"
 - EDINET: a list including "120" (有報)
@@ -1462,6 +1485,7 @@ If any returns "数字取得失敗", debug that fetcher before moving on.
 - [ ] **Step 3: End-to-end skill invocation**
 
 In a new Claude Code session:
+
 ```
 /equity-decision NVDA
 ```

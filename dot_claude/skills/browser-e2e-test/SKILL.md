@@ -42,6 +42,7 @@ For each feature under test:
 ### 3. Issue Recording
 
 When a problem is found:
+
 - Record API status codes (especially 4xx, 5xx)
 - Record console errors
 - Record reproduction steps
@@ -49,22 +50,24 @@ When a problem is found:
 
 ### 4. Issue Creation
 
-Create a GitHub Issue for each discovered problem via `gh issue create`.
-See [references/issue-template.md](references/issue-template.md) for the template.
+Create a GitHub Issue for each discovered problem via `gh issue create`. See [references/issue-template.md](references/issue-template.md) for the template.
 
 ## Chrome in Claude Tips
 
 ### Page Interaction
+
 - Use `read_page` with `filter: interactive` to get only buttons/links/inputs
 - Use `ref` parameter for click targets (more stable than coordinates)
 - Use `hover` to reveal elements that only appear on hover
 
 ### Debugging
+
 - `read_network_requests` captures requests made after the first call
 - `read_console_messages` works the same way — call it early to start capturing
 - Filter by API pattern: `urlPattern: "/api/"`
 
 ### Caveats
+
 - Avoid triggering alert dialogs (they block all interaction)
 - Always use tab IDs from fresh tabs_context_mcp calls
 - Add appropriate `wait` after interactions
@@ -72,6 +75,7 @@ See [references/issue-template.md](references/issue-template.md) for the templat
 ## Cleanup
 
 After testing is complete:
+
 1. Delete any test data created during the session
 2. Mark all TodoWrite tasks as complete
 3. Output a test results summary

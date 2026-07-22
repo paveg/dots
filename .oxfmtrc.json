@@ -1,0 +1,12 @@
+{
+  "ignorePatterns": [
+    "**/fixtures/**",
+    "**/NOTICE.md",
+    ".firecrawl/**",
+    "**/.venv/**",
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "dot_local/share/devbox/**"
+  ]
+}

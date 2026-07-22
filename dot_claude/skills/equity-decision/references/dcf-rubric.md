@@ -1,5 +1,4 @@
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # DCF Rubric — Defaults and Guardrails
 
@@ -7,15 +6,15 @@ Used by Phase 3 of `equity-workflow.md`. The skill produces a 3-scenario DCF (Be
 
 ## Inputs and defaults
 
-| Input | Default | Guardrail |
-|---|---|---|
-| Forecast horizon | 5 years | Fixed |
-| Revenue CAGR (Bear / Base / Bull) | sector median × {0.5 / 1.0 / 1.5} | ±50% around base; cap at 30% even for hyper-growth |
-| Operating margin (steady state) | average of last 3y | ±5pp from history unless step-change argued |
-| Tax rate | 25% (US) / 30% (JP) | Override only if disclosed effective rate ≠ statutory ≥ 5pp |
-| WACC | 8% (US large-cap) / 7% (US tech) / 6% (JP large-cap) | ±2pp; cite source in memo if outside |
-| Terminal growth | 2.5% | Hard cap 3.5%; never exceed long-term GDP+1 |
-| Net debt | from latest 10-Q / 短信 | Use book value; flag if off-balance-sheet ≥ 10% of market cap |
+| Input                             | Default                                              | Guardrail                                                     |
+| --------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
+| Forecast horizon                  | 5 years                                              | Fixed                                                         |
+| Revenue CAGR (Bear / Base / Bull) | sector median × {0.5 / 1.0 / 1.5}                    | ±50% around base; cap at 30% even for hyper-growth            |
+| Operating margin (steady state)   | average of last 3y                                   | ±5pp from history unless step-change argued                   |
+| Tax rate                          | 25% (US) / 30% (JP)                                  | Override only if disclosed effective rate ≠ statutory ≥ 5pp   |
+| WACC                              | 8% (US large-cap) / 7% (US tech) / 6% (JP large-cap) | ±2pp; cite source in memo if outside                          |
+| Terminal growth                   | 2.5%                                                 | Hard cap 3.5%; never exceed long-term GDP+1                   |
+| Net debt                          | from latest 10-Q / 短信                              | Use book value; flag if off-balance-sheet ≥ 10% of market cap |
 
 ## Method (skill internal)
 

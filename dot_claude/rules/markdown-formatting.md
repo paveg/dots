@@ -2,9 +2,7 @@
 
 Language-independent formatting rules for Markdown output (responses, PR bodies, docs).
 
-- Don't hardcode numbers at the start of headings or list items. If order matters, let
-  Markdown's ordered-list syntax (`1.` `2.`) render the numbering; don't type the numerals
-  into the body text yourself.
+- Don't hardcode numbers at the start of headings or list items. If order matters, let Markdown's ordered-list syntax (`1.` `2.`) render the numbering; don't type the numerals into the body text yourself.
 
 ## Line breaks in prose
 
@@ -18,10 +16,7 @@ Prose has **no column limit** and is **not hard-wrapped** by default. Write one 
 
 ## Diagrams: mermaid in artifacts, ASCII in chat
 
-Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs,
-.md files — where GitHub, Obsidian, VS Code preview, etc. render it as a real diagram.
-In chat/terminal responses it is the reverse: mermaid does not render there, so use
-ASCII art, prose, or short bullet lists instead.
+Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs, .md files — where GitHub, Obsidian, VS Code preview, etc. render it as a real diagram. In chat/terminal responses it is the reverse: mermaid does not render there, so use ASCII art, prose, or short bullet lists instead.
 
 ### Authoring rules
 

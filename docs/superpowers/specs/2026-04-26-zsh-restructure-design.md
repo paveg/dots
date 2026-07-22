@@ -80,6 +80,7 @@ dot_config/zsh/
 ### ヘッダ規約
 
 「副作用あり」とみなす操作:
+
 - `export`, `setopt`, `unsetopt`
 - `source`, `eval`, `exec`
 - `compinit`, `compdef` などの completion 初期化
@@ -92,12 +93,12 @@ dot_config/zsh/
 
 ヘッダ項目（4 項目すべて記述、副作用ありファイルでは必須）:
 
-| 項目 | 内容 |
-|------|------|
-| `Provides:` | このファイルが定義する公開関数・公開変数・widget |
-| `Requires:` | 必要な外部コマンドや先行ロードファイル |
-| `Side-effects:` | 副作用の具体的内容（複数行可） |
-| `Load-order:` | `free` または `AFTER xxx` `BEFORE yyy` |
+| 項目            | 内容                                             |
+| --------------- | ------------------------------------------------ |
+| `Provides:`     | このファイルが定義する公開関数・公開変数・widget |
+| `Requires:`     | 必要な外部コマンドや先行ロードファイル           |
+| `Side-effects:` | 副作用の具体的内容（複数行可）                   |
+| `Load-order:`   | `free` または `AFTER xxx` `BEFORE yyy`           |
 
 `_*` 接頭辞の private 関数は `Provides:` に列挙しない（内部実装扱い）。
 
@@ -107,13 +108,13 @@ dot_config/zsh/
 
 ## 副作用ホットスポット
 
-| 項目 | 場所 | 対応 |
-|------|------|------|
-| `dot_tmux.conf:105` の `bind g` が `~/.config/zsh/split/wt-interactive.zsh` を参照 | tmux 設定 | 行ごと削除（worktree 廃止） |
-| `.chezmoiignore` が `.config/zsh/split/atcoder.zsh` を business 環境で除外 | chezmoi config | `.config/zsh/atcoder.zsh` へパス更新 |
-| `_GHQ_CACHE` を `ghq` と `_fzf_cd_ghq` が共有 | グローバル変数 | 同じ `features/ghq-fzf.zsh` に共置で閉じる |
-| `PROTECTED_BRANCHES` を `rub` が参照 | グローバル変数 | 同じ `features/branch-cleanup.zsh` に共置で閉じる |
-| `_zinit_setup_abbr` の `le`/`lz` abbr が `local-env`/`local-zsh` を expand | 遅延 expand | abbr expand 時刻には関数定義済みなので OK |
+| 項目                                                                               | 場所           | 対応                                              |
+| ---------------------------------------------------------------------------------- | -------------- | ------------------------------------------------- |
+| `dot_tmux.conf:105` の `bind g` が `~/.config/zsh/split/wt-interactive.zsh` を参照 | tmux 設定      | 行ごと削除（worktree 廃止）                       |
+| `.chezmoiignore` が `.config/zsh/split/atcoder.zsh` を business 環境で除外         | chezmoi config | `.config/zsh/atcoder.zsh` へパス更新              |
+| `_GHQ_CACHE` を `ghq` と `_fzf_cd_ghq` が共有                                      | グローバル変数 | 同じ `features/ghq-fzf.zsh` に共置で閉じる        |
+| `PROTECTED_BRANCHES` を `rub` が参照                                               | グローバル変数 | 同じ `features/branch-cleanup.zsh` に共置で閉じる |
+| `_zinit_setup_abbr` の `le`/`lz` abbr が `local-env`/`local-zsh` を expand         | 遅延 expand    | abbr expand 時刻には関数定義済みなので OK         |
 
 ## マイグレーション順序
 
@@ -158,14 +159,14 @@ graph TD
 
 1 PR にまとめる（個人 dotfiles で共同作業者なし、変更が機械的、レビュー側として全体像が見えるほうが副作用追跡しやすい）。1 PR 内で以下のコミット粒度に分割:
 
-| Commit | 内容 |
-|--------|------|
-| 1 | `feat(zsh): remove worktree feature` |
-| 2 | `refactor(zsh): split functions.zsh into features/` |
-| 3 | `refactor(zsh): extract init/ and modules/ from dot_zshrc.tmpl` |
-| 4 | `refactor(zsh): promote split/ files to top-level zsh dir` |
-| 5 | `feat(zsh): add header convention + CI lint` |
-| 6 | `chore: update .chezmoiignore for new layout` |
+| Commit | 内容                                                            |
+| ------ | --------------------------------------------------------------- |
+| 1      | `feat(zsh): remove worktree feature`                            |
+| 2      | `refactor(zsh): split functions.zsh into features/`             |
+| 3      | `refactor(zsh): extract init/ and modules/ from dot_zshrc.tmpl` |
+| 4      | `refactor(zsh): promote split/ files to top-level zsh dir`      |
+| 5      | `feat(zsh): add header convention + CI lint`                    |
+| 6      | `chore: update .chezmoiignore for new layout`                   |
 
 ## ロールバック計画
 

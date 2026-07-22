@@ -23,12 +23,12 @@ Long instruction sets degrade model behavior — IFScale (arxiv 2507.11538) show
 
 Where to place a new constraint, by violation history and reversibility:
 
-| Level | Location | When to use |
-| :---- | :------- | :---------- |
-| L1 | Mention in `CLAUDE.md` or task instructions | First occurrence; soft preference |
-| L2 | New/extended rule in `~/.claude/rules/*.md` | Same issue noticed twice or more |
-| L3 | `~/.claude/hooks/` (PreToolUse, Stop, etc.) | Repeated violation OR irreversible action (push --force, rm -rf, secret leak) |
-| L4 | Project CI / required check | Production impact, security, or compliance |
+| Level | Location                                    | When to use                                                                   |
+| :---- | :------------------------------------------ | :---------------------------------------------------------------------------- |
+| L1    | Mention in `CLAUDE.md` or task instructions | First occurrence; soft preference                                             |
+| L2    | New/extended rule in `~/.claude/rules/*.md` | Same issue noticed twice or more                                              |
+| L3    | `~/.claude/hooks/` (PreToolUse, Stop, etc.) | Repeated violation OR irreversible action (push --force, rm -rf, secret leak) |
+| L4    | Project CI / required check                 | Production impact, security, or compliance                                    |
 
 - Skip levels when the action is irreversible — go straight to L3+ instead of trusting prose
 - Prefer machine-checkable enforcement (L3/L4) over instructions (L1/L2) whenever a deterministic check is possible
@@ -45,7 +45,7 @@ Where to place a new constraint, by violation history and reversibility:
 
 Rules and hooks under `~/.claude/` are also code; they deserve the same Red-Green-Refactor discipline before being committed.
 
-1. **Red**: Reproduce the failure pattern *without* the new rule/hook in place. Confirm the agent fails the way you expect
+1. **Red**: Reproduce the failure pattern _without_ the new rule/hook in place. Confirm the agent fails the way you expect
 2. **Green**: Add the rule or hook. Confirm the same scenario is now blocked or corrected
 3. **Refactor**: In a fresh session, probe edge cases — paraphrased prompts, adjacent tasks — to confirm the rule is not just memorized to one phrasing
 

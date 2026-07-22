@@ -36,8 +36,8 @@ Default: **no comments**. Only add a comment when ALL of the following are true:
 2. Removing the comment would leave a future reader confused
 3. The information cannot be conveyed by better naming alone
 
-Explicitly forbidden (the rot-comment hook blocks task/PR refs, caller refs, and
-temporal phrasing mechanically):
+Explicitly forbidden (the rot-comment hook blocks task/PR refs, caller refs, and temporal phrasing mechanically):
+
 - Repeating what the code does, restating the signature, or section banners
 - Commented-out code (delete it; git remembers)
 

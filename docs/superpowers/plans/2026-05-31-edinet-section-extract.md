@@ -17,6 +17,7 @@
 ### Task 1: lxml 依存と抽出ヘルパ（監査）
 
 **Files:**
+
 - Modify: `scripts/fetch_edinet.py`（PEP723 ヘッダ + 新規関数）
 - Create: `scripts/tests/test_extract_sections.py`
 - Test fixture (already present): `scripts/tests/fixtures/jpcrp030000-asr-001_E04707-000_2025-03-31_01_2025-06-26.xbrl`
@@ -48,8 +49,7 @@ def test_audit_section_extracted():
 
 - [ ] **Step 2: テストが失敗することを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v`
-Expected: FAIL — `ImportError: cannot import name 'extract_sections_from_instance'`
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v` Expected: FAIL — `ImportError: cannot import name 'extract_sections_from_instance'`
 
 - [ ] **Step 3: 最小実装（PEP723 に lxml 追加 + 抽出関数）**
 
@@ -109,8 +109,7 @@ def extract_sections_from_instance(instance_bytes: bytes) -> dict:
 
 - [ ] **Step 4: テストが通ることを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v`
-Expected: PASS (`test_audit_section_extracted`)
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v` Expected: PASS (`test_audit_section_extracted`)
 
 - [ ] **Step 5: Commit（git管理時のみ）**
 
@@ -124,6 +123,7 @@ git commit -m "feat(edinet): extract 監査の状況 from 有報 XBRL"
 ### Task 2: 訴訟キーワードスキャンのテスト
 
 **Files:**
+
 - Modify: `scripts/tests/test_extract_sections.py`（テスト追加のみ。実装は Task 1 で完了済み）
 
 - [ ] **Step 1: 失敗しないことを期待するテストを追加**（実装済み機能の固定化）
@@ -152,8 +152,7 @@ def test_litigation_no_dedicated_textblock_element():
 
 - [ ] **Step 2: テストが通ることを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v`
-Expected: PASS（3 tests）
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_extract_sections.py -v` Expected: PASS（3 tests）
 
 - [ ] **Step 3: Commit（git管理時のみ）**
 
@@ -167,6 +166,7 @@ git commit -m "test(edinet): pin litigation keyword-scan behavior"
 ### Task 3: `--sections <docID>` CLI モード
 
 **Files:**
+
 - Modify: `scripts/fetch_edinet.py`（ZIP取得関数 + main 引数分岐）
 
 - [ ] **Step 1: ZIP→インスタンス抽出とダウンロード関数を追加**
@@ -230,13 +230,11 @@ def main() -> int:
 
 - [ ] **Step 3: ライブ smoke test（要 op 認証 / ネット）**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py --sections S100VY55 | python3 -m json.tool | head -30`
-Expected: JSON。`sections.audit.found == true`、`sections.audit.text` が「監査の状況」を含む、`sections.litigation.matches` が非空。
+Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py --sections S100VY55 | python3 -m json.tool | head -30` Expected: JSON。`sections.audit.found == true`、`sections.audit.text` が「監査の状況」を含む、`sections.litigation.matches` が非空。
 
 - [ ] **Step 4: 既存一覧モードが壊れていないことを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py 4661 | python3 -m json.tool`
-Expected: 従来どおり `edinetCode` と `docs`（有報）を含む JSON。
+Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py 4661 | python3 -m json.tool` Expected: 従来どおり `edinetCode` と `docs`（有報）を含む JSON。
 
 - [ ] **Step 5: Commit（git管理時のみ）**
 
@@ -250,6 +248,7 @@ git commit -m "feat(edinet): add --sections <docID> mode"
 ### Task 4: `TARGET_TYPES` 140→160 修正（四半期報告書廃止対応）
 
 **Files:**
+
 - Modify: `scripts/fetch_edinet.py`（定数 + 日次マッチ部の小リファクタ + テスト）
 - Modify: `scripts/tests/test_extract_sections.py`（または新規 `test_target_types.py`）
 
@@ -288,8 +287,7 @@ def test_collect_targets_picks_120_and_160():
 
 - [ ] **Step 2: テストが失敗することを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_target_types.py -v`
-Expected: FAIL — `ImportError: cannot import name 'collect_targets'`（かつ TARGET_TYPES がまだ 140）
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_target_types.py -v` Expected: FAIL — `ImportError: cannot import name 'collect_targets'`（かつ TARGET_TYPES がまだ 140）
 
 - [ ] **Step 3: 定数変更 + 純粋関数を実装し fetch_docs から呼ぶ**
 
@@ -331,8 +329,7 @@ def collect_targets(results: list, code_padded: str, found: dict) -> str | None:
 
 - [ ] **Step 4: テストが通ることを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_target_types.py -v`
-Expected: PASS（2 tests）
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/test_target_types.py -v` Expected: PASS（2 tests）
 
 - [ ] **Step 5: Commit（git管理時のみ）**
 
@@ -346,6 +343,7 @@ git commit -m "fix(edinet): replace deprecated docType 140 with 160 (半期報�
 ### Task 5: `op read` timeout を 45s に延長
 
 **Files:**
+
 - Modify: `scripts/fetch_edinet.py`（`get_key()` 内 `timeout=20` → `timeout=45`）
 
 - [ ] **Step 1: 値を変更**
@@ -365,8 +363,7 @@ git commit -m "fix(edinet): replace deprecated docType 140 with 160 (半期報�
 
 - [ ] **Step 2: 既存呼び出しが通ることを確認**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py 4661 >/dev/null && echo OK`
-Expected: `OK`（認証→一覧取得が成功）
+Run: `cd ~/.claude/skills/equity-decision && uv run scripts/fetch_edinet.py 4661 >/dev/null && echo OK` Expected: `OK`（認証→一覧取得が成功）
 
 - [ ] **Step 3: Commit（git管理時のみ）**
 
@@ -380,6 +377,7 @@ git commit -m "chore(edinet): bump op read timeout for biometric approval"
 ### Task 6: ワークフロー結線（SKILL.md / equity-workflow.md）
 
 **Files:**
+
 - Modify: `SKILL.md`（データ fetcher 表 + JP フォールバック節）
 - Modify: `references/equity-workflow.md`（Phase 4 手順）
 
@@ -399,7 +397,7 @@ git commit -m "chore(edinet): bump op read timeout for biometric approval"
 > EDINET が通る場合: まず `fetch_edinet.py {code}` で有報 docID を取得し、続けて `fetch_edinet.py --sections {docID}` で Phase 4 の ⚖️訴訟・📚監査 を一次情報から埋める（このとき Phase 4 は手動補完不要）。
 ```
 
-- [ ] **Step 3: equity-workflow.md の Phase 4  filling rules に追記**
+- [ ] **Step 3: equity-workflow.md の Phase 4 filling rules に追記**
 
 「## Filling rules」の最初の箇条書き群に追加:
 
@@ -409,8 +407,7 @@ git commit -m "chore(edinet): bump op read timeout for biometric approval"
 
 - [ ] **Step 4: 結線の目視確認**
 
-Run: `cd ~/.claude/skills/equity-decision && grep -n "\-\-sections" SKILL.md references/equity-workflow.md`
-Expected: 3 箇所（SKILL 表 / SKILL フォールバック / workflow Phase4）でヒット。
+Run: `cd ~/.claude/skills/equity-decision && grep -n "\-\-sections" SKILL.md references/equity-workflow.md` Expected: 3 箇所（SKILL 表 / SKILL フォールバック / workflow Phase4）でヒット。
 
 - [ ] **Step 5: Commit（git管理時のみ）**
 
@@ -424,12 +421,12 @@ git commit -m "docs(edinet): wire --sections into Phase 4 workflow"
 ### Task 7: 全テスト緑 + dev ツール整理
 
 **Files:**
+
 - Modify/Delete: `scripts/_devtools/fetch_fixture.py`（残置 or 削除の判断）
 
 - [ ] **Step 1: 全テストを実行**
 
-Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/ -v`
-Expected: PASS（test_extract_sections の3件 + test_target_types の2件 = 5 tests）
+Run: `cd ~/.claude/skills/equity-decision && uv run --with pytest --with lxml --with requests pytest scripts/tests/ -v` Expected: PASS（test_extract_sections の3件 + test_target_types の2件 = 5 tests）
 
 - [ ] **Step 2: dev ツールの扱いを決める**
 

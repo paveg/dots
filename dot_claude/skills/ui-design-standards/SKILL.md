@@ -57,6 +57,7 @@ theme/
 ```
 
 **Required tokens**:
+
 - Colors (primary, secondary, neutral, semantic)
 - Typography (font families, sizes, weights)
 - Spacing (consistent scale: 4, 8, 12, 16, 24, 32...)
@@ -104,15 +105,15 @@ Before marking UI implementation complete:
 
 When reviewing UI code:
 
-| Area | Check |
-|------|-------|
-| Visual | Does it match the design? |
-| Theme | Are all values from theme system? |
-| Components | Reusable and properly abstracted? |
-| States | All interaction states handled? |
-| Accessibility | Proper semantics and ARIA? |
-| Performance | No unnecessary re-renders? |
-| Hardcoding | Any magic numbers or colors? |
+| Area          | Check                             |
+| ------------- | --------------------------------- |
+| Visual        | Does it match the design?         |
+| Theme         | Are all values from theme system? |
+| Components    | Reusable and properly abstracted? |
+| States        | All interaction states handled?   |
+| Accessibility | Proper semantics and ARIA?        |
+| Performance   | No unnecessary re-renders?        |
+| Hardcoding    | Any magic numbers or colors?      |
 
 ### Common Issues to Flag
 
@@ -132,11 +133,11 @@ style={{ display: 'flex', gap: 8 }}  // Should be component/class
 
 ## Quality Levels
 
-| Level | Description |
-|-------|-------------|
-| A | Pixel-perfect, fully themed, all states, accessible |
-| B | Visually accurate, mostly themed, core states work |
-| C | Functional but visual inconsistencies, some hardcoding |
-| D | Major visual deviations, significant hardcoding |
+| Level | Description                                            |
+| ----- | ------------------------------------------------------ |
+| A     | Pixel-perfect, fully themed, all states, accessible    |
+| B     | Visually accurate, mostly themed, core states work     |
+| C     | Functional but visual inconsistencies, some hardcoding |
+| D     | Major visual deviations, significant hardcoding        |
 
 Target: Level A for production, Level B minimum for review approval.

@@ -1,14 +1,7 @@
 ---
 name: ios-submission-review
 description: >
-  Pre-submission review for iOS App Store. Scans the codebase for common
-  rejection reasons and generates a pass/fail report with fixes.
-  Use this skill when the user mentions App Store submission, review, release,
-  審査, 提出, or phrases like "ready to submit", "before submitting to Apple",
-  "submission review", "rejection check". Also trigger when the user is
-  preparing a TestFlight build for external review or discussing App Store
-  rejection issues. Supports Swift/SwiftUI, UIKit, and React Native projects
-  with Apple IAP and RevenueCat.
+  Pre-submission review for iOS App Store. Scans the codebase for common rejection reasons and generates a pass/fail report with fixes. Use this skill when the user mentions App Store submission, review, release, 審査, 提出, or phrases like "ready to submit", "before submitting to Apple", "submission review", "rejection check". Also trigger when the user is preparing a TestFlight build for external review or discussing App Store rejection issues. Supports Swift/SwiftUI, UIKit, and React Native projects with Apple IAP and RevenueCat.
 ---
 
 # iOS Submission Review
@@ -24,12 +17,14 @@ When invoked, run all checks below against the current project. The user shouldn
 ## Step 1: Detect Project Type
 
 Determine the stack by checking for:
+
 - `*.xcodeproj` / `*.xcworkspace` → Native iOS (Swift/ObjC)
 - `package.json` with `react-native` → React Native
 - `Podfile`, `Gemfile` → Additional native dependencies
 - `app.json` / `app.config.js` → Expo (React Native)
 
 Also detect IAP setup:
+
 - `RevenueCatUI`, `Purchases`, `@revenuecat/purchases-react-native` → RevenueCat
 - `StoreKit`, `SKPaymentQueue` → Native StoreKit
 - Both can coexist
@@ -48,6 +43,7 @@ Read `references/guidelines.md` for the full checklist and code signals per guid
 6. **2026 Requirements** — SDK version, age rating, AI consent, privacy manifests
 
 For each check:
+
 - Scan relevant files using Grep/Glob
 - Classify as PASS, WARN, or FAIL
 - For FAIL/WARN: cite the specific file and line, explain why it's a problem, and state the fix

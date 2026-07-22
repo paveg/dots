@@ -27,9 +27,11 @@ Foundational: creates the norms reference PR-B depends on. Content-authoring (ma
 ### Task A1: Create the canonical norms reference
 
 **Files:**
+
 - Create: `dot_claude/references/japanese-writing/norms.md`
 
 **Interfaces:**
+
 - Produces: the file `~/.claude/references/japanese-writing/norms.md` (post-deploy path) that wrappers and the PR-B hooks point at by that path.
 
 - [ ] **Step 1: Author `norms.md`** with these sections, distilled in house style from the cited sources (do not restate verbatim — synthesize):
@@ -37,8 +39,7 @@ Foundational: creates the norms reference PR-B depends on. Content-authoring (ma
   - **Sourcing / faithfulness** — trace load-bearing claims to source; state inference as inference (source: `technical-writing` "Faithfulness and sourcing").
   - **Rhythm (fingerprint axis)** — sentence-length variety / burstiness, paragraph non-uniformity, avoid ≥3× antithesis (source: `rules/japanese-writing.md` §6).
   - **Cognitive rhythm (structural axis)** — 状況を更新する文 vs 文書を更新する文（dead prose）, hold unresolved tension, dense→sparse alternation, no self-reference to devices. Credit line: "Distilled from k16shikano's cognitive-rhythm-writing method (gist eb2929f…), in house style."
-  - **AI-smell taxonomy** — mechanical list templates, hype vocabulary, over-emphasis, English-colon syntax, particle omission (source: `rules/japanese-writing.md` §1–5).
-  Keep it a reference (principles + short before/after), not a workflow.
+  - **AI-smell taxonomy** — mechanical list templates, hype vocabulary, over-emphasis, English-colon syntax, particle omission (source: `rules/japanese-writing.md` §1–5). Keep it a reference (principles + short before/after), not a workflow.
 - [ ] **Step 2: Verify it deploys.** Run:
   ```bash
   grep -n "references" .chezmoiignore || echo "references not ignored → deploys (OK)"
@@ -54,6 +55,7 @@ Foundational: creates the norms reference PR-B depends on. Content-authoring (ma
 ### Task A2: Thin the always-on rule to a floor + pointer
 
 **Files:**
+
 - Modify: `dot_claude/rules/japanese-writing.md`
 
 - [ ] **Step 1: Trim** the deep rhythm/AI-smell detail that now lives in `norms.md`, leaving a minimal always-on floor: the non-negotiables (avoid AI-smell; particle discipline; active voice) plus a one-line pointer: "Full norms: `~/.claude/references/japanese-writing/norms.md` (loaded JIT by writing skills / injection hooks)." Target: roughly halve the file.
@@ -72,11 +74,13 @@ Foundational: creates the norms reference PR-B depends on. Content-authoring (ma
 ### Task A3: Point the three wrappers at the norms reference
 
 **Files:**
+
 - Modify: `dot_claude/skills/technical-writing/SKILL.md`
 - Modify: `dot_claude/skills/article-writing/SKILL.md`
 - Modify: `dot_claude/skills/japanese-ai-writing-proofreader/SKILL.md`
 
 **Interfaces:**
+
 - Consumes: `~/.claude/references/japanese-writing/norms.md` (Task A1).
 
 - [ ] **Step 1: technical-writing** — replace restated norm prose (register, sourcing principle, rhythm) with "Apply the shared norms: `~/.claude/references/japanese-writing/norms.md`." Keep domain-specific tactics (notation tables, procedure shaping, reader-calibration, the before/after examples).
@@ -107,10 +111,12 @@ Depends on PR-A (injects a pointer to `norms.md`). Non-blocking, zero-latency. H
 ### Task B1: Extend the PR hook to carry the Japanese-writing pointer
 
 **Files:**
+
 - Modify: `dot_claude/hooks/executable_gh-pr-inject.sh`
 - Test: `tests/hooks/gh-pr-inject.test.sh` (create if absent)
 
 **Interfaces:**
+
 - Consumes: existing `gh pr create|edit` detection in the hook.
 
 - [ ] **Step 1: Write the failing test** — assert that for a `gh pr create` command whose `--body` contains Japanese, the emitted `additionalContext` includes `references/japanese-writing/norms.md` and a proofreader reminder; and that an English-only body does NOT add the Japanese pointer.
@@ -136,11 +142,13 @@ Depends on PR-A (injects a pointer to `norms.md`). Non-blocking, zero-latency. H
 ### Task B2: New doc-injection hook for Japanese `.md` writes
 
 **Files:**
+
 - Create: `dot_claude/hooks/executable_japanese-writing-inject.sh`
 - Create: `tests/hooks/japanese-writing-inject.test.sh`
 - Modify: `dot_claude/settings.json.tmpl` (wire PreToolUse Write|Edit)
 
 **Interfaces:**
+
 - Consumes: Claude Code hook JSON (`tool_input.file_path`, `tool_input.content` / `tool_input.new_string`).
 
 - [ ] **Step 1: Write the failing test** — a Write to `foo.md` with Japanese content emits `additionalContext` referencing `norms.md`; a Write to `foo.py` with Japanese, or to `foo.md` with English-only, emits nothing.
@@ -172,6 +180,7 @@ Independent of PR-A/B in content; ordered last so it sweeps their cross-referenc
 ### Task C1: Record the naming convention
 
 **Files:**
+
 - Create: `dot_claude/rules/skill-naming.md` (or append to an existing conventions rule if one fits)
 
 - [ ] **Step 1: Write** the convention: kebab-case `<subject>-<role|action>`, subject-first; families of ≥2 share a leading stem; guessable names; migration = lazy (rename on next substantive touch) + convention-for-new. Include the rename map table from ADR 0003.
@@ -186,6 +195,7 @@ Independent of PR-A/B in content; ordered last so it sweeps their cross-referenc
 ### Task C2: Rename the writing family + sweep references
 
 **Files:**
+
 - Rename: `dot_claude/skills/technical-writing/` → `writing-technical/`
 - Rename: `dot_claude/skills/article-writing/` → `writing-article/`
 - Rename: `dot_claude/skills/japanese-ai-writing-proofreader/` → `writing-proofreader/`
@@ -211,6 +221,6 @@ Independent of PR-A/B in content; ordered last so it sweeps their cross-referenc
 ## Self-Review
 
 - **Spec coverage:** ADR 0002 → PR-A (A1 norms, A2 floor, A3 wrappers). ADR 0001 Stage 0 → PR-B (B1 PR hook, B2 doc hook); Stage 1/2 explicitly deferred. ADR 0003 → PR-C (C1 convention, C2 rename). Covered.
-- **Placeholder scan:** norms/rule/convention *content* is authored at execution from cited sources — that is a deliverable, not a placeholder; the plan fixes sections, sources, and verification for each.
+- **Placeholder scan:** norms/rule/convention _content_ is authored at execution from cited sources — that is a deliverable, not a placeholder; the plan fixes sections, sources, and verification for each.
 - **Type/name consistency:** hook file names (`executable_japanese-writing-inject.sh`), reference path (`~/.claude/references/japanese-writing/norms.md`), and new skill names (`writing-technical/-article/-proofreader`) are used consistently across tasks.
 - **Ordering:** PR-A before PR-B (B injects A's path); PR-C last (sweeps A/B refs). Signed-commit override applied in every commit step.

@@ -39,6 +39,7 @@ BUSINESS_USE=1 chezmoi init --apply paveg/dots
 ```
 
 On first run, you'll be prompted for:
+
 - Your name
 - Your email (personal)
 - Your work email (only if `BUSINESS_USE=1`)
@@ -105,39 +106,40 @@ dots/
 
 ## Tools (via devbox)
 
-| Tool | Description |
-|------|-------------|
-| go | Go language (for gopls LSP) |
-| nodejs | Node.js (for ts_ls, pyright LSP) |
-| python | Python (for python development) |
-| neovim | Editor |
-| tmux | Terminal multiplexer |
-| ghq | Repository management |
-| fzf | Fuzzy finder |
-| ripgrep | Fast grep |
-| fd | Fast find |
-| bat | Better cat |
-| eza | Better ls |
-| zoxide | Smart cd |
-| lazygit | Git TUI |
-| direnv | Per-directory env vars |
-| jq | JSON processor |
-| yq | YAML processor |
-| delta | Better git diff |
-| just | Task runner |
-| stylua | Lua formatter |
-| shfmt | Shell formatter |
-| shellcheck | Shell script linter |
-| atuin | Shell history sync |
-| keychain | SSH agent manager |
-| mise | Runtime version manager |
-| pnpm | Fast Node.js package manager |
-| kubectl | Kubernetes CLI |
-| gitleaks | Secret detection (800+ patterns) |
+| Tool       | Description                      |
+| ---------- | -------------------------------- |
+| go         | Go language (for gopls LSP)      |
+| nodejs     | Node.js (for ts_ls, pyright LSP) |
+| python     | Python (for python development)  |
+| neovim     | Editor                           |
+| tmux       | Terminal multiplexer             |
+| ghq        | Repository management            |
+| fzf        | Fuzzy finder                     |
+| ripgrep    | Fast grep                        |
+| fd         | Fast find                        |
+| bat        | Better cat                       |
+| eza        | Better ls                        |
+| zoxide     | Smart cd                         |
+| lazygit    | Git TUI                          |
+| direnv     | Per-directory env vars           |
+| jq         | JSON processor                   |
+| yq         | YAML processor                   |
+| delta      | Better git diff                  |
+| just       | Task runner                      |
+| stylua     | Lua formatter                    |
+| shfmt      | Shell formatter                  |
+| shellcheck | Shell script linter              |
+| atuin      | Shell history sync               |
+| keychain   | SSH agent manager                |
+| mise       | Runtime version manager          |
+| pnpm       | Fast Node.js package manager     |
+| kubectl    | Kubernetes CLI                   |
+| gitleaks   | Secret detection (800+ patterns) |
 
 ## Features
 
 ### Terminal: Ghostty
+
 - Font: UDEV Gothic NF (Japanese-friendly Nerd Font)
 - Theme: Catppuccin Mocha
 - Native tabs/splits
@@ -147,12 +149,14 @@ dots/
 The Ghostty terminal uses [UDEV Gothic NF](https://github.com/yuru7/udev-gothic), a programming font with Nerd Font icons and excellent Japanese support.
 
 **macOS (Homebrew):**
+
 ```bash
 brew tap homebrew/cask-fonts
 brew install --cask font-udev-gothic-nf
 ```
 
 **Linux (manual):**
+
 ```bash
 # Download and install to user fonts directory
 mkdir -p ~/.local/share/fonts
@@ -163,6 +167,7 @@ fc-cache -fv
 ```
 
 ### Shell: zsh + zinit turbo mode
+
 - Fast startup (~50ms) with powerlevel10k instant prompt
 - Powerlevel10k prompt (Nerd Font icons, git status)
 - Syntax highlighting
@@ -170,17 +175,20 @@ fc-cache -fv
 - Auto tmux on Linux SSH
 
 **Prompt customization:**
+
 ```bash
 p10k configure  # Run the configuration wizard
 ```
 
 ### Editor: Neovim (kickstart-based)
+
 - LSP support (Mason)
 - GitHub Copilot
 - Telescope fuzzy finder
 - Treesitter
 
 ### Security: gitleaks
+
 Prevents committing secrets (API keys, tokens, passwords, etc).
 
 ```bash
@@ -195,6 +203,7 @@ gitleaks detect --source . --verbose --log-opts="--all"
 ```
 
 **Configuration:**
+
 - Global config: `~/.config/gitleaks/config.toml` (auto-loaded via `$GITLEAKS_CONFIG`)
 - Per-repo override: `.gitleaks.toml` in project root
 - 800+ built-in patterns with common false-positive exclusions
@@ -203,43 +212,43 @@ gitleaks detect --source . --verbose --log-opts="--all"
 
 ### Zsh
 
-| Key | Description |
-|-----|-------------|
-| `Ctrl+g` | ghq + fzf (repository navigation) |
-| `Ctrl+r` | History search (fzf) |
-| `z <dir>` | Smart cd (zoxide) |
+| Key       | Description                       |
+| --------- | --------------------------------- |
+| `Ctrl+g`  | ghq + fzf (repository navigation) |
+| `Ctrl+r`  | History search (fzf)              |
+| `z <dir>` | Smart cd (zoxide)                 |
 
 ### Neovim (Leader = Space)
 
-| Key | Description |
-|-----|-------------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>fb` | Buffers |
-| `<leader>e` | File explorer |
-| `gd` | Go to definition |
-| `gr` | Go to references |
-| `K` | Hover documentation |
-| `<leader>rn` | Rename |
-| `<leader>ca` | Code action |
-| `gcc` | Toggle comment |
-| `<leader>cc` | Copilot Chat |
+| Key          | Description         |
+| ------------ | ------------------- |
+| `<leader>ff` | Find files          |
+| `<leader>fg` | Live grep           |
+| `<leader>fb` | Buffers             |
+| `<leader>e`  | File explorer       |
+| `gd`         | Go to definition    |
+| `gr`         | Go to references    |
+| `K`          | Hover documentation |
+| `<leader>rn` | Rename              |
+| `<leader>ca` | Code action         |
+| `gcc`        | Toggle comment      |
+| `<leader>cc` | Copilot Chat        |
 
 ### Lazygit
 
-| Key | Description |
-|-----|-------------|
+| Key | Description         |
+| --- | ------------------- |
 | `C` | Conventional commit |
 
 ## Environment Variables
 
 ### Local Configuration (per-machine, not tracked by git)
 
-| File | Purpose |
-|------|---------|
-| `~/.env.local` | Machine-specific environment variables |
+| File             | Purpose                                            |
+| ---------------- | -------------------------------------------------- |
+| `~/.env.local`   | Machine-specific environment variables             |
 | `~/.zshrc.local` | Machine-specific shell config (aliases, functions) |
-| `.envrc` | Directory-specific env vars (via direnv) |
+| `.envrc`         | Directory-specific env vars (via direnv)           |
 
 ```bash
 # ~/.env.local - environment variables
@@ -271,22 +280,22 @@ direnv allow
 
 ## Utility Functions
 
-| Command | Description |
-|---------|-------------|
-| `dots` | **Show all dotfiles commands and keybindings** |
-| `repos` | ghq + fzf repository navigation |
-| `gcof` | Switch git branch with fzf (local default, Ctrl-A/R filters, commit-history preview) |
-| `rub` | Remove merged git branches |
-| `kctx` | Switch Kubernetes context (fzf) |
-| `kns` | Switch Kubernetes namespace (fzf) |
-| `kinfo` | Show current context/namespace |
-| `zsh-bench` | Benchmark shell startup |
-| `zsh-clear-cache` | Clear all zsh caches |
-| `zsh-update-cache` | Regenerate init caches |
-| `local-env` | Manage ~/.env.local |
-| `local-zsh` | Manage ~/.zshrc.local |
-| `le` | Quick: edit ~/.env.local |
-| `lz` | Quick: edit ~/.zshrc.local |
+| Command            | Description                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| `dots`             | **Show all dotfiles commands and keybindings**                                       |
+| `repos`            | ghq + fzf repository navigation                                                      |
+| `gcof`             | Switch git branch with fzf (local default, Ctrl-A/R filters, commit-history preview) |
+| `rub`              | Remove merged git branches                                                           |
+| `kctx`             | Switch Kubernetes context (fzf)                                                      |
+| `kns`              | Switch Kubernetes namespace (fzf)                                                    |
+| `kinfo`            | Show current context/namespace                                                       |
+| `zsh-bench`        | Benchmark shell startup                                                              |
+| `zsh-clear-cache`  | Clear all zsh caches                                                                 |
+| `zsh-update-cache` | Regenerate init caches                                                               |
+| `local-env`        | Manage ~/.env.local                                                                  |
+| `local-zsh`        | Manage ~/.zshrc.local                                                                |
+| `le`               | Quick: edit ~/.env.local                                                             |
+| `lz`               | Quick: edit ~/.zshrc.local                                                           |
 
 ## Platform Support
 
@@ -307,6 +316,7 @@ devbox global install
 **Note:** Ghostty config is automatically skipped on SSH sessions (detected via `$SSH_CLIENT`).
 
 **Auto tmux:** On Linux SSH sessions, tmux starts automatically. Disable with:
+
 ```bash
 export DISABLE_AUTO_TMUX=1
 ```
@@ -349,16 +359,16 @@ just test
 
 ### Just Commands
 
-| Command | Description |
-|---------|-------------|
-| `just` | Show available commands |
-| `just fmt` | Format all files |
-| `just fmt-check` | Check formatting |
-| `just lint` | Run linters |
-| `just test` | Run all checks |
-| `just apply` | Apply dotfiles |
-| `just diff` | Show pending changes |
-| `just clean` | Clear all caches |
+| Command          | Description             |
+| ---------------- | ----------------------- |
+| `just`           | Show available commands |
+| `just fmt`       | Format all files        |
+| `just fmt-check` | Check formatting        |
+| `just lint`      | Run linters             |
+| `just test`      | Run all checks          |
+| `just apply`     | Apply dotfiles          |
+| `just diff`      | Show pending changes    |
+| `just clean`     | Clear all caches        |
 
 ## License
 

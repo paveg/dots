@@ -1,10 +1,6 @@
 # Spec: `equity-decision` skill
 
-**Status**: Approved (brainstorming complete)
-**Date**: 2026-05-29
-**Author**: Ryota (with Claude)
-**Skill location**: `~/.local/share/chezmoi/dot_claude/skills/equity-decision/`
-**Origin**: Adapted from [`anthropics/financial-services`](https://github.com/anthropics/financial-services) (Apache 2.0)
+**Status**: Approved (brainstorming complete) **Date**: 2026-05-29 **Author**: Ryota (with Claude) **Skill location**: `~/.local/share/chezmoi/dot_claude/skills/equity-decision/` **Origin**: Adapted from [`anthropics/financial-services`](https://github.com/anthropics/financial-services) (Apache 2.0)
 
 ## Problem
 
@@ -20,8 +16,7 @@
 
 ## Approach
 
-**Approach C (一発 + 深掘りポート)** を採用。
-初手レポートで全 phase の要点を 1 画面サマリで出す。末尾に「深掘りする？」5 件を提示し、必要なものだけ追加ターンで掘る。
+**Approach C (一発 + 深掘りポート)** を採用。初手レポートで全 phase の要点を 1 画面サマリで出す。末尾に「深掘りする？」5 件を提示し、必要なものだけ追加ターンで掘る。
 
 理由: A (対話的 walkthrough) は判断スピード優先に逆行、B (一発レポート) は何が決定打だったか見えにくく token も食う。C は速度と詳細掘りの折衷で最も「判断を簡単にする」要件にフィット。
 
@@ -71,15 +66,16 @@ dot_claude/skills/equity-decision/
 
 `/equity-decision NVDA` を叩いた初手レポートが必ず含む 5 phase + 上限。
 
-| Phase | 中身 | 上限 | データ源 |
-|---|---|---|---|
-| 1. Business snapshot | 事業 3 行 + セグメント売上比率 + 主要顧客集中度 | 80 字 + 表 | 10-K Item 1 / 有報 / 短信 |
-| 2. Fundamentals (3y) | 売上成長率, GP/OP/NP, FCF margin, ROIC, ND/EBITDA, 希薄化 | 表 1 個 | Yahoo + 直近 10-K/10-Q |
-| 3. Valuation triangulation | (a) Multiples (PER/PSR/EV-EBITDA/EV-FCF) vs 業種中央値, (b) DCF 簡易版 3 シナリオ | レンジ + 一言 | Yahoo + Damodaran |
-| 4. Risks (5 軸スキャン) | Debt / Competition / Regulation / Accounting / Concentration を各 1 行 | 5 行 | 10-K Item 1A / 有報 |
-| 5. Verdict | Thesis 3 行 + Invalidation KPI 3 件 + Verdict (Buy/Watch/Pass) + Sizing + Horizon | 150 字 | 上記合成 |
+| Phase                      | 中身                                                                              | 上限          | データ源                  |
+| -------------------------- | --------------------------------------------------------------------------------- | ------------- | ------------------------- |
+| 1. Business snapshot       | 事業 3 行 + セグメント売上比率 + 主要顧客集中度                                   | 80 字 + 表    | 10-K Item 1 / 有報 / 短信 |
+| 2. Fundamentals (3y)       | 売上成長率, GP/OP/NP, FCF margin, ROIC, ND/EBITDA, 希薄化                         | 表 1 個       | Yahoo + 直近 10-K/10-Q    |
+| 3. Valuation triangulation | (a) Multiples (PER/PSR/EV-EBITDA/EV-FCF) vs 業種中央値, (b) DCF 簡易版 3 シナリオ | レンジ + 一言 | Yahoo + Damodaran         |
+| 4. Risks (5 軸スキャン)    | Debt / Competition / Regulation / Accounting / Concentration を各 1 行            | 5 行          | 10-K Item 1A / 有報       |
+| 5. Verdict                 | Thesis 3 行 + Invalidation KPI 3 件 + Verdict (Buy/Watch/Pass) + Sizing + Horizon | 150 字        | 上記合成                  |
 
 末尾固定:
+
 ```
 深掘りする？
   1. valuation を変数いじって再計算 (WACC / terminal / 売上 CAGR)
@@ -91,21 +87,21 @@ dot_claude/skills/equity-decision/
 
 ### Phase 5 — Invalidation の縛り
 
-崩壊条件は **検証可能な数字 KPI** に縛る。「市場が悪くなったら」のような曖昧な記述は不可。
-例: ✓ "Q3 で Data Center YoY が +30% を下回る" / ✗ "AI ブームが終わる"
+崩壊条件は **検証可能な数字 KPI** に縛る。「市場が悪くなったら」のような曖昧な記述は不可。例: ✓ "Q3 で Data Center YoY が +30% を下回る" / ✗ "AI ブームが終わる"
 
 ## ETF / Index workflow (4 phase)
 
-| Phase | 中身 | 上限 | データ源 |
-|---|---|---|---|
-| 1. 商品スナップショット | ベンチマーク, 運用会社, 設定日, AUM, 運用方式 (フルレプリ / サンプリング) | 表 1 個 | Yahoo + 運用会社 product page |
-| 2. コスト構造 | TER + 同等 ETF 3-5 本比較, bid-ask spread, 1y tracking error | 比較表 | Yahoo / Stooq + fact sheet |
-| 3. Holdings | 上位 10 銘柄, セクター, 地域, 集中度 (HHI or top10 比率) | 表 + 1 行 | 運用会社 CSV / Yahoo Holdings |
-| 4. Fit | ポートフォリオ重複 (optional), 3y/5y/10y total return, NISA 扱い, FX リスク | 4 行 | 上記 + ユーザ memo |
+| Phase                   | 中身                                                                        | 上限      | データ源                      |
+| ----------------------- | --------------------------------------------------------------------------- | --------- | ----------------------------- |
+| 1. 商品スナップショット | ベンチマーク, 運用会社, 設定日, AUM, 運用方式 (フルレプリ / サンプリング)   | 表 1 個   | Yahoo + 運用会社 product page |
+| 2. コスト構造           | TER + 同等 ETF 3-5 本比較, bid-ask spread, 1y tracking error                | 比較表    | Yahoo / Stooq + fact sheet    |
+| 3. Holdings             | 上位 10 銘柄, セクター, 地域, 集中度 (HHI or top10 比率)                    | 表 + 1 行 | 運用会社 CSV / Yahoo Holdings |
+| 4. Fit                  | ポートフォリオ重複 (optional), 3y/5y/10y total return, NISA 扱い, FX リスク | 4 行      | 上記 + ユーザ memo            |
 
 Verdict ラベル: **Core / Satellite / Pass** (個別株とは別)
 
 末尾固定:
+
 ```
 深掘りする？
   1. 類似 ETF 3-5 本の横並び比較
@@ -127,14 +123,14 @@ Verdict ラベル: **Core / Satellite / Pass** (個別株とは別)
 
 ### ソース
 
-| 用途 | US | JP | ETF |
-|---|---|---|---|
-| 株価・主要指標 | Yahoo Finance | Yahoo Finance Japan | Yahoo Finance |
-| 通期 (10-K / 有報) | SEC EDGAR submissions API | EDINET 書類取得 API | — |
-| 四半期 (10-Q / 短信) | EDGAR | TDnet 短信 HTML / EDINET | — |
-| 重要事実 (8-K / 適時開示) | EDGAR | TDnet | — |
-| 業種中央値 | NYU Damodaran | Damodaran (US proxy) | Morningstar category |
-| ETF holdings | — | — | 運用会社公式 CSV |
+| 用途                      | US                        | JP                       | ETF                  |
+| ------------------------- | ------------------------- | ------------------------ | -------------------- |
+| 株価・主要指標            | Yahoo Finance             | Yahoo Finance Japan      | Yahoo Finance        |
+| 通期 (10-K / 有報)        | SEC EDGAR submissions API | EDINET 書類取得 API      | —                    |
+| 四半期 (10-Q / 短信)      | EDGAR                     | TDnet 短信 HTML / EDINET | —                    |
+| 重要事実 (8-K / 適時開示) | EDGAR                     | TDnet                    | —                    |
+| 業種中央値                | NYU Damodaran             | Damodaran (US proxy)     | Morningstar category |
+| ETF holdings              | —                         | —                        | 運用会社公式 CSV     |
 
 ### スクリプト規約
 
@@ -158,12 +154,12 @@ Verdict ラベル: **Core / Satellite / Pass** (個別株とは別)
 
 ## Phasing
 
-| Phase | 内容 | リリース |
-|---|---|---|
-| A — Skeleton | SKILL.md + references/ ドキュメント一式。fetcher 無し、Claude が手で数字埋め。これだけで「ユーザが手で数字を渡す」フローは動く | v1 内 |
-| B — Fetchers | scripts/ に Yahoo / EDGAR / EDINET の最小フェッチャ。`uv run` で動く単体スクリプト | v1 内 |
-| C — ETF | ETF テンプレ + holdings フェッチャ + Core/Satellite/Pass verdict | v1.1 (別 PR) |
-| D — Polish | 24h cache, `--no-cache`, 失敗時メッセージ整備, Stooq フォールバック, README 使用例 | v1.2 (別 PR) |
+| Phase        | 内容                                                                                                                           | リリース     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| A — Skeleton | SKILL.md + references/ ドキュメント一式。fetcher 無し、Claude が手で数字埋め。これだけで「ユーザが手で数字を渡す」フローは動く | v1 内        |
+| B — Fetchers | scripts/ に Yahoo / EDGAR / EDINET の最小フェッチャ。`uv run` で動く単体スクリプト                                             | v1 内        |
+| C — ETF      | ETF テンプレ + holdings フェッチャ + Core/Satellite/Pass verdict                                                               | v1.1 (別 PR) |
+| D — Polish   | 24h cache, `--no-cache`, 失敗時メッセージ整備, Stooq フォールバック, README 使用例                                             | v1.2 (別 PR) |
 
 ## Done criteria (v1 = Phase A + B + 個別株のみ)
 

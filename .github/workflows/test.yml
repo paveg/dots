@@ -20,6 +20,7 @@ jobs:
       nvim: ${{ steps.filter.outputs.nvim }}
       devbox: ${{ steps.filter.outputs.devbox }}
       chezmoi: ${{ steps.filter.outputs.chezmoi }}
+      markdown: ${{ steps.filter.outputs.markdown }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -47,11 +48,15 @@ jobs:
               - 'dot_config/**'
               - 'private_dot_ssh/**'
               - '.github/workflows/**'
+            markdown:
+              - '**/*.md'
+              - '.oxfmtrc.json'
+              - '.github/workflows/**'
 
   format:
     name: Format Check
     needs: changes
-    if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true' || needs.changes.outputs.devbox == 'true'
+    if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true' || needs.changes.outputs.devbox == 'true' || needs.changes.outputs.markdown == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -88,6 +93,13 @@ jobs:
           # Strip chezmoi template syntax and validate as JSON
           sed 's/{{[^}]*}}//g' "$TMPL" | python3 -c "import json,sys; json.load(sys.stdin)" \
             && echo "✓ Valid JSON (template stripped)"
+
+      - name: Check Markdown format (oxfmt)
+        run: |
+          echo "Checking Markdown format..."
+          git ls-files '*.md' \
+            | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' \
+            | xargs npx --yes oxfmt@0.58.0 --check
 
   lint:
     name: Lint

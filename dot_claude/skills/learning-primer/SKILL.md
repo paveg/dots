@@ -11,17 +11,13 @@ argument-hint: <topic> <audience> [sources] [out]
 
 # learning-primer
 
-Research target repositories/docs in parallel for a topic and generate a
-**disposable learning primer (Markdown, with mermaid diagrams)** tailored to the
-reader. Domain-agnostic: never hardcode domain knowledge — research it from
-`sources` each time.
+Research target repositories/docs in parallel for a topic and generate a **disposable learning primer (Markdown, with mermaid diagrams)** tailored to the reader. Domain-agnostic: never hardcode domain knowledge — research it from `sources` each time.
 
 Initial request: $ARGUMENTS
 
 ## Diagram-first (top priority)
 
-Diagrams are the centerpiece. Use mermaid aggressively to maximize the reader's
-comprehension and knowledge retention.
+Diagrams are the centerpiece. Use mermaid aggressively to maximize the reader's comprehension and knowledge retention.
 
 - **Any explanation involving structure, time order, relationships, or before/after gets a mermaid diagram** — do not settle for prose alone
 - Aim for **at least one diagram per section** across §1–§3, **one diagram per sub-area in §4** (matching the skeleton's "diagram per area"), plus the §5 dependency diagram (skip sections with no such structure). §0 Mindset and the §5 tier table are **tables — not counted** toward the diagram budget; the §5 dependency diagram **is** counted
@@ -31,17 +27,14 @@ comprehension and knowledge retention.
 
 ## Inputs
 
-| Arg | Required | Default | Description |
-|-----|----------|---------|-------------|
-| `topic` | ✓ | — | Subject to learn |
-| `audience` | ✓ | — | Reader profile; frame as "current state → target state" |
-| `sources` | optional | cwd | Repos/dirs to research (multiple allowed) |
-| `out` | optional | `.ai/<topic-slug>-primer.md` | Output path |
+| Arg        | Required | Default                      | Description                                             |
+| ---------- | -------- | ---------------------------- | ------------------------------------------------------- |
+| `topic`    | ✓        | —                            | Subject to learn                                        |
+| `audience` | ✓        | —                            | Reader profile; frame as "current state → target state" |
+| `sources`  | optional | cwd                          | Repos/dirs to research (multiple allowed)               |
+| `out`      | optional | `.ai/<topic-slug>-primer.md` | Output path                                             |
 
-The default `out` lives in `.ai/`, which is **globally git-ignored**
-(`~/.config/git/ignore`), so it is never committed. Override with `out=/tmp/...`
-to write outside the repo. Outside a git repo where `.ai/` is not ignored, set
-`out` explicitly.
+The default `out` lives in `.ai/`, which is **globally git-ignored** (`~/.config/git/ignore`), so it is never committed. Override with `out=/tmp/...` to write outside the repo. Outside a git repo where `.ai/` is not ignored, set `out` explicitly.
 
 **Early return**: if `topic` or `audience` is missing, ask for it. Do not guess.
 
@@ -49,8 +42,7 @@ to write outside the repo. Outside a git repo where `.ai/` is not ignored, set
 
 1. **Validate inputs**: confirm `topic` / `audience`; ask if missing (early return)
 2. **Classify sources**: detect whether `sources` (default cwd) is a docs site / plain Markdown / code-only, and adapt
-   > [!WARNING]
-   > Landing / index / category pages are often **stubs**. Do not trust the index — read the real files (design docs, ADRs, how-tos, code).
+   > [!WARNING] Landing / index / category pages are often **stubs**. Do not trust the index — read the real files (design docs, ADRs, how-tos, code).
 3. **Decompose**: split `topic` into 3–5 sub-areas. Generic categories: concept & motivation / how it works / workflow & lifecycle / surrounding ecosystem & tools / prerequisites
 4. **Parallel fan-out**: assign each sub-area to an Explore subagent; have it return **only "conclusion + evidence `path(:line)`"** (no long quotations — preserve main context)
 5. **Synthesize**: pour into the skeleton below. Open with the `audience` before → after to create the perspective shift
@@ -59,10 +51,7 @@ to write outside the repo. Outside a git repo where `.ai/` is not ignored, set
 
 ## Output skeleton (fixed)
 
-Write the primer in the audience's language; translate the headings accordingly.
-If the audience's language is not explicit, default to the language the
-`audience`/`topic` arguments are written in; if mixed or unstated, use the
-language of the user's request.
+Write the primer in the audience's language; translate the headings accordingly. If the audience's language is not explicit, default to the language the `audience`/`topic` arguments are written in; if mixed or unstated, use the language of the user's request.
 
 ```
 # <topic> Learning Primer (for <audience>)
@@ -82,13 +71,13 @@ Appendix: glossary (optional)
 
 **Budget: 4–8 diagrams total.** If per-§4-sub-area coverage would push the total past 8, merge related sub-areas or drop the lowest-value diagram — the 8-cap wins over per-section coverage.
 
-| Purpose | Syntax |
-|---------|--------|
-| Structure/dependency, before/after | `graph TD` |
-| Data flow / pipeline | `flowchart LR` |
-| Lifecycle / phases | `stateDiagram-v2` |
-| Cross-system calls | `sequenceDiagram` |
-| Schema / relationships | `erDiagram` |
+| Purpose                            | Syntax            |
+| ---------------------------------- | ----------------- |
+| Structure/dependency, before/after | `graph TD`        |
+| Data flow / pipeline               | `flowchart LR`    |
+| Lifecycle / phases                 | `stateDiagram-v2` |
+| Cross-system calls                 | `sequenceDiagram` |
+| Schema / relationships             | `erDiagram`       |
 
 ≤ ~10 nodes per diagram; concrete labels (no `ServiceA` — use `UserService`).
 

@@ -15,14 +15,14 @@ Produces a structured purchase memo for an individual stock (US or JP). Adapted 
 
 ## Inputs
 
-| Form | Example | Routing |
-|---|---|---|
-| US ticker | `NVDA`, `AAPL` | `^[A-Z]{1,5}$` → EDGAR + Yahoo Finance |
-| JP code | `7203`, `9984` | `^\d{4}$` → EDINET + Yahoo Finance (Japan) |
-| URL | `https://www.sec.gov/.../10-K.htm` | Read page; infer symbol; route per above |
-| Mixed | `NVDA "DC growth slowing"` | Use the extra string as a hypothesis to test in Phase 5 |
-| Flag | `--ja 9434` | Force JP routing for ambiguous 4-digit |
-| Flag | `--no-cache NVDA` | Skip 24h cache, refetch |
+| Form      | Example                            | Routing                                                 |
+| --------- | ---------------------------------- | ------------------------------------------------------- |
+| US ticker | `NVDA`, `AAPL`                     | `^[A-Z]{1,5}$` → EDGAR + Yahoo Finance                  |
+| JP code   | `7203`, `9984`                     | `^\d{4}$` → EDINET + Yahoo Finance (Japan)              |
+| URL       | `https://www.sec.gov/.../10-K.htm` | Read page; infer symbol; route per above                |
+| Mixed     | `NVDA "DC growth slowing"`         | Use the extra string as a hypothesis to test in Phase 5 |
+| Flag      | `--ja 9434`                        | Force JP routing for ambiguous 4-digit                  |
+| Flag      | `--no-cache NVDA`                  | Skip 24h cache, refetch                                 |
 
 ## Output
 
@@ -51,13 +51,13 @@ A single markdown memo of 100–200 lines, matching `references/equity-workflow.
 
 Run these from `~/.claude/skills/equity-decision/scripts/` via `uv run`:
 
-| When | Command | Returns |
-|---|---|---|
-| US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA` | quote, PE/PSR, market cap, TTM revenue/FCF |
-| US ticker → recent filings | `uv run scripts/fetch_edgar.py NVDA` | latest 10-K, 10-Q, 5 × 8-K (with URLs) |
-| JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203` | same shape, auto `.T` suffix |
-| JP code → EDINET filings | `uv run scripts/fetch_edinet.py 7203` | latest 有報 + 半期報告書 (with URLs) |
-| JP 有報本文 → 訴訟・監査 | `uv run scripts/fetch_edinet.py --sections {docID}` | `sections.audit`（監査の状況本文）+ `sections.litigation.matches`（訴訟/係争/損害賠償スニペット） |
+| When                          | Command                                             | Returns                                                                                           |
+| ----------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| US ticker → price + multiples | `uv run scripts/fetch_yahoo.py NVDA`                | quote, PE/PSR, market cap, TTM revenue/FCF                                                        |
+| US ticker → recent filings    | `uv run scripts/fetch_edgar.py NVDA`                | latest 10-K, 10-Q, 5 × 8-K (with URLs)                                                            |
+| JP ticker → price + multiples | `uv run scripts/fetch_yahoo.py 7203`                | same shape, auto `.T` suffix                                                                      |
+| JP code → EDINET filings      | `uv run scripts/fetch_edinet.py 7203`               | latest 有報 + 半期報告書 (with URLs)                                                              |
+| JP 有報本文 → 訴訟・監査      | `uv run scripts/fetch_edinet.py --sections {docID}` | `sections.audit`（監査の状況本文）+ `sections.litigation.matches`（訴訟/係争/損害賠償スニペット） |
 
 Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr contains `数字取得失敗: ...` — propagate that text into the memo, do not invent numbers.
 
@@ -70,7 +70,7 @@ Each script outputs JSON to stdout. On failure, exit code is non-zero and stderr
 EDINET API is occasionally down, key activation can be delayed, and the portal has had outages. When `fetch_edinet.py` exits non-zero for a JP ticker:
 
 1. **Do NOT abort the memo.** Continue with Phase 2/3/5 using `fetch_yahoo.py {code}` only (it auto-suffixes `.T` and covers price + PE/PSR + market cap + TTM revenue / operating income / FCF).
-2. In Phase 1 (segment breakdown) and Phase 4 (filings-sourced risks), write `数字取得失敗 — EDINET unavailable. Paste 有報 / 短信 URL to enable.` Then ask the user: *「有報か短信の URL があれば貼ってください。なければこのまま Yahoo の数字で進めます」*
+2. In Phase 1 (segment breakdown) and Phase 4 (filings-sourced risks), write `数字取得失敗 — EDINET unavailable. Paste 有報 / 短信 URL to enable.` Then ask the user: _「有報か短信の URL があれば貼ってください。なければこのまま Yahoo の数字で進めます」_
 3. If the user pastes a URL or PDF, fetch / read it and fill in Phase 1 + 4 from there.
 4. The Verdict (Phase 5) can still ground itself on Phase 2 / 3 alone; flag the missing filings context in the Invalidation list.
 

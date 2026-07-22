@@ -1,5 +1,4 @@
-> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0).
-> Modified for retail use without paid data sources.
+> Adapted from [anthropics/financial-services](https://github.com/anthropics/financial-services) (Apache License 2.0). Modified for retail use without paid data sources.
 
 # Data Sources
 
@@ -9,11 +8,9 @@ Free, retail-accessible sources used by the skill. Each source includes the URL 
 
 ### SEC EDGAR
 
-- **Company ticker → CIK map** (one-time fetch, cache yearly):
-  `GET https://www.sec.gov/files/company_tickers.json`
+- **Company ticker → CIK map** (one-time fetch, cache yearly): `GET https://www.sec.gov/files/company_tickers.json`
 - **Latest filings index**: `GET https://data.sec.gov/submissions/CIK{cik_10digit}.json`
-- **Filing body**: assembled from the recent filings index (returns `accessionNumber`, `primaryDocument`):
-  `GET https://www.sec.gov/Archives/edgar/data/{cik}/{accession_no_dashes}/{primary_document}`
+- **Filing body**: assembled from the recent filings index (returns `accessionNumber`, `primaryDocument`): `GET https://www.sec.gov/Archives/edgar/data/{cik}/{accession_no_dashes}/{primary_document}`
 - **User-Agent required**: SEC blocks requests without a UA. Use `User-Agent: <name> <email>`.
 - **Rate limit**: 10 requests/second across all SEC endpoints.
 

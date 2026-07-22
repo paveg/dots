@@ -47,6 +47,7 @@ Present an outline for approval:
 - Section list with the one key message per section
 - Which 素材ノート entries feed each section
 - Proposed title (+ description/frontmatter if the repo schema needs it)
+- 検索流入を狙う媒体なら、title と description は検索結果に出る要約として書く（description は概ね120字）。tags は内容を表す意味のあるキーワードにする
 
 Iterate here until approved. Restructuring an outline is cheap; restructuring a draft is not.
 
@@ -59,6 +60,10 @@ Iterate here until approved. Restructuring an outline is cheap; restructuring a 
    - Every factual statement must trace to the 素材ノート
    - Concrete numbers over adjectives; bold ≈ one key claim per section
    - Apply the shared norms (`~/.claude/references/japanese-writing/norms.md`) for rhythm and structure, then layer the style profile's rhythm rules (sentence-end variety, long-short contrast) on top — the profile's markers matter less than the norms underneath them
+5. 読者を引き込む要素は、効く記事にだけ足す（全記事に機械的に入れない）:
+   - 読者参加型の小見出し（「あなたはどのフェーズ?」のようなチェックリスト）で自分ごと化させる
+   - シリーズ物は末尾に次回の具体的な予告を置き、次を読む理由を残す
+   - 専門用語には脚注で定義と公式リンクを付け、専門外の読者も置き去りにしない
 
 ## Phase 5: ファクトチェック＋公開可否 — GATE
 

@@ -19,9 +19,10 @@ esac
 content=$(jq -r '.tool_input.content // .tool_input.new_string // ""' <<<"$input")
 
 # perl -CSD decodes stdin/stdout as UTF-8 so \p{...} matches actual Hiragana/
-# Katakana/Han codepoints. BSD grep (macOS default) has no -P/PCRE support,
-# so this cannot be done with grep alone here.
-if ! printf '%s' "$content" | perl -CSD -ne 'exit(/\p{Hiragana}|\p{Katakana}|\p{Han}/ ? 0 : 1)'; then
+# Katakana/Han codepoints. -0777 slurps the whole content into one string so
+# multi-line docs are scanned, not just the first line. BSD grep (macOS
+# default) has no -P/PCRE support, so this cannot be done with grep alone.
+if ! printf '%s' "$content" | perl -CSD -0777 -ne 'exit(/\p{Hiragana}|\p{Katakana}|\p{Han}/ ? 0 : 1)'; then
   exit 0
 fi
 

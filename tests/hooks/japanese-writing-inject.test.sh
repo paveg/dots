@@ -51,4 +51,9 @@ contains_norms_pointer "$out" || { echo "pointer not injected for nested .md pat
 out=$(run '{"tool_name":"Write","tool_input":{"file_path":"doc.md.bak","content":"日本語"}}')
 [[ -z $out ]] || { echo "fired on non-.md suffix path: $out"; exit 1; }
 
+# Edge: Japanese content on a non-first line must still fire (multi-line scan,
+# not just the first line)
+out=$(run '{"tool_name":"Write","tool_input":{"file_path":"doc.md","content":"# English Title\n\n本文は日本語"}}')
+contains_norms_pointer "$out" || { echo "pointer not injected for japanese on non-first line: $out"; exit 1; }
+
 echo "all assertions passed"

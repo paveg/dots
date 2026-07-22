@@ -44,4 +44,9 @@ out=$(run '{"tool_input":{"command":"gh pr create --body \"日本語\""}}')
 echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
   || { echo "proofreader skill mention missing: $out"; exit 1; }
 
+# Edge: Japanese content on a non-first line of a multi-line --body must
+# still fire (multi-line scan, not just the first line)
+out=$(run '{"tool_input":{"command":"gh pr create --body \"english intro\n日本語の本文\""}}')
+contains_norms_pointer "$out" || { echo "pointer not injected for japanese on non-first line: $out"; exit 1; }
+
 echo "all assertions passed"

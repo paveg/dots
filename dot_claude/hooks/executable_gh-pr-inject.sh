@@ -20,9 +20,10 @@ fi
 body=$(cat "$rule")
 
 # perl -CSD decodes stdin/stdout as UTF-8 so \p{...} matches actual Hiragana/
-# Katakana/Han codepoints. BSD grep (macOS default) has no -P/PCRE support,
-# so this cannot be done with grep alone here.
-if printf '%s' "$cmd" | perl -CSD -ne 'exit(/\p{Hiragana}|\p{Katakana}|\p{Han}/ ? 0 : 1)'; then
+# Katakana/Han codepoints. -0777 slurps the whole command into one string so
+# multi-line bodies are scanned, not just the first line. BSD grep (macOS
+# default) has no -P/PCRE support, so this cannot be done with grep alone.
+if printf '%s' "$cmd" | perl -CSD -0777 -ne 'exit(/\p{Hiragana}|\p{Katakana}|\p{Han}/ ? 0 : 1)'; then
   body="$body
 
 Japanese writing norms: $norms

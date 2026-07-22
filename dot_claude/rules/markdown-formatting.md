@@ -8,13 +8,13 @@ Language-independent formatting rules for Markdown output (responses, PR bodies,
 
 ## Line breaks in prose
 
-Default: **do not hard-wrap prose.** Write one paragraph per line and let the editor/renderer soft-wrap. Hard-wrapping gains nothing in rendered output (CommonMark collapses a soft break to a space) and is a footgun on hard-break surfaces (below).
+Prose has **no column limit** and is **not hard-wrapped** by default. Write one paragraph per line and let the editor/renderer soft-wrap. A hard wrap gains nothing in rendered Markdown (CommonMark collapses a soft break to a space) and is a footgun on hard-break surfaces (below).
 
 - **Never wrap hard-break surfaces**: GitHub issue / PR / comment bodies render every single newline as a `<br>`, so a wrapped paragraph shows as jagged forced breaks. Write them as long unwrapped lines with a blank line between paragraphs. (Tables and code blocks are not prose — leave them.)
-- **Follow the repo when it declares a convention**: an `.editorconfig` `max_line_length`, Prettier `proseWrap`, or an existing consistently-wrapped corpus (e.g. these rule files). Match it.
-- [Semantic Line Breaks](https://sembr.org/) (one sentence per line) is **opt-in** — worth it only where the repo wants sentence-granularity prose diffs, never the global default.
-- When you do wrap, break only at sentence boundaries (。．.！？!?), never mid-clause for a column limit. Japanese especially: a mid-sentence wrap can render as a bogus half-width space (CJK segment-break removal is unevenly implemented), so the sentence boundary is the only safe break.
-- **Code comments**: follow the repo's / language's formatter and line-length config.
+- **Follow the repo's prose convention when it declares one**: Prettier `proseWrap`, or an existing consistently-wrapped corpus (e.g. these rule files). Match it.
+- [Semantic Line Breaks](https://sembr.org/) (one sentence per line) is **opt-in** — worth it only where the repo wants sentence-granularity prose diffs, never the global default. When wrapping, break only at sentence boundaries (。．.！？!?), never mid-clause. Japanese: a mid-sentence wrap can render as a bogus half-width space (CJK segment-break removal is unevenly implemented), so the sentence boundary is the only safe break.
+
+**Code line length** is not governed here — it follows each language's own formatter / linter (`.editorconfig`, `.stylua.toml`, Prettier, `shfmt`, etc.), never a Markdown-wide column rule.
 
 ## Diagrams: mermaid in artifacts, ASCII in chat
 

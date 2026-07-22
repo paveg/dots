@@ -16,3 +16,20 @@ Shell commands you run are audited by the user in real time. Optimize for
   pipeline when a simpler form exists.
 - When a pipeline genuinely is the right tool (e.g. `… | jq …`), say in one
   line what it produces.
+
+## Shared Claude skills
+
+`~/.agents/skills` links to `~/.claude/skills`. Treat those skills as shared
+workflows. When one names a Claude-specific surface, preserve its workflow and
+translate it to the equivalent Codex capability:
+
+- `Agent` or subagent dispatch → Codex collaboration subagents, including the
+  requested fan-out and isolation when available.
+- `TaskCreate` / `TaskUpdate` → the Codex plan; `AskUserQuestion` → a concise
+  user question; `Monitor` / `TaskStop` → available monitoring or session
+  controls.
+- `${CLAUDE_SKILL_DIR}` → the directory containing the selected `SKILL.md`.
+
+If no equivalent capability exists, state the gap and use a safe inline
+fallback only when it preserves required separation and isolation. Never invoke
+`codex-subagent` from inside Codex; it is the Claude-to-Codex bridge.

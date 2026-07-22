@@ -11,12 +11,16 @@ default:
 fmt:
     @echo "Formatting Lua files..."
     @stylua dot_config/nvim/
+    @echo "Formatting Markdown files (oxfmt)..."
+    @git ls-files '*.md' | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' | xargs oxfmt --write
     @echo "✓ Done!"
 
 # Check formatting without changes
 fmt-check:
     @echo "Checking Lua format..."
     @stylua --check dot_config/nvim/
+    @echo "Checking Markdown format (oxfmt)..."
+    @git ls-files '*.md' | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' | xargs oxfmt --check
     @echo "Checking devbox.json template renders as valid JSON..."
     @chezmoi execute-template < dot_local/share/devbox/global/default/devbox.json.tmpl | python3 -c "import json,sys; json.load(sys.stdin)"
     @echo "✓ All files formatted correctly!"

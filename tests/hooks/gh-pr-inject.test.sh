@@ -40,7 +40,7 @@ out=$(run '{"tool_input":{"command":"gh pr edit 123 --body \"変更内容の説�
 contains_norms_pointer "$out" || { echo "japanese pointer not injected for gh pr edit: $out"; exit 1; }
 
 # Green: pointer also suggests running the proofreader skill in fix mode
-out=$(run '{"tool_input":{"command":"gh pr create --body \"日本語\""}}')
+out=$(run '{"tool_input":{"command":"gh pr create --body \"日本語の本文です\""}}')
 echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
   || { echo "proofreader skill mention missing: $out"; exit 1; }
 
@@ -48,5 +48,11 @@ echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-
 # still fire (multi-line scan, not just the first line)
 out=$(run '{"tool_input":{"command":"gh pr create --body \"english intro\n日本語の本文\""}}')
 contains_norms_pointer "$out" || { echo "pointer not injected for japanese on non-first line: $out"; exit 1; }
+
+# Regression: an English body that only mentions Japanese punctuation as an
+# example must NOT get the Japanese norms pointer (the base gh-pr-body.md
+# rule injection may still fire).
+out=$(run '{"tool_input":{"command":"gh pr create --body \"English body that only mentions 。 as an example.\""}}')
+contains_norms_pointer "$out" && { echo "japanese pointer fired on punctuation-only mention: $out"; exit 1; }
 
 echo "all assertions passed"

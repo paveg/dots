@@ -69,7 +69,10 @@ Restructuring an outline is cheap; restructuring a draft is not.
 4. Constraints while drafting:
    - Every factual statement must trace to the 素材ノート
    - Concrete numbers over adjectives; bold ≈ one key claim per section
-   - Follow the style profile's rhythm rules (sentence-end variety, long-short contrast) — these matter more than its surface markers
+   - Apply the shared norms (`~/.claude/references/japanese-writing/norms.md`) for
+     rhythm and structure, then layer the style profile's rhythm rules
+     (sentence-end variety, long-short contrast) on top — the profile's markers
+     matter less than the norms underneath them
 
 ## Phase 5: ファクトチェック＋公開可否 — GATE
 
@@ -81,7 +84,8 @@ Present the claims table.
 ## Phase 6: 校正
 
 Invoke the `japanese-ai-writing-proofreader` skill on the draft in fix mode (the draft is Claude-written).
-It runs textlint, removes AI-smell, and checks deep naturalness.
+It runs textlint, removes AI-smell, and checks deep naturalness against the shared norms
+(`~/.claude/references/japanese-writing/norms.md`).
 Re-read the result against the style profile: proofreading must not have flattened the chosen voice.
 
 ## Phase 7: 完成レポート — CHECKPOINT

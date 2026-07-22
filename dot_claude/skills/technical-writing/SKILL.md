@@ -76,7 +76,7 @@ Prefer the shortest sentence that keeps the meaning:
 | 削除を実行する必要があります | 削除してください |
 | 〜という点に留意する必要がある | 〜に注意 |
 
-- Pick one register per document and hold it（README・設計文書は だ・である、手順書・ガイドは です・ます が目安 — existing repo docs win）. Source memos leak casual or 依頼 register（「〜してほしい」「しくじったら」）; convert to the document's register（「〜すること」「失敗した場合」）.
+- Apply the shared norms' one-register-per-document rule: `~/.claude/references/japanese-writing/norms.md`. In this domain: README・設計文書は だ・である、手順書・ガイドは です・ます が目安（existing repo docs win）. Source memos leak casual or 依頼 register（「〜してほしい」「しくじったら」）; convert to the document's register（「〜すること」「失敗した場合」）.
 - Short paragraphs (2–4 sentences) with a blank line between logical units; tables for enumerable facts, numbered lists for sequences, prose for reasoning. Where prose works, prefer prose over decorated lists.
 
 ## Terminology and notation
@@ -99,14 +99,13 @@ When the subject is a structure or a flow — components interacting, state tran
 
 ## Faithfulness and sourcing
 
-The document states exactly what its sources support — and goes and gets the source when one is within reach:
+Apply the shared norms: `~/.claude/references/japanese-writing/norms.md`.
 
-- Every technical fact — defaults, limits, behaviors — traces to the source material, the code, or an official document.
-- When a claim is verifiable, verify it before writing instead of hedging: read the implementation, run the command, fetch the official docs. 「要確認」 is for what you genuinely cannot reach, not for what is merely tedious. When the memo and the code disagree, the code wins — note the discrepancy for the memo's author.
-- Attach the source to load-bearing claims so the reader can re-verify: code references as `path:line`, external specs as links, measured values with the command that produced them. A sourced claim settles doubt and strengthens the argument; routine facts don't need citations.
-- State a remaining inference as an inference（「〜と考えられる。要確認」）. Plausible-sounding specs no source states（e.g. 全削除 API の説明に「部分的な無効化はできない」を付け足す）are the main failure mode here.
+Technical-writing specific: when a source memo and the code disagree, the code
+wins — note the discrepancy for the memo's author. Cite code references as
+`path:line` so a reader can re-verify without asking.
 
 ## Finishing pass
 
-- The always-loaded rules still apply: `~/.claude/rules/japanese-writing.md` (AI-smell) and `markdown-formatting.md` (Semantic Line Breaks).
+- The always-loaded rules still apply: `~/.claude/rules/japanese-writing.md` (non-negotiables) and `markdown-formatting.md` (Semantic Line Breaks). Full AI-smell taxonomy and rhythm norms: `~/.claude/references/japanese-writing/norms.md`.
 - For a final prose-level polish, invoke the japanese-ai-writing-proofreader skill in fix mode.

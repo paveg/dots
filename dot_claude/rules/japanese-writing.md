@@ -1,68 +1,22 @@
 # Japanese Writing
 
-When producing Japanese prose (responses, PR bodies, commit messages, docs), avoid the
-following "AI smell". The instructions below are in English; the target vocabulary and
-example sentences stay in Japanese because they are what the rule operates on.
-Reference: [textlint-rule-preset-ai-writing](https://github.com/textlint-ja/textlint-rule-preset-ai-writing)
+When producing Japanese prose (responses, PR bodies, commit messages, docs), avoid
+"AI smell" and keep the sentence structurally sound. The instructions below are in
+English; the target vocabulary stays in Japanese because it is what the rule operates on.
 
-## 1. Mechanical list formatting
-
-Avoid:
-
-- A fixed `**ラベル**: 説明` template applied to every item
-- Mechanical use of emoji markers (✅ ❌ 💡 🎯 🚀)
-- Forcing the same structure onto every bullet
-
-→ Use prose where prose works. If you must list, keep granularity and structure
-consistent but drop the boilerplate labels.
-
-## 2. Hype / exaggeration
-
-Avoid: 「革命的」「画期的」「世界初」「魔法のような」「パラダイムシフト」「劇的に向上」「圧倒的」「究極の」「最強の」「次世代」
-
-→ Replace with concrete numbers, facts, and comparisons.
-
-## 3. Excessive emphasis
-
-Avoid:
-
-- Bolding adverbs（`**非常に**`、`**極めて**`、`**かなり**`）
-- Leading every heading with an emoji
-- Repeated 「！」
-
-→ Emphasize only the single point that truly matters. If the meaning carries on its own,
-don't decorate it.
-
-## 4. English-style colon syntax
-
-Avoid placing `:` right after a clause that ends in a predicate (verb/adjective).
-例: ❌「これは便利です: 〜」「実装した: 〜」
-
-→ Receive with a noun before `:`, or break with a newline/period.
-例: ✅「便利な点は次のとおり: 〜」「〜を実装した。具体的には〜」
-
-## 5. Technical writing
+## Non-negotiables
 
 - Don't omit particles (助詞). Prefer 「ファイルを作成する」 over 「ファイル作成」,
   「設定を変更する」 over 「設定変更」. Particles fix meaning in Japanese; omitting them
   makes the dependency structure ambiguous.
 - Prefer active over passive voice（「〜される」→「〜する」）
-- Compress redundancy（「〜することができる」→「〜できる」、「〜を行う」→ verb form）
-- Consider splitting any sentence over 80 characters
-- No subject–predicate disagreement
-- Unify terminology within a document（「サーバ／サーバー」 etc.）
+- Avoid AI smell: mechanical list templates, hype vocabulary, over-emphasis, and
+  English-style colon syntax right after a predicate. Full taxonomy in the norms
+  reference below.
 
-## 6. Rhythm (measured)
-
-Rhythm, not vocabulary, is now the strongest measured AI signal (corpus: 137 human /
-406 AI docs — coji/natural-japanese).
-
-- Vary sentence length deliberately; place a short punch sentence among long ones.
-  Uniform sentence length is the top signal
-- Don't shape every paragraph identically (e.g. exactly 3-4 sentences each)
-- Occasional 体言止め is human (humans ~60% of docs, AI ~0%); use it occasionally in
-  essays/blogs, sparingly in formal tech docs
-- Don't repeat the 「〜ではなく…」 antithesis pattern (3+ times per document reads as AI)
+Full norms: `~/.claude/references/japanese-writing/norms.md` (loaded JIT by writing
+skills / injection hooks) — structure, sourcing, rhythm, cognitive rhythm, and the
+complete AI-smell taxonomy live there.
 
 ## Scope
 

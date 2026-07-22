@@ -88,24 +88,23 @@ Add `--genre essay|tech|business` when the genre is clear — it switches to cal
 
 ## Pass 3: AI-smell (the 5 categories)
 
-Aligned with `~/.claude/rules/japanese-writing.md`. Hunt each category explicitly:
-
-1. **機械的リスト**: `**ラベル**: 説明` templates, emoji markers (✅❌💡), identical structure forced onto every bullet → rewrite as prose or destructure the list
-2. **誇張**: 「革命的」「劇的に」「圧倒的」「究極の」 → replace with the concrete number or comparison, or delete
-3. **過剰な強調**: bolded adverbs, emoji-led headings, repeated 「！」 → keep at most the one emphasis that matters
-4. **英語式コロン**: 述語直後の「:」（「実装した: 〜」）→ receive with a noun or split the sentence
-5. **冗長・受動**: 「することができる」→「できる」、「〜を行う」→ verb form, passive → active, dropped particles restored（「設定変更」→「設定を変更する」）
+Full taxonomy: `~/.claude/references/japanese-writing/norms.md`. Hunt each category
+explicitly: mechanical list templates, hype vocabulary, over-emphasis, English-style
+colon syntax, and particle omission / padding (dropped 助詞, passive → active,
+「することができる」→「できる」等).
 
 This manual read is also where plain 誤字・誤用・文法ミス get caught — textlint misses many（「とゆう」等）.
 Report them under Pass 3 in the findings table.
 
 ## Pass 4: Deep naturalness (what surface rules miss)
 
-This is where text that passes Pass 1-3 still reads AI-written. The dimensions Pass 2 now catches mechanically (文長の均質, 段落の均質, 接続詞の機械的連結, 翻訳調) are dropped from this list — this pass covers only what remains judgment-dependent:
+This is where text that passes Pass 1-3 still reads AI-written. The dimensions Pass 2 now catches mechanically (文長の均質, 段落の均質, 接続詞の機械的連結, 翻訳調) are dropped from this list — this pass covers only what remains judgment-dependent. The structure and cognitive-rhythm principles behind these checks live in
+`~/.claude/references/japanese-writing/norms.md`; this pass is where a human read verifies the draft actually holds them:
 
 - **文末の単調**: same ending 3+ sentences in a row（です。です。です。）→ rotate でした／ません／た。／体言止め／問いかけ
 - **読点過多/過少**: 一文に読点4つ以上は分割を検討。読点ゼロの長文は補う
-- **情報の出し順**: conclusion buried at paragraph end, examples before the point they illustrate → lead with the load-bearing sentence
+- **情報の出し順**: conclusion buried at paragraph end, examples before the point they illustrate → lead with the load-bearing sentence (norms' Structure principle)
+- **状況を更新しない文**: progress announcements, self-description, or unsubstantiated hedges that add nothing the reader didn't already have → cut or replace with a claim that moves the reader's understanding forward (norms' Cognitive rhythm principle)
 - **未消化の専門用語・カタカナ英語**: English or loanword jargon a general reader stumbles on → replace with settled Japanese, or gloss on first use（ドロップ→配線・ケーブル、ネゴシエーション→つながる・リンクする、ラジオ→帯域、律速→ボトルネック・頭打ち、Traffic Rule→トラフィックルール）. Keep field-standard terms as-is（API・PoE・VLAN・SSID）. textlint cannot catch this — read for it manually
 - **初出の専門用語の導入**: don't start using a term in the body before its alias/definition appears — a VLAN labeled Default in a table, then called Trusted in prose with no bridge, reads as 唐突 → introduce on first use as「A（＝B、その役割）」
 

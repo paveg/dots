@@ -1,0 +1,10 @@
+{{ .email }} ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKDPUz/WZBhkJsFEBQeUzU7s/O2tkddTScMWUBgSl3q
+{{- if .signing_key }}
+{{ .email }} {{ .signing_key }}
+{{- end }}
+{{- if .work_email }}
+{{ .work_email }} ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKDPUz/WZBhkJsFEBQeUzU7s/O2tkddTScMWUBgSl3q
+{{- if .signing_key }}
+{{ .work_email }} {{ .signing_key }}
+{{- end }}
+{{- end }}

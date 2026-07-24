@@ -31,13 +31,6 @@
     "gnused@latest",
     "peco@latest",
     "kubectl@latest",
-{{- if .business_use }}
-    "aws-sso-util@latest",
-    "colima@latest",
-    "docker-client@latest",
-    "docker-compose@latest",
-    "docker-credential-helpers@latest",
-    "dive@latest",
     "k9s@latest",
     "kubernetes-helm@latest",
     "helmfile@latest",
@@ -47,6 +40,13 @@
     "krew@latest",
     "kubectx@latest",
     "sops@latest",
+{{- if .business_use }}
+    "aws-sso-util@latest",
+    "colima@latest",
+    "docker-client@latest",
+    "docker-compose@latest",
+    "docker-credential-helpers@latest",
+    "dive@latest",
 {{- end }}
 {{- if not .business_use }}
     "gitleaks@latest",
@@ -62,7 +62,6 @@
     "ncdu@latest",
     "hyperfine@latest",
     "vhs@latest",
-    "oxfmt@latest",
     "yamllint@latest",
 {{- end }}
     "glow@latest",
@@ -76,7 +75,8 @@
     "golangci-lint@latest",
     "textlint@latest",
     "textlint-rule-preset-ja-technical-writing@latest",
-    "textlint-rule-preset-ja-spacing@latest"
+    "textlint-rule-preset-ja-spacing@latest",
+    "oxfmt@latest"
   ],
   "shell": {
     "init_hook": []

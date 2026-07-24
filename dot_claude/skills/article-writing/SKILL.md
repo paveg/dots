@@ -71,7 +71,7 @@ Follow `references/fact-check.md`: extract every verifiable claim, verify each a
 
 ## Phase 6: 校正
 
-Invoke the `japanese-ai-writing-proofreader` skill on the draft in fix mode (the draft is Claude-written). It runs textlint, removes AI-smell, and checks deep naturalness against the shared norms (`~/.claude/references/japanese-writing/norms.md`). Re-read the result against the style profile: proofreading must not have flattened the chosen voice.
+Invoke the `japanese-ai-writing-proofreader` skill on the draft in fix mode (the draft is Claude-written), naming the draft's path and the chosen style profile — without the profile it will read the voice devices as findings. It runs textlint, removes AI-smell, and checks deep naturalness against the shared norms. Re-read the result against the style profile: proofreading must not have flattened the chosen voice.
 
 ## Phase 7: 完成レポート — CHECKPOINT
 

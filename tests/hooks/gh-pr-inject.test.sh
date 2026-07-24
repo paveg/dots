@@ -39,10 +39,11 @@ echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("backslash
 out=$(run '{"tool_input":{"command":"gh pr edit 123 --body \"変更内容の説明\""}}')
 contains_norms_pointer "$out" || { echo "japanese pointer not injected for gh pr edit: $out"; exit 1; }
 
-# Green: pointer also suggests running the proofreader skill in fix mode
+# Regression: the pointer must NOT summon the proofreader skill — hook-driven
+# proofreading burns a full pipeline run on every Japanese PR body
 out=$(run '{"tool_input":{"command":"gh pr create --body \"日本語の本文です\""}}')
 echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
-  || { echo "proofreader skill mention missing: $out"; exit 1; }
+  && { echo "proofreader skill mention resurfaced: $out"; exit 1; }
 
 # Edge: Japanese content on a non-first line of a multi-line --body must
 # still fire (multi-line scan, not just the first line)

@@ -36,8 +36,7 @@ if ! printf '%s' "$content" | perl -CSD -0777 -ne '
 fi
 
 body="Japanese writing norms: $norms
-Apply these norms (structure, rhythm, cognitive rhythm, AI-smell) to the Japanese prose.
-Before finalizing, run the japanese-ai-writing-proofreader skill in fix mode."
+Apply these norms (structure, rhythm, cognitive rhythm, AI-smell) to the Japanese prose."
 
 jq -n --arg body "$body" '{
   hookSpecificOutput: {

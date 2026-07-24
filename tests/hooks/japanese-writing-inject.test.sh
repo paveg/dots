@@ -23,9 +23,10 @@ out=$(run '{"tool_name":"Write"}')
 out=$(run '{"tool_name":"Write","tool_input":{"file_path":"doc.md","content":"これは日本語の文章です"}}')
 contains_norms_pointer "$out" || { echo "pointer not injected for japanese .md write: $out"; exit 1; }
 
-# Green: pointer also suggests running the proofreader skill in fix mode
+# Regression: the pointer must NOT summon the proofreader skill — hook-driven
+# proofreading burns a full pipeline run on every Japanese .md write
 echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
-  || { echo "proofreader skill mention missing: $out"; exit 1; }
+  && { echo "proofreader skill mention resurfaced: $out"; exit 1; }
 
 # Edge: .py file with Japanese content must NOT fire
 out=$(run '{"tool_name":"Write","tool_input":{"file_path":"script.py","content":"# 日本語コメント"}}')

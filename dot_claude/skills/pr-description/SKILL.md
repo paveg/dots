@@ -60,10 +60,10 @@ gh pr edit <N> -R <owner/repo> --body-file <scratch>/pr-body.md
 
 Fetch the body back and confirm the fences are intact before reporting completion:
 
-```bash
+````bash
 gh pr view <N> -R <owner/repo> --json body -q '.body' | awk '/^\\`/ {print NR": "$0}'   # zero output = OK
 gh pr view <N> -R <owner/repo> --json body -q '.body' | grep -n '^```mermaid'          # opening fence present (skip if no mermaid)
-```
+````
 
 If any fence line starts with a backslash, fix the local file and re-push it.
 

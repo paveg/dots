@@ -31,7 +31,10 @@ fetch-retry-maxtimeout=60000
 fetch-timeout=60000
 
 # Output
-loglevel=info
+# warn drops npm/pnpm's http and info chatter while keeping warnings and errors.
+# Automated callers that cannot act on warnings pass --loglevel=error themselves;
+# a CLI flag overrides this value.
+loglevel=warn
 color=always
 
 # Security

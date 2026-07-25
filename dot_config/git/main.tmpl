@@ -27,7 +27,6 @@
   pager = delta
   quotepath = false
   autocrlf = input
-  attributesfile = ~/.config/git/attributes
 
 [init]
   defaultBranch = main
@@ -47,11 +46,6 @@
 
 [merge]
   conflictstyle = diff3
-
-[merge "mergiraf"]
-  name = mergiraf
-  driver = mergiraf merge %O %A %B %L %P
-  recursive = text
 
 [diff]
   colorMoved = default

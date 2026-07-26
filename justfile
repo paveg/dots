@@ -62,6 +62,7 @@ test-hooks:
 test-skill-scripts:
     @echo "Running skill script tests..."
     @bash tests/skills/pr-monitor/run-tests.sh
+    @bash tests/skills/context-diet/run-tests.sh
 
 # Run skill fetcher tests
 test-skills:

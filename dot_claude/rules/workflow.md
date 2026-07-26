@@ -12,10 +12,16 @@
 
 ## Subagent Strategy
 
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One tack per subagent for focused execution
+Delegation is decided here and nowhere else. When the harness default says not to spawn agents unasked, that default wins — what follows describes _how_ to delegate once delegation is warranted, not a standing instruction to delegate.
+
+### Whether to delegate at all
+
+Spawning costs a fixed ~10K tokens before any work happens: every subagent re-reads this rule set plus the repo's CLAUDE.md and git status, and re-reads the target files the caller already has. Measured 2026-07-25: three agents that accomplished nothing burned 114K tokens. Weigh that fixed cost against what staying inline would add to the caller's own history.
+
+- Delegate when the work dwarfs the spawn cost, when it needs isolation from the caller's context, or when whoever generates it must not be the one who evaluates it
+- Stay inline for small, high-frequency tasks — the fixed cost is paid per call, so inline usually wins on total tokens
+- On a 1M-context session, context hygiene alone does not justify a spawn
+- Codex (`codex-subagent`) is for when an independent model's read is the point — cross-model review, a second opinion on a diagnosis — or when the user asks for it by name. It is not the default owner of ordinary coding work
 
 ### Model Tiers
 

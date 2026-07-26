@@ -50,7 +50,6 @@ homebrew/
 .config/git/freee
 .config/colima/
 homebrew/Brewfile.work
-.claude/rules/pr-size.md
 .claude/skills/acli/
 {{ end }}
 

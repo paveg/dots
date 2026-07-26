@@ -35,6 +35,8 @@ just diff        # Show pending chezmoi changes
 
 ### Template Testing
 
+`chezmoi execute-template < file.tmpl` renders against the current config and touches nothing — reach for it first.
+
 `chezmoi init` rewrites the real `~/.config/chezmoi/chezmoi.yaml` **even with `--dry-run`**. Never run it against the real config (especially with `BUSINESS_USE=1`, or from a shell that inherited it) — once flipped, the applied `~/.zshenv` exports `BUSINESS_USE=1` and re-poisons every later shell, including new `chezmoi init` runs. Isolate test inits:
 
 ```bash
@@ -45,6 +47,8 @@ XDG_CONFIG_HOME="$tmpdir" env -u BUSINESS_USE chezmoi init --source=. --dry-run 
 ```
 
 Recovery: `env -u BUSINESS_USE chezmoi init --source ~/.local/share/chezmoi && env -u BUSINESS_USE chezmoi apply`, then kill the tmux server and restart shells (inherited env survives `exec $SHELL -l`).
+
+The Bash tool initializes from the user's profile, so its environment is never assumed clean — check `BUSINESS_USE` before any chezmoi operation rather than trusting the command line.
 
 ## Package Management Policy
 

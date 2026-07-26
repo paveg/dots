@@ -1,7 +1,7 @@
 ---
 name: technical-writing
 description: >-
-  Generate or revise Japanese technical documents — README sections, design docs, runbooks/手順書, operations guides, API docs. Use when asked to 「技術ドキュメントを書いて」「READMEに追記して」「手順書を作って」 「設計ドキュメントをまとめて」「このドキュメントを読みやすくして」, or when turning engineer memos/logs into repo documentation. For blog articles use article-writing; for prose-level proofreading of finished text use japanese-ai-writing-proofreader.
+  Write or revise Japanese technical documents — README sections, design docs, runbooks/手順書, operations guides, API docs — including turning engineer memos into repo documentation. Triggers: 「技術ドキュメントを書いて」「READMEに追記して」「手順書を作って」「設計ドキュメントをまとめて」. Blog articles go to article-writing; prose-level proofreading of finished text goes to japanese-ai-writing-proofreader.
 
 argument-hint: <doc type / target file / source material>
 ---

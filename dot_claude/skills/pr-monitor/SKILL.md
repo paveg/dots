@@ -1,14 +1,10 @@
 ---
 name: pr-monitor
-description: |
-  Watch a GitHub PR asynchronously until CI is green and review threads are
-  resolved (or through merge), using the harness Monitor tool so the main
-  session keeps working. Optional auto-fix mode reacts to CI failures by
-  fixing and pushing on the PR branch.
-  Use when (1) the user asks to watch a PR or CI (「PR見てて」「CI監視して」),
-  (2) changes were just pushed and CI needs confirmation, (3) another skill
-  (e.g. issue-ship) needs CI watched through merge. Self-contained — no
-  plugin dependency, so it works on every machine.
+description: >-
+  Watch a GitHub PR asynchronously until CI is green and review threads resolve (or
+  through merge), so the main session keeps working. Optional auto-fix mode pushes CI
+  fixes on the PR branch. Use on 「PR見てて」「CI監視して」, after pushing changes that need
+  CI confirmation, or when another skill needs CI watched through merge.
 argument-hint: "[pr-number] [--until merged] [--auto-fix] [--exclude name1,name2]"
 ---
 

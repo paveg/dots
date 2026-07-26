@@ -1,10 +1,10 @@
 # Cut Patterns
 
-What to compress, what to move, what to leave alone. Read this before writing edits; the classification in SKILL.md tells you *where* the cost is, this file tells you *what* to do about it.
+What to compress, what to move, what to leave alone. Read this before writing edits; the classification in SKILL.md tells you _where_ the cost is, this file tells you _what_ to do about it.
 
 ## Cut outright
 
-**Restated model defaults.** Anything the model already does without being told. "Match the user's input language" duplicates the harness `language` setting. "Use Go template syntax `{{ .variable }}`" restates what reading one template file teaches. Test: would a competent reader who never saw this line behave differently?
+**Restated model defaults.** Anything the model already does without being told. "Match the user's input language" duplicates the harness `language` setting. "Use Go template syntax `{{ .variable }}`" restates what reading one template file teaches. These pass the named-failure test trivially: there is no failure they prevent, because the behavior happens anyway. If you suspect otherwise, that suspicion is itself the test case — run it before cutting.
 
 **Rationalization tables.** The `| "This is too simple to test" | Simple code breaks too |` format was built for models that argued their way out of constraints. Newer models do not need the counter-argument spelled out, and the table costs 6–10 lines to say what one line says. Keep the constraint; drop the debate. If the rationalizations are historically interesting, move them to `references/` as a record, not a rule.
 
@@ -41,3 +41,5 @@ What to compress, what to move, what to leave alone. Read this before writing ed
 ## Sequencing
 
 Compress before splitting. A `references/` split of text that should have been deleted just moves the problem, and the pointer line you leave behind costs something too. Delete, then compress what survives, then split what is still large and genuinely staged.
+
+Splitting last is also the safer order for quality. A split is the one move whose failure is silent — the content still exists, so nothing looks wrong until a run needs it and the pointer does not fire. Doing it after the deletions and compressions have been verified means a regression that appears at this stage has only one candidate cause.

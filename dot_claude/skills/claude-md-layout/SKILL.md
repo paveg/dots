@@ -1,14 +1,10 @@
 ---
 name: claude-md-layout
-description: |
-  Design where a repository's agent knowledge lives — which conventions belong in
-  which directory-level CLAUDE.md, and which "convention-definition" skills should be
-  copied into CLAUDE.md and then deleted. Optimizes for what the model gets wrong
-  without the note, not documentation coverage. Loads the session model's profile from
-  ~/.claude/references/model-profiles/ to match its writing style.
-  Use when onboarding a repo to Claude Code, after a model upgrade, or when CLAUDE.md
-  has grown bloated or conventions are scattered across skills.
-  Triggers: 「CLAUDE.md を設計」「階層別 CLAUDE.md」「作法を CLAUDE.md に移したい」.
+description: >-
+  Design which directory-level CLAUDE.md holds which repo convention, and which
+  convention-defining skills should be folded into CLAUDE.md and deleted. Use when
+  onboarding a repo, after a model upgrade, or when CLAUDE.md has bloated —
+  「CLAUDE.md を設計」「階層別 CLAUDE.md」「作法を CLAUDE.md に移したい」.
 argument-hint: Target repo path (defaults to the current repo)
 ---
 

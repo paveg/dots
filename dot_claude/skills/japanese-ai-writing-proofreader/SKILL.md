@@ -1,7 +1,7 @@
 ---
 name: japanese-ai-writing-proofreader
 description: >-
-  Proofread Japanese prose in four passes: textlint (mechanical), a rhythm/statistics lint (sentence-length burstiness, paragraph uniformity, antithesis repetition), AI-smell removal, and deep naturalness (sentence-end variety, connectives). Invoke only on an explicit user request — 「校正して」「推敲して」「AI臭を消して」「自然な日本語にして」 — or as the proofreading phase of the article-writing skill. Never fire proactively on PR bodies, commit messages, or docs you just wrote: the always-loaded japanese-writing rules already hold that baseline.
+  Proofread Japanese prose for AI smell, rhythm, and naturalness. Invoke only on an explicit user request — 「校正して」「推敲して」「AI臭を消して」「自然な日本語にして」 — or as the proofreading phase of the article-writing skill. Never fire proactively on PR bodies, commit messages, or docs you just wrote: the always-loaded japanese-writing rules already hold that baseline.
 
 argument-hint: <file or text to proofread>
 ---

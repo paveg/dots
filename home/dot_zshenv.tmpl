@@ -42,17 +42,95 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # =============================================================================
 typeset -U path PATH
 
+{{ include "dot_config/zsh/init/generated-cache.zsh" }}
+
 # Devbox global (rebuilds PATH from its own stack — must come before user tools)
-_devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
-if [[ -f "$_devbox_cache" ]]; then
-  source "$_devbox_cache"
-elif command -v devbox &>/dev/null; then
-  mkdir -p "${XDG_CACHE_HOME}/devbox"
-  # Filter out multiplexer/session-specific vars to avoid breaking auto-mux
-  devbox global shellenv | grep -Ev '^export (TMUX|TMUX_PANE|TERM_PROGRAM|TERM_PROGRAM_VERSION|HERDR_[A-Z_]+)=' > "$_devbox_cache"
-  source "$_devbox_cache"
+_devbox_legacy_cache="${XDG_CACHE_HOME}/devbox/shellenv.zsh"
+_devbox_cache="${XDG_CACHE_HOME}/devbox/shellenv-pure.zsh"
+
+# Never trust the pre-pure cache: it may contain inherited secrets or
+# session-specific values from the shell that generated it.
+if [[ -f "$_devbox_legacy_cache" || -L "$_devbox_legacy_cache" ]]; then
+  command rm -f -- "$_devbox_legacy_cache"
 fi
-unset _devbox_cache
+
+_zsh_generate_devbox_shellenv() {
+  emulate -L zsh
+  setopt local_options pipe_fail
+
+  # --pure excludes inherited variables. The filter is defense in depth for
+  # shell identity, session, multiplexer, temporary, and secret-like exports.
+  command devbox global shellenv --pure |
+    command grep -Ev '^export (HOME|USER|LOGNAME|DISPLAY|WAYLAND_DISPLAY|PWD|OLDPWD|SHLVL|_|DEVBOX_PURE_SHELL|TMUX[A-Z0-9_]*|TERM[A-Z0-9_]*|COLORTERM|ITERM_[A-Z0-9_]*|LC_TERMINAL(_VERSION)?|SSH_[A-Z0-9_]*|TMPDIR|WINDOWID|XDG_(RUNTIME_DIR|SESSION_[A-Z0-9_]*)|DBUS_SESSION_BUS_ADDRESS|SECURITYSESSIONID|HERDR_[A-Z0-9_]*|[A-Z0-9_]*(SECRET|TOKEN|PASSWORD|CREDENTIAL)[A-Z0-9_]*)='
+}
+
+_zsh_merge_devbox_search_path() {
+  emulate -L zsh
+  local variable_name="$1"
+  local generated_value="$2"
+  local baseline_value="$3"
+  local -aU components
+
+  components=(
+    "${(@s/:/)generated_value}"
+    "${(@s/:/)baseline_value}"
+  )
+  typeset -g "$variable_name=${(j/:/)components}"
+}
+
+if command -v devbox &>/dev/null; then
+  # Pure mode deliberately emits fully resolved search paths. Preserve the
+  # current shell's paths in memory and append them after the Devbox paths so
+  # package binaries keep precedence without dropping system or Homebrew data.
+  _devbox_base_path="$PATH"
+  _devbox_base_manpath="${MANPATH:-}"
+  _devbox_base_infopath="${INFOPATH:-}"
+  _devbox_base_xdg_data_dirs="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  _devbox_binary="${commands[devbox]:A}"
+  _devbox_manifest="${XDG_DATA_HOME}/devbox/global/default/devbox.json"
+  _devbox_lock="${XDG_DATA_HOME}/devbox/global/default/devbox.lock"
+  _devbox_refresh=0
+  if [[ "$_devbox_binary" -nt "$_devbox_cache" ]] ||
+    [[ -e "$_devbox_manifest" && "$_devbox_manifest" -nt "$_devbox_cache" ]] ||
+    [[ -e "$_devbox_lock" && "$_devbox_lock" -nt "$_devbox_cache" ]]; then
+    _devbox_refresh=1
+  fi
+  _devbox_fingerprint="dots-generated-zsh-cache-v1|devbox-shellenv-pure-v1|${_devbox_binary}"
+
+  if _zsh_cache_prepare \
+    "$_devbox_cache" \
+    "$_devbox_refresh" \
+    "$_devbox_fingerprint" \
+    _zsh_generate_devbox_shellenv; then
+    source "$_devbox_cache"
+    export PATH="${PATH:+$PATH:}${_devbox_base_path}"
+    _zsh_merge_devbox_search_path MANPATH "${MANPATH:-}" "$_devbox_base_manpath"
+    _zsh_merge_devbox_search_path INFOPATH "${INFOPATH:-}" "$_devbox_base_infopath"
+    _zsh_merge_devbox_search_path \
+      XDG_DATA_DIRS \
+      "${XDG_DATA_DIRS:-}" \
+      "$_devbox_base_xdg_data_dirs"
+    export MANPATH INFOPATH XDG_DATA_DIRS
+  fi
+fi
+# DEVBOX_PURE_SHELL describes the generator subprocess, not the current shell.
+unset DEVBOX_PURE_SHELL
+unfunction \
+  _zsh_generate_devbox_shellenv \
+  _zsh_merge_devbox_search_path \
+  2>/dev/null
+unset \
+  _devbox_base_infopath \
+  _devbox_base_manpath \
+  _devbox_base_path \
+  _devbox_base_xdg_data_dirs \
+  _devbox_binary \
+  _devbox_cache \
+  _devbox_fingerprint \
+  _devbox_legacy_cache \
+  _devbox_lock \
+  _devbox_manifest \
+  _devbox_refresh
 
 # User tool paths (after devbox to avoid being overwritten)
 export BUN_INSTALL="$HOME/.bun"

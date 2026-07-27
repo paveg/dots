@@ -211,7 +211,12 @@ grr-push:
 
 # Clean all caches
 clean:
-    @rm -rf ~/.cache/zsh/init
-    @rm -rf ~/.cache/p10k*
-    @rm -f ~/.cache/devbox/shellenv.zsh
-    @echo "✓ Cache cleared. Restart shell."
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+    rm -rf "$cache_home/zsh/init"
+    rm -rf "$cache_home"/p10k*
+    rm -f "$cache_home/devbox/shellenv.zsh"
+    rm -f "$cache_home/devbox/shellenv-pure.zsh"
+    echo "✓ Cache cleared. Restart shell."

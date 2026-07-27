@@ -11,8 +11,8 @@ Only files under `home/` are deployment sources. Repository files such as docs, 
 ## Commands
 
 ```bash
-just test        # All checks: lint, zsh header lint, format, hook & skill-script tests (CI runs only a subset)
-just fmt         # Format all files (Lua, JSON)
+just test        # All checks: lint, profile rendering, format, hook & skill-script tests
+just fmt         # Format Lua and Markdown files
 just fmt-check   # Check formatting without changes
 just lint        # Check zsh and lua syntax
 just apply       # Apply dotfiles via chezmoi
@@ -52,13 +52,15 @@ The Bash tool initializes from the user's profile, so its environment is never a
 
 ## Package Management Policy
 
-Personal (non-business) CLI tools follow an availability waterfall — use the first layer that provides the package:
+CLI tools follow an availability waterfall — use the first layer that provides the package:
 
-1. **devbox (Nix)** — first choice for cross-platform CLI tools. Reproducible, pinned in `devbox.lock`. Add via `devbox global add`. Because `devbox.json` is a chezmoi template (business/personal split), the change is **not** auto-persisted — the `devbox()` wrapper warns you to add the package to the matching block in `devbox.json.tmpl` by hand (personal packages go in the `not .business_use` block).
+1. **devbox (Nix)** — first choice for cross-platform CLI tools. Most manifest entries intentionally use rolling `@latest`; `devbox.lock` is untracked because the chezmoi template renders different personal and business manifests. Add via `devbox global add`. Because `devbox.json` is a template, the change is **not** auto-persisted — the `devbox()` wrapper warns you to update `devbox.json.tmpl` by hand (personal packages go in the `not .business_use` block).
 2. **mise** — Nix gap-filler only. Use when a tool is **not in nixpkgs** but available via a mise backend (`ubi:` release binaries, `go:`, `cargo:`, `npm:`). Declared in `home/dot_config/mise/config.toml`. mise does **not** manage language runtimes here — `node`/`go`/`deno` stay in devbox global.
 3. **Homebrew** — last resort for CLI. Use only when a tool is in neither nix nor a mise backend (e.g. brew-tap-only tools).
 
-Out of the waterfall (always Homebrew): GUI apps (`cask`), Mac App Store (`mas`), VSCode extensions, and macOS-specific CLI that isn't portable (e.g. `colima`, `vips`, `swiftlint`, `xcodegen`).
+Out of the waterfall (always Homebrew): GUI apps (`cask`), Mac App Store (`mas`), VSCode extensions, and macOS-specific CLI that isn't portable (e.g. `vips`, `swiftlint`, `xcodegen`).
+
+After source changes, refresh with `chezmoi apply` followed by `devbox global install`, then inspect `devbox global list` for resolved-version changes. `brewbundle` refuses exact-name CLI overlaps from `brew`, `cargo`, `go`, `npm`, and `uv` with the authoritative rendered Devbox profile before replacing a tracked Brewfile. Go module paths are compared by their final component. Known providers are normalized (`git-delta` to `delta`, `corepack` to `nodejs`). It cannot detect other aliases or packages with different names, so review every dump manually.
 
 ## Authoring rules & skills
 

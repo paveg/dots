@@ -7,7 +7,7 @@ default:
 
 # Format all files
 # Note: devbox.json.tmpl is a chezmoi template (mixed JSON + Go template directives).
-# Rendered output is verified by fmt-check; the template itself is hand-edited.
+# Rendered output is verified by test-devbox; the template itself is hand-edited.
 fmt:
     @echo "Formatting Lua files..."
     @stylua home/dot_config/nvim/
@@ -21,8 +21,6 @@ fmt-check:
     @stylua --check home/dot_config/nvim/
     @echo "Checking Markdown format (oxfmt)..."
     @git ls-files '*.md' | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' | xargs oxfmt --check
-    @echo "Checking devbox.json template renders as valid JSON..."
-    @chezmoi execute-template < home/dot_local/share/devbox/global/default/devbox.json.tmpl | python3 -c "import json,sys; json.load(sys.stdin)"
     @echo "✓ All files formatted correctly!"
 
 # Run linters
@@ -123,7 +121,7 @@ lint-headers:
     @echo "✓ Headers OK!"
 
 # Fast, hermetic checks that run unconditionally in CI.
-quality-gate: lint lint-headers test-hooks test-zsh-features test-skill-scripts
+quality-gate: lint lint-headers test-devbox test-hooks test-zsh-features test-skill-scripts
     @echo "✓ Fast quality gate passed!"
 
 # Run all checks
@@ -139,6 +137,11 @@ test-hooks:
 test-zsh-features:
     @echo "Running zsh feature tests..."
     @bash tests/zsh/devbox-brew.test.sh
+
+# Render and validate both Devbox profiles without touching user state
+test-devbox:
+    @echo "Validating rendered Devbox profiles..."
+    @bash tests/devbox/render-and-assert.sh
 
 # Run hermetic skill script tests (no network)
 test-skill-scripts:

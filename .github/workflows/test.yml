@@ -247,7 +247,7 @@ jobs:
             exit 1
           fi
 
-          actual_source="$(chezmoi source-path)"
+          actual_source="$(chezmoi --source="${repo_root}" source-path)"
           if [[ "${actual_source}" != "${expected_source}" ]]; then
             echo "Unexpected chezmoi source root" >&2
             echo "expected: ${expected_source}" >&2
@@ -256,7 +256,7 @@ jobs:
           fi
 
           expected_git_source="${expected_source}/dot_config/git/config"
-          actual_git_source="$(chezmoi source-path "${HOME}/.config/git/config")"
+          actual_git_source="$(chezmoi --source="${repo_root}" source-path "${HOME}/.config/git/config")"
           if [[ "${actual_git_source}" != "${expected_git_source}" ]]; then
             echo "Unexpected source path for ~/.config/git/config" >&2
             echo "expected: ${expected_git_source}" >&2
@@ -264,7 +264,7 @@ jobs:
             exit 1
           fi
 
-          managed_files="$(chezmoi managed)"
+          managed_files="$(chezmoi --source="${repo_root}" managed)"
           if ! grep -Fxq '.config/git/config' <<<"${managed_files}"; then
             echo "Managed files do not contain .config/git/config" >&2
             exit 1
@@ -274,7 +274,7 @@ jobs:
             exit 1
           fi
 
-          chezmoi cat "${HOME}/.config/git/config"
+          chezmoi --source="${repo_root}" cat "${HOME}/.config/git/config"
 
   devbox:
     name: Devbox Validation

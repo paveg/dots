@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Test runner for dot_claude/hooks/*.sh
+# Test runner for home/dot_claude/hooks/*.sh
 #
 # Each *.test.sh in this directory is invoked with HOOKS_DIR set to the
-# chezmoi source dir (dot_claude/hooks). Tests use bash to execute hook
+# chezmoi source dir (home/dot_claude/hooks). Tests use bash to execute hook
 # scripts directly, so the executable bit and chezmoi prefix do not matter.
 set -euo pipefail
 

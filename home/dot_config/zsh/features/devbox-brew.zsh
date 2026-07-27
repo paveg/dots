@@ -25,14 +25,36 @@ devbox() {
 
 # Brewfile management (macOS)
 brewbundle() {
-  local chezmoi_dir="${CHEZMOI_SOURCE_DIR:-$HOME/.local/share/chezmoi}"
+  local source_hint="${CHEZMOI_SOURCE_DIR:-}"
+  local source_dir
   local brewfile
-  if [[ -n "$BUSINESS_USE" ]]; then
-    brewfile="$chezmoi_dir/homebrew/Brewfile.work"
+
+  if [[ -n "$source_hint" ]]; then
+    source_dir="$(chezmoi --source "$source_hint" source-path 2>/dev/null)" || {
+      echo "Could not resolve the chezmoi source directory from CHEZMOI_SOURCE_DIR: $source_hint" >&2
+      return 1
+    }
   else
-    brewfile="$chezmoi_dir/homebrew/Brewfile"
+    source_dir="$(chezmoi source-path 2>/dev/null)" || {
+      echo "Could not resolve the active chezmoi source directory." >&2
+      return 1
+    }
   fi
-  [[ ! -f "$brewfile" ]] && echo "Brewfile not found: $brewfile" && return 1
+
+  if [[ -z "$source_dir" ]]; then
+    echo "chezmoi returned an empty source directory." >&2
+    return 1
+  fi
+
+  if [[ -n "$BUSINESS_USE" ]]; then
+    brewfile="$source_dir/homebrew/Brewfile.work"
+  else
+    brewfile="$source_dir/homebrew/Brewfile"
+  fi
+  if [[ ! -f "$brewfile" ]]; then
+    echo "Brewfile not found: $brewfile" >&2
+    return 1
+  fi
   brew bundle dump --force --file="$brewfile"
   echo "Updated: $brewfile"
 }

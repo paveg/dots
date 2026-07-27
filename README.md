@@ -68,41 +68,39 @@ devbox global install
 
 ```
 dots/
-├── .chezmoi.yaml.tmpl      # chezmoi config (OS, BUSINESS_USE detection)
-├── .chezmoiignore          # OS-specific ignores
-├── dot_zshenv.tmpl         # -> ~/.zshenv
-├── dot_zshrc.tmpl          # -> ~/.zshrc
-├── dot_p10k.zsh            # -> ~/.p10k.zsh (powerlevel10k config)
-├── dot_local/
-│   └── share/devbox/global/default/
-│       └── devbox.json     # -> ~/.local/share/devbox/global/default/devbox.json
-└── dot_config/
-    ├── git/
-    │   ├── config          # -> ~/.config/git/config (conditional includes, git-secrets)
-    │   ├── main.tmpl       # -> ~/.config/git/main
-    │   ├── ignore          # -> ~/.config/git/ignore
-    │   └── work.tmpl       # -> ~/.config/git/work (work repos only)
-    ├── nvim/               # -> ~/.config/nvim/
-    │   ├── init.lua
-    │   └── lua/plugins/
-    │       ├── colorscheme.lua
-    │       ├── ui.lua
-    │       ├── editor.lua
-    │       ├── treesitter.lua
-    │       ├── lsp.lua
-    │       ├── completion.lua
-    │       └── copilot.lua
-    ├── direnv/
-    │   ├── direnv.toml.tmpl  # -> ~/.config/direnv/direnv.toml (whitelist)
-    │   └── direnvrc        # -> ~/.config/direnv/direnvrc
-    ├── gitleaks/
-    │   └── config.toml     # -> ~/.config/gitleaks/config.toml (global)
-    ├── zsh/split/          # -> included in ~/.zshrc (plugins, options, etc.)
-    ├── lazygit/config.yml  # -> ~/.config/lazygit/config.yml
-    └── ghostty/config      # -> ~/.config/ghostty/config
-├── .ssh/
-│   └── config              # -> ~/.ssh/config (common settings only)
+├── .chezmoiroot            # selects home/ as the deployment source
+├── home/                   # only this subtree is managed by chezmoi
+│   ├── .chezmoi.yaml.tmpl  # chezmoi config (OS, BUSINESS_USE detection)
+│   ├── .chezmoiignore      # target/profile/OS/runtime exclusions
+│   ├── dot_zshenv.tmpl     # -> ~/.zshenv
+│   ├── dot_zshrc.tmpl      # -> ~/.zshrc
+│   ├── dot_p10k.zsh        # -> ~/.p10k.zsh
+│   ├── dot_claude/         # -> ~/.claude/
+│   ├── dot_codex/          # -> ~/.codex/
+│   ├── dot_local/
+│   │   └── share/devbox/global/default/
+│   │       └── devbox.json.tmpl
+│   ├── private_dot_ssh/    # -> ~/.ssh/
+│   └── dot_config/
+│       ├── git/
+│       ├── nvim/
+│       ├── zsh/
+│       ├── direnv/
+│       ├── gitleaks/
+│       ├── lazygit/
+│       └── ghostty/
+├── .github/                # CI; never deployed
+├── docs/                   # ADRs and historical plans; never deployed
+├── tests/                  # hook and skill tests; never deployed
+├── justfile
+└── install.sh
 ```
+
+The `home/` boundary keeps repository-only files out of `$HOME` without adding
+housekeeping entries to `home/.chezmoiignore`.
+
+Historical ADRs and plans may use chezmoi-source-relative paths; from the
+repository root, prepend `home/` to those paths in the current layout.
 
 ## Tools (via devbox)
 

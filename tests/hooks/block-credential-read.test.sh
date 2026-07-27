@@ -142,10 +142,10 @@ out=$(run '{"tool_name":"Bash","tool_input":{"command":"rg secret /home/user/.zs
 is_block "$out" || fail "should deny: rg secret /home/user/.zsh_history — got: $out"
 
 # chezmoi source naming (dot_) lacks the dotted substring — must stay allowed
-out=$(run '{"tool_name":"Bash","tool_input":{"command":"chezmoi execute-template < dot_npmrc.tmpl"}}')
-[[ -z $out ]] || fail "should allow: chezmoi execute-template < dot_npmrc.tmpl — got: $out"
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"chezmoi execute-template < home/dot_npmrc.tmpl"}}')
+[[ -z $out ]] || fail "should allow: chezmoi execute-template < home/dot_npmrc.tmpl — got: $out"
 
-out=$(run '{"tool_name":"Bash","tool_input":{"command":"ls private_dot_ssh/"}}')
-[[ -z $out ]] || fail "should allow: ls private_dot_ssh/ — got: $out"
+out=$(run '{"tool_name":"Bash","tool_input":{"command":"ls home/private_dot_ssh/"}}')
+[[ -z $out ]] || fail "should allow: ls home/private_dot_ssh/ — got: $out"
 
 echo "all assertions passed"

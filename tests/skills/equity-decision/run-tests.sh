@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test runner for dot_claude/skills/equity-decision/scripts/*.py
+# Test runner for home/dot_claude/skills/equity-decision/scripts/*.py
 # Runs all pytest tests in this directory using `uv run`.
 set -euo pipefail
 

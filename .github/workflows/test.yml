@@ -55,7 +55,7 @@ jobs:
         with:
           filters: |
             shell:
-              - 'home/dot_zshrc.tmpl'
+              - 'home/private_dot_zshrc.tmpl'
               - 'home/dot_zshenv.tmpl'
               - 'home/dot_config/zsh/features/devbox-brew.zsh'
               - 'home/dot_config/direnv/**'
@@ -69,6 +69,7 @@ jobs:
               - 'home/**/*.zsh'
               - 'home/**/*.zsh.tmpl'
               - 'home/dot_z*.tmpl'
+              - 'home/private_dot_z*.tmpl'
               - 'home/dot_p10k.zsh'
               - 'justfile'
               - '.github/scripts/install-chezmoi.sh'

@@ -456,7 +456,7 @@ for profile in personal business; do
     --config-format json \
     --source "$repo_root" \
     --override-data "$data" \
-    execute-template --file "$repo_root/home/dot_zshrc.tmpl" >"$rendered"
+    execute-template --file "$repo_root/home/private_dot_zshrc.tmpl" >"$rendered"
   zsh -n "$rendered"
   grep -Fq '"mise-activate-v1"' "$rendered" ||
     fail "$profile render is missing validated mise activation"

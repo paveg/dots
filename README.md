@@ -241,11 +241,12 @@ gitleaks detect --source . --verbose --log-opts="--all"
 
 ### Local Configuration (per-machine, not tracked by git)
 
-| File             | Purpose                                            |
-| ---------------- | -------------------------------------------------- |
-| `~/.env.local`   | Machine-specific environment variables             |
-| `~/.zshrc.local` | Machine-specific shell config (aliases, functions) |
-| `.envrc`         | Directory-specific env vars (via direnv)           |
+| File             | Purpose                                                         |
+| ---------------- | --------------------------------------------------------------- |
+| `~/.env.local`   | Machine-specific environment variables                          |
+| `~/.zshrc.local` | Machine-specific shell config (aliases, functions)              |
+| `.env`           | Data-only project variables, loaded after explicit direnv allow |
+| `.envrc`         | Project environment logic, loaded after explicit direnv allow   |
 
 ```bash
 # ~/.env.local - environment variables
@@ -269,11 +270,32 @@ chezmoi init --apply paveg/dots
 
 ### Directory-specific (direnv)
 
+Direnv 2.31 or newer discovers `.env` files directly. It parses them as dotenv
+data rather than sourcing them as shell scripts, so command substitutions are
+not executed. The first load requires explicit approval, and any content change
+revokes that approval until it is reviewed and allowed again. Variables are
+automatically unloaded when leaving the directory.
+
 ```bash
-# Create .envrc in any project directory
-echo 'export DATABASE_URL="postgres://..."' > .envrc
-direnv allow
+# Data-only variables need no .envrc boilerplate
+printf '%s\n' 'DATABASE_URL=postgres://localhost/app' > .env
+direnv allow  # review first; rerun after changing .env
 ```
+
+For project logic, use an `.envrc`. Direnv's version-gated standard library
+provides `dotenv_if_exists` and watches the loaded file. Allowing that `.envrc`
+intentionally delegates trust to the `.env` it parses: later `.env` data
+changes reload in the active shell without another `direnv allow`, while
+`.envrc` changes still require re-approval. The nested `.env` remains dotenv
+data and is never sourced as shell code.
+
+```bash
+printf '%s\n' 'dotenv_if_exists' > .envrc
+direnv allow  # review first; rerun after changing .envrc
+```
+
+Prefer direct `.env` loading without an `.envrc` when every `.env` edit should
+cross the strict per-file review and re-allow boundary.
 
 ## Utility Functions
 

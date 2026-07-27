@@ -25,7 +25,7 @@ jobs:
       - name: Install check dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq lua5.4 zsh
+          sudo apt-get install -y direnv jq lua5.4 zsh
           bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
@@ -58,10 +58,11 @@ jobs:
               - 'home/dot_zshrc.tmpl'
               - 'home/dot_zshenv.tmpl'
               - 'home/dot_config/zsh/features/devbox-brew.zsh'
+              - 'home/dot_config/direnv/**'
               - 'install.sh'
               - 'home/.chezmoiscripts/**'
               - 'tests/devbox/**'
-              - 'tests/zsh/devbox-brew.test.sh'
+              - 'tests/zsh/*.test.sh'
               - '.github/scripts/install-chezmoi.sh'
               - '.github/workflows/**'
             zsh:
@@ -122,7 +123,7 @@ jobs:
           echo "Checking shell format..."
 
           # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/devbox-brew.test.sh" \) -print0 | \
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | \
             xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
@@ -154,7 +155,7 @@ jobs:
           fi
           
           # Check install.sh, chezmoi scripts, CI helpers, and Bash regression tests
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/devbox-brew.test.sh" \) -print0 | xargs -0 shellcheck
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | xargs -0 shellcheck
 
   zsh-darwin:
     name: Zsh Syntax (macOS)

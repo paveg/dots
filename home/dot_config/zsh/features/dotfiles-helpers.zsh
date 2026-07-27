@@ -18,8 +18,9 @@ dots() {
 🔧 Local Config (per-machine, not tracked)
   ~/.env.local         Global environment variables
   ~/.zshrc.local       Shell customizations
-  .envrc               Per-project env (direnv, needs allow)
-  .env                  Per-project env (auto-loaded)
+  .env                  Project data (direnv, needs allow/re-allow)
+  .envrc                Project logic (direnv, needs allow/re-allow)
+  dotenv_if_exists      Load .env from an explicitly allowed .envrc
 
 ⌨️  Key Bindings
   Ctrl+g       Repository navigation (ghq + fzf)

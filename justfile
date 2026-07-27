@@ -135,8 +135,20 @@ test-hooks:
 
 # Run hermetic zsh feature tests
 test-zsh-features:
-    @echo "Running zsh feature tests..."
-    @bash tests/zsh/devbox-brew.test.sh
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    echo "Running zsh feature tests..."
+    test_count=0
+    for test_file in tests/zsh/*.test.sh; do
+      [[ -f "$test_file" ]] || {
+        echo "No zsh feature tests found." >&2
+        exit 1
+      }
+      bash "$test_file"
+      test_count=$((test_count + 1))
+    done
+    echo "✓ $test_count zsh feature test files passed!"
 
 # Render and validate both Devbox profiles without touching user state
 test-devbox:

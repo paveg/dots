@@ -7,9 +7,6 @@
 # Hide the diff output when loading/unloading envrc
 hide_env_diff = true
 
-[whitelist]
-# Trust all .envrc files under ghq-managed repositories
-prefix = [
-  "{{ .chezmoi.homeDir }}/repos",
-  "{{ .chezmoi.homeDir }}/.local/share/chezmoi",
-]
+# Load data-only .env files through direnv's explicit allow/re-allow boundary.
+# Requires direnv >= 2.31.0.
+load_dotenv = true

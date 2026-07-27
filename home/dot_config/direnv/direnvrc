@@ -1,17 +1,15 @@
+# shellcheck shell=bash
 # =============================================================================
 # direnv standard library extensions
 # =============================================================================
 
-# dotenv_if_exists: Load .env file if it exists
-# Usage in .envrc: dotenv_if_exists
-dotenv_if_exists() {
-  local env_file="${1:-.env}"
-  if [[ -f "$env_file" ]]; then
-    dotenv "$env_file"
-  fi
-}
+# dotenv_if_exists is provided by direnv's standard library. Keep that
+# implementation: it registers .env with watch_file so active shells reload
+# data changes without requiring the approved .envrc to change.
 
 # dotenv_if_exists_up: Search for .env up the directory tree
+# The standard-library dotenv call registers the discovered file with
+# watch_file.
 dotenv_if_exists_up() {
   local env_file="${1:-.env}"
   local dir="$PWD"

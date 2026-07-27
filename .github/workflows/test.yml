@@ -57,8 +57,11 @@ jobs:
             shell:
               - 'home/dot_zshrc.tmpl'
               - 'home/dot_zshenv.tmpl'
+              - 'home/dot_config/zsh/features/devbox-brew.zsh'
               - 'install.sh'
               - 'home/.chezmoiscripts/**'
+              - 'tests/devbox/**'
+              - 'tests/zsh/devbox-brew.test.sh'
               - '.github/scripts/install-chezmoi.sh'
               - '.github/workflows/**'
             zsh:
@@ -77,6 +80,12 @@ jobs:
               - '.github/workflows/**'
             devbox:
               - 'home/dot_local/share/devbox/global/default/devbox.json.tmpl'
+              - 'home/dot_config/zsh/features/devbox-brew.zsh'
+              - 'home/homebrew/Brewfile'
+              - 'home/homebrew/Brewfile.work'
+              - 'tests/devbox/**'
+              - 'tests/zsh/devbox-brew.test.sh'
+              - 'justfile'
               - '.github/workflows/**'
             chezmoi:
               - '.chezmoiroot'
@@ -113,21 +122,13 @@ jobs:
           echo "Checking shell format..."
 
           # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" \) -print0 | \
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/devbox-brew.test.sh" \) -print0 | \
             xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
         run: |
           echo "Checking lua format..."
           stylua --check home/dot_config/nvim/
-
-      - name: Check JSON format (devbox.json.tmpl)
-        run: |
-          echo "Checking devbox.json.tmpl renders valid JSON (both personal and business)..."
-          TMPL="home/dot_local/share/devbox/global/default/devbox.json.tmpl"
-          # Strip chezmoi template syntax and validate as JSON
-          sed 's/{{[^}]*}}//g' "$TMPL" | python3 -c "import json,sys; json.load(sys.stdin)" \
-            && echo "✓ Valid JSON (template stripped)"
 
       - name: Check Markdown format (oxfmt)
         run: |
@@ -152,8 +153,8 @@ jobs:
             sudo apt-get update && sudo apt-get install -y shellcheck
           fi
           
-          # Check install.sh, chezmoi scripts, and the CI installer
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" \) -print0 | xargs -0 shellcheck
+          # Check install.sh, chezmoi scripts, CI helpers, and Bash regression tests
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/devbox-brew.test.sh" \) -print0 | xargs -0 shellcheck
 
   zsh-darwin:
     name: Zsh Syntax (macOS)
@@ -275,35 +276,35 @@ jobs:
           chezmoi --source="${repo_root}" cat "${HOME}/.config/git/config"
 
   devbox:
-    name: Devbox Validation
+    name: Devbox Validation (${{ matrix.profile }})
     needs: changes
     if: needs.changes.outputs.devbox == 'true'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [personal, business]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate devbox.json.tmpl
+      - name: Install chezmoi
         run: |
-          echo "Validating devbox.json.tmpl..."
-          TMPL="home/dot_local/share/devbox/global/default/devbox.json.tmpl"
-          sed 's/{{[^}]*}}//g' "$TMPL" | python3 -c "import json,sys; json.load(sys.stdin)"
-          echo "✓ Valid JSON (template stripped)"
+          bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
-      - name: Render devbox.json from template
-        run: |
-          TMPL="home/dot_local/share/devbox/global/default/devbox.json.tmpl"
-          sed 's/{{[^}]*}}//g' "$TMPL" > home/dot_local/share/devbox/global/default/devbox.json
+      - name: Render and validate profile manifests
+        run: bash tests/devbox/render-and-assert.sh "$RUNNER_TEMP/devbox-profiles"
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
         with:
           enable-cache: true
-          project-path: home/dot_local/share/devbox/global/default
+          project-path: ${{ runner.temp }}/devbox-profiles/${{ matrix.profile }}
 
       - name: Test devbox packages
         run: |
-          echo "Testing devbox package resolution..."
-          devbox install --config home/dot_local/share/devbox/global/default/devbox.json
+          echo "Testing ${{ matrix.profile }} Devbox package resolution..."
+          devbox install --config "$RUNNER_TEMP/devbox-profiles/${{ matrix.profile }}/devbox.json"
 
   neovim:
     name: Neovim Config

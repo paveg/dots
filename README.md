@@ -104,35 +104,34 @@ repository root, prepend `home/` to those paths in the current layout.
 
 ## Tools (via devbox)
 
-| Tool       | Description                      |
-| ---------- | -------------------------------- |
-| go         | Go language (for gopls LSP)      |
-| nodejs     | Node.js (for ts_ls, pyright LSP) |
-| python     | Python (for python development)  |
-| neovim     | Editor                           |
-| tmux       | Terminal multiplexer             |
-| ghq        | Repository management            |
-| fzf        | Fuzzy finder                     |
-| ripgrep    | Fast grep                        |
-| fd         | Fast find                        |
-| bat        | Better cat                       |
-| eza        | Better ls                        |
-| zoxide     | Smart cd                         |
-| lazygit    | Git TUI                          |
-| direnv     | Per-directory env vars           |
-| jq         | JSON processor                   |
-| yq         | YAML processor                   |
-| delta      | Better git diff                  |
-| just       | Task runner                      |
-| stylua     | Lua formatter                    |
-| shfmt      | Shell formatter                  |
-| shellcheck | Shell script linter              |
-| atuin      | Shell history sync               |
-| keychain   | SSH agent manager                |
-| mise       | Runtime version manager          |
-| pnpm       | Fast Node.js package manager     |
-| kubectl    | Kubernetes CLI                   |
-| gitleaks   | Secret detection (800+ patterns) |
+The rendered global manifest always includes Go 1.25, Node.js 24, Neovim 0.11,
+shell utilities, Git/GitHub tooling, Kubernetes tooling, formatters, and
+linters. Personal-only tools include `gitleaks`, `protobuf`, `grpcurl`,
+`cloudflared`, and `flyctl`; business-only tools include `aws-sso-util`,
+`colima`, and the Docker CLI/tooling. The
+[manifest template](home/dot_local/share/devbox/global/default/devbox.json.tmpl)
+is the complete package list.
+
+Most entries intentionally use rolling `@latest` versions. `devbox.lock` is
+not tracked because one chezmoi template renders different personal and
+business manifests. Refresh deliberately:
+
+```bash
+chezmoi apply
+devbox global install
+devbox global list  # review the resolved versions
+```
+
+Source changes do not alter the active manifest until `chezmoi apply` runs.
+Review resolved-version changes before relying on the refreshed toolchain.
+
+Homebrew owns GUI/host-specific exceptions. `brewbundle` dumps to a temporary
+file and refuses to replace the tracked Brewfile when an exact CLI entry from
+`brew`, `cargo`, `go`, `npm`, or `uv` is already owned by the authoritative
+rendered Devbox profile. Go module paths use their final component for this
+comparison. Known providers are normalized (`git-delta` to `delta`, `corepack`
+to `nodejs`). Other aliases or differently named packages still require manual
+review.
 
 ## Features
 

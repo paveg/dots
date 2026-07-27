@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) and [devbox](https://www.jetify.com/devbox). `.chezmoiroot` selects `home/` as the chezmoi source root. Inside it, files prefixed with `dot_` become dotfiles (e.g., `home/dot_zshrc.tmpl` → `~/.zshrc`).
+Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) and [devbox](https://www.jetify.com/devbox). `.chezmoiroot` selects `home/` as the chezmoi source root. Inside it, files prefixed with `dot_` become dotfiles, and `private_` sets mode `0600` (e.g., `home/private_dot_zshrc.tmpl` → `~/.zshrc`).
 
 Only files under `home/` are deployment sources. Repository files such as docs, tests, CI helpers, and the project-scoped `.claude/` stay outside that boundary and must not be added to `home/`. `home/.chezmoiignore` is reserved for target/profile/OS/runtime exclusions, not repository housekeeping.
 

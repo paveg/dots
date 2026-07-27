@@ -73,7 +73,8 @@ dots/
 │   ├── .chezmoi.yaml.tmpl  # chezmoi config (OS, BUSINESS_USE detection)
 │   ├── .chezmoiignore      # target/profile/OS/runtime exclusions
 │   ├── dot_zshenv.tmpl     # -> ~/.zshenv
-│   ├── dot_zshrc.tmpl      # -> ~/.zshrc
+│   ├── private_dot_npmrc.tmpl # -> ~/.npmrc (mode 0600)
+│   ├── private_dot_zshrc.tmpl # -> ~/.zshrc (mode 0600)
 │   ├── dot_p10k.zsh        # -> ~/.p10k.zsh
 │   ├── dot_claude/         # -> ~/.claude/
 │   ├── dot_codex/          # -> ~/.codex/

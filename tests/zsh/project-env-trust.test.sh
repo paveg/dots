@@ -79,7 +79,7 @@ render_profile() {
     --source "$repo_root" \
     --destination "$profile_home" \
     --override-data "$data" \
-    execute-template --file "$source_root/dot_zshrc.tmpl" >"$rendered_zsh"
+    execute-template --file "$source_root/private_dot_zshrc.tmpl" >"$rendered_zsh"
   zsh -n "$rendered_zsh"
 
   if grep -Fq '_auto_dotenv' "$rendered_zsh"; then

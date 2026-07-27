@@ -89,7 +89,7 @@ lint-zsh:
       esac
       while IFS= read -r -d '' template; do
         render_and_check "$profile" "$template" "$data"
-      done < <(git ls-files -z 'home/dot_z*.tmpl')
+      done < <(git ls-files -z 'home/dot_z*.tmpl' 'home/private_dot_z*.tmpl')
     done
 
 # Check Lua syntax. CI explicitly sets LUA_COMPILER=luac5.4 on Ubuntu.

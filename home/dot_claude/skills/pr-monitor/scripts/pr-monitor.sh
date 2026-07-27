@@ -22,25 +22,75 @@ UNTIL=${5:-green}
 INTERVAL=${PR_MONITOR_INTERVAL:-30}
 MAX_POLLS=${PR_MONITOR_MAX_POLLS:-0}
 
-THREADS_QUERY='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100){nodes{isResolved}}}}}'
+THREADS_QUERY="query(\$o:String!,\$r:String!,\$n:Int!,\$after:String){repository(owner:\$o,name:\$r){pullRequest(number:\$n){reviewThreads(first:100,after:\$after){nodes{isResolved}pageInfo{hasNextPage endCursor}}}}}"
 
 last_state=""
 polls=0
 errors=0
 
+fetch_threads() {
+  local after=""
+  local seen=$'\n'
+  local page stats has_next next page_total page_unresolved
+  local pages=0
+  local total=0
+  local unresolved=0
+  local -a args
+
+  while true; do
+    # Bound each poll even if the API returns an endless sequence of cursors.
+    ((pages >= 100)) && return 1
+    pages=$((pages + 1))
+
+    args=(api graphql -f query="$THREADS_QUERY" -f o="$OWNER" -f r="$REPO" -F n="$PR")
+    [[ -n $after ]] && args+=(-f after="$after")
+    page=$(gh "${args[@]}" 2>/dev/null) || return 1
+
+    stats=$(jq -ec '
+      select(
+        (.errors == null)
+        or ((.errors | type) == "array" and (.errors | length) == 0)
+      )
+      | .data.repository.pullRequest.reviewThreads
+      | select((.nodes | type) == "array")
+      | select(all(.nodes[]; (.isResolved | type) == "boolean"))
+      | select((.pageInfo.hasNextPage | type) == "boolean")
+      | { total: (.nodes | length),
+          unresolved: ([.nodes[] | select(.isResolved == false)] | length),
+          hasNextPage: .pageInfo.hasNextPage,
+          endCursor: .pageInfo.endCursor }' <<<"$page") || return 1
+
+    page_total=$(jq -r '.total' <<<"$stats")
+    page_unresolved=$(jq -r '.unresolved' <<<"$stats")
+    total=$((total + page_total))
+    unresolved=$((unresolved + page_unresolved))
+
+    has_next=$(jq -r '.hasNextPage' <<<"$stats")
+    [[ $has_next == true ]] || break
+
+    next=$(jq -er '.endCursor | select(type == "string" and length > 0)' <<<"$stats") || return 1
+    [[ $seen == *$'\n'"$next"$'\n'* ]] && return 1
+    seen+="$next"$'\n'
+    after=$next
+  done
+
+  jq -cn --argjson total "$total" --argjson unresolved "$unresolved" \
+    '{total: $total, unresolved: $unresolved}'
+}
+
 while true; do
   polls=$((polls + 1))
-  if (( MAX_POLLS > 0 && polls > MAX_POLLS )); then
+  if ((MAX_POLLS > 0 && polls > MAX_POLLS)); then
     echo "[TIMEOUT] max polls reached"
     exit 1
   fi
 
   if pr_json=$(gh pr view "$PR" --repo "$OWNER/$REPO" --json state,statusCheckRollup 2>/dev/null) &&
-     th_json=$(gh api graphql -f query="$THREADS_QUERY" -F o="$OWNER" -F r="$REPO" -F n="$PR" 2>/dev/null); then
+    threads=$(fetch_threads); then
     errors=0
   else
     errors=$((errors + 1))
-    if (( errors % 3 == 0 )); then
+    if ((errors % 3 == 0)); then
       echo "[POLL_ERROR] $errors consecutive fetch failures — check gh auth / network"
     fi
     sleep "$INTERVAL"
@@ -59,10 +109,6 @@ while true; do
         pending: (.total - .ok - (.failures | length)),
         failed: (.failures | length),
         failures }' <<<"$pr_json")
-  threads=$(jq -c '
-    [.data.repository.pullRequest.reviewThreads.nodes[]?.isResolved]
-    | {total: length, unresolved: ([.[] | select(. == false)] | length)}' <<<"$th_json")
-
   state="CI $ci | Reviews $threads | PR $pr_state"
   if [[ $state != "$last_state" ]]; then
     echo "$state"
@@ -70,15 +116,21 @@ while true; do
   fi
 
   case $pr_state in
-    MERGED) echo "DONE: merged"; exit 0 ;;
-    CLOSED) echo "DONE: closed without merge"; exit 0 ;;
+    MERGED)
+      echo "DONE: merged"
+      exit 0
+      ;;
+    CLOSED)
+      echo "DONE: closed without merge"
+      exit 0
+      ;;
   esac
 
   if [[ $UNTIL == green ]]; then
     pending=$(jq -r '.pending' <<<"$ci")
     failed=$(jq -r '.failed' <<<"$ci")
     unresolved=$(jq -r '.unresolved' <<<"$threads")
-    if (( pending == 0 && failed == 0 && unresolved == 0 )); then
+    if ((pending == 0 && failed == 0 && unresolved == 0)); then
       echo "DONE: all checks green and threads resolved"
       exit 0
     fi

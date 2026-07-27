@@ -350,11 +350,17 @@ Common SSH settings are managed, host-specific configs should be in `~/.ssh/conf
 Host github.com
   IdentityFile ~/.ssh/id_ed25519
 
-Host myserver
-  HostName 192.168.1.100
+Host trusted-bastion
+  HostName bastion.example.com
   User myuser
   IdentityFile ~/.ssh/id_ed25519
+  ForwardAgent yes
 ```
+
+Agent forwarding is disabled by default. Enable it only on explicit, trusted
+host aliases—never on a wide wildcard. After applying this config, close any
+existing SSH and ControlMaster connections, then reconnect so the new setting
+takes effect.
 
 ## Development
 

@@ -10,7 +10,7 @@ default:
 # Rendered output is verified by fmt-check; the template itself is hand-edited.
 fmt:
     @echo "Formatting Lua files..."
-    @stylua dot_config/nvim/
+    @stylua home/dot_config/nvim/
     @echo "Formatting Markdown files (oxfmt)..."
     @git ls-files '*.md' | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' | xargs oxfmt --write
     @echo "✓ Done!"
@@ -18,11 +18,11 @@ fmt:
 # Check formatting without changes
 fmt-check:
     @echo "Checking Lua format..."
-    @stylua --check dot_config/nvim/
+    @stylua --check home/dot_config/nvim/
     @echo "Checking Markdown format (oxfmt)..."
     @git ls-files '*.md' | grep -vE 'fixtures/|NOTICE\.md|\.firecrawl/|devbox/global|pytest_cache' | xargs oxfmt --check
     @echo "Checking devbox.json template renders as valid JSON..."
-    @chezmoi execute-template < dot_local/share/devbox/global/default/devbox.json.tmpl | python3 -c "import json,sys; json.load(sys.stdin)"
+    @chezmoi execute-template < home/dot_local/share/devbox/global/default/devbox.json.tmpl | python3 -c "import json,sys; json.load(sys.stdin)"
     @echo "✓ All files formatted correctly!"
 
 # Run linters
@@ -55,18 +55,18 @@ lint-zsh:
 
     render_and_check() {
       local label="$1"
-      local template="$2"
+      local repo_template="$2"
       local data="$3"
-      local rendered="$tmpdir/$label-${template//\//-}"
+      local rendered="$tmpdir/$label-${repo_template//\//-}"
 
       chezmoi \
         --config "$tmpdir/chezmoi.json" \
         --config-format json \
         --source "$PWD" \
         --override-data "$data" \
-        execute-template --file "$template" > "$rendered"
+        execute-template --file "$repo_template" > "$rendered"
       zsh -n "$rendered"
-      echo "✓ $template ($label, current runner OS)"
+      echo "✓ $repo_template ($label, current runner OS)"
     }
 
     # Render each nested template directly so it cannot hide behind a false
@@ -74,7 +74,7 @@ lint-zsh:
     standalone_data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"test-instance","grafana_api_token":"test-api-token","grafana_sa_token":"test-sa-token"}'
     while IFS= read -r -d '' template; do
       render_and_check standalone "$template" "$standalone_data"
-    done < <(git ls-files -z '*.zsh.tmpl')
+    done < <(git ls-files -z 'home/*.zsh.tmpl')
 
     # Render the complete top-level shell configuration for each data branch.
     for profile in personal-basic personal-telemetry business; do
@@ -91,7 +91,7 @@ lint-zsh:
       esac
       while IFS= read -r -d '' template; do
         render_and_check "$profile" "$template" "$data"
-      done < <(git ls-files -z 'dot_z*.tmpl')
+      done < <(git ls-files -z 'home/dot_z*.tmpl')
     done
 
 # Check Lua syntax. CI explicitly sets LUA_COMPILER=luac5.4 on Ubuntu.
@@ -109,12 +109,12 @@ lint-lua:
     while IFS= read -r -d '' file; do
       "$lua_compiler" -p "$file"
       echo "✓ $file"
-    done < <(git ls-files -z 'dot_config/nvim/*.lua' 'dot_config/nvim/**/*.lua')
+    done < <(git ls-files -z 'home/dot_config/nvim/*.lua' 'home/dot_config/nvim/**/*.lua')
 
 # Lint Provides header on zsh files (init/, modules/, features/)
 lint-headers:
     @echo "Checking header convention..."
-    @for f in dot_config/zsh/init/*.zsh* dot_config/zsh/modules/*.zsh* dot_config/zsh/features/*.zsh; do \
+    @for f in home/dot_config/zsh/init/*.zsh* home/dot_config/zsh/modules/*.zsh* home/dot_config/zsh/features/*.zsh; do \
         if ! head -10 "$f" | grep -qE '^# Provides:'; then \
             echo "✗ $f: missing '# Provides:' header (top 10 lines)"; \
             exit 1; \
@@ -123,7 +123,7 @@ lint-headers:
     @echo "✓ Headers OK!"
 
 # Fast, hermetic checks that run unconditionally in CI.
-quality-gate: lint lint-headers test-hooks test-skill-scripts
+quality-gate: lint lint-headers test-hooks test-zsh-features test-skill-scripts
     @echo "✓ Fast quality gate passed!"
 
 # Run all checks
@@ -134,6 +134,11 @@ test: quality-gate fmt-check
 test-hooks:
     @echo "Running hook tests..."
     @bash tests/hooks/run-tests.sh
+
+# Run hermetic zsh feature tests
+test-zsh-features:
+    @echo "Running zsh feature tests..."
+    @bash tests/zsh/devbox-brew.test.sh
 
 # Run hermetic skill script tests (no network)
 test-skill-scripts:

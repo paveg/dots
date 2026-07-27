@@ -2,7 +2,7 @@
 name: empirical-prompt-tuning
 description: >-
   Improve agent-facing text instructions (skills, slash commands, task prompts, CLAUDE.md sections) by having a bias-free executor actually run them, then evaluating from both sides until improvement plateaus. Use right after creating or significantly revising a prompt, or when odd agent behavior looks like ambiguous instructions rather than a bug.
-argument-hint: Path or name of the prompt/skill to tune (e.g., dot_claude/skills/my-skill/SKILL.md)
+argument-hint: Path or name of the prompt/skill to tune (e.g., home/dot_claude/skills/my-skill/SKILL.md)
 ---
 
 # Empirical Prompt Tuning
@@ -51,7 +51,7 @@ This skill applies to **both** scopes equally. The evaluation workflow is identi
 
 When tuning a global prompt, consider that it will run across many different project contexts — design scenarios that span 2–3 representative project types, not just the repo where you noticed the problem.
 
-**Always edit the chezmoi source** at `~/.local/share/chezmoi/dot_claude/` — never edit `~/.claude/` directly. Changes to the live path are overwritten by the next `chezmoi apply`. After each iteration's fix, confirm with the user before running `chezmoi apply` to reflect the change.
+**Always edit the chezmoi source** at `~/.local/share/chezmoi/home/dot_claude/` — never edit `~/.claude/` directly. Changes to the live path are overwritten by the next `chezmoi apply`. After each iteration's fix, confirm with the user before running `chezmoi apply` to reflect the change.
 
 ## Workflow
 
@@ -117,7 +117,7 @@ Apply the minimal fix that addresses one theme of unclear points.
 
 - **1 theme per iteration** (related micro-fixes count as 1 theme; unrelated fixes go to the next iter)
 - Before applying: state which checklist item / judgment criterion this fix satisfies. Axis names and judgment criteria are different things — map to the criterion text, not the axis label
-- **Edit the chezmoi source** (`~/.local/share/chezmoi/dot_claude/`), never `~/.claude/` directly. After editing, confirm with the user before running `chezmoi apply`.
+- **Edit the chezmoi source** (`~/.local/share/chezmoi/home/dot_claude/`), never `~/.claude/` directly. After editing, confirm with the user before running `chezmoi apply`.
 
 ### Step 6 — Re-evaluate
 

@@ -1,5 +1,5 @@
 ---
-paths: "dot_config/nvim/**/*.lua"
+paths: "home/dot_config/nvim/**/*.lua"
 ---
 
 # Neovim Lua Rules
@@ -11,7 +11,7 @@ paths: "dot_config/nvim/**/*.lua"
 
 ## Plugin Structure
 
-Plugins are organized in `dot_config/nvim/lua/plugins/`:
+Plugins are organized in `home/dot_config/nvim/lua/plugins/`:
 
 - One file per plugin category (ui.lua, editor.lua, lsp.lua, etc.)
 - Uses lazy.nvim plugin manager with lazy-loading

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Tests for dot_claude/skills/context-diet/scripts/measure.py
+# Tests for home/dot_claude/skills/context-diet/scripts/measure.py
 #
 # Builds a throwaway skills/ + rules/ tree so the parser is exercised against
 # known byte counts. The load-bearing case is the folded YAML description
 # (`>-`), which is what every real skill in this repo uses.
 set -uo pipefail
 cd "$(dirname "$0")"
-SCRIPT="$(cd ../../.. && pwd)/dot_claude/skills/context-diet/scripts/measure.py"
+SCRIPT="$(cd ../../.. && pwd)/home/dot_claude/skills/context-diet/scripts/measure.py"
 
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT

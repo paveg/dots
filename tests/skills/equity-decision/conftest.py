@@ -4,7 +4,9 @@ from pathlib import Path
 
 import pytest
 
-SCRIPTS_DIR = Path(__file__).resolve().parents[3] / "dot_claude" / "skills" / "equity-decision" / "scripts"
+SCRIPTS_DIR = (
+    Path(__file__).resolve().parents[3] / "home" / "dot_claude" / "skills" / "equity-decision" / "scripts"
+)
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 

@@ -17,7 +17,15 @@ from pathlib import Path
 
 import pytest
 
-SCRIPT = Path(__file__).resolve().parents[3] / "dot_claude" / "skills" / "equity-decision" / "scripts" / "fetch_edinet.py"
+SCRIPT = (
+    Path(__file__).resolve().parents[3]
+    / "home"
+    / "dot_claude"
+    / "skills"
+    / "equity-decision"
+    / "scripts"
+    / "fetch_edinet.py"
+)
 
 
 def _has_key() -> bool:

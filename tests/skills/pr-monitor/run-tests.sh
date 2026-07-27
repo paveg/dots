@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Tests for dot_claude/skills/pr-monitor/scripts/pr-monitor.sh
+# Tests for home/dot_claude/skills/pr-monitor/scripts/pr-monitor.sh
 #
 # Stubs `gh` via PATH; the stub serves staged JSON fixtures (one per poll,
 # clamped at the last) so the loop can be driven through state transitions
 # without network access.
 set -uo pipefail
 cd "$(dirname "$0")"
-SCRIPT="$(cd ../../.. && pwd)/dot_claude/skills/pr-monitor/scripts/pr-monitor.sh"
+SCRIPT="$(cd ../../.. && pwd)/home/dot_claude/skills/pr-monitor/scripts/pr-monitor.sh"
 
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT

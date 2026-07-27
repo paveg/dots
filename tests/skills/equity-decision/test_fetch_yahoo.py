@@ -11,7 +11,15 @@ from pathlib import Path
 
 import pytest
 
-SCRIPT = Path(__file__).resolve().parents[3] / "dot_claude" / "skills" / "equity-decision" / "scripts" / "fetch_yahoo.py"
+SCRIPT = (
+    Path(__file__).resolve().parents[3]
+    / "home"
+    / "dot_claude"
+    / "skills"
+    / "equity-decision"
+    / "scripts"
+    / "fetch_yahoo.py"
+)
 
 
 def run_script(*args: str) -> dict:

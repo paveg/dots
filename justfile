@@ -26,17 +26,90 @@ fmt-check:
     @echo "✓ All files formatted correctly!"
 
 # Run linters
-lint:
-    @echo "Checking zsh syntax..."
-    @for file in dot_zshrc.tmpl dot_zshenv.tmpl; do \
-        if [ -f "$file" ]; then \
-            sed 's/{{{{[^}]*}}}}//g' "$file" > /tmp/check.zsh; \
-            zsh -n /tmp/check.zsh && echo "✓ $file"; \
-        fi \
-    done
-    @echo "Checking lua syntax..."
-    @find dot_config/nvim -name "*.lua" -exec luac -p {} \; 2>/dev/null || true
+lint: lint-zsh lint-lua
     @echo "✓ Done!"
+
+# Check tracked zsh sources using the current runner OS.
+# The conditional chezmoi CI matrix separately expands templates on macOS and Linux.
+lint-zsh:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    for command in chezmoi git zsh; do
+      if ! command -v "$command" >/dev/null 2>&1; then
+        echo "✗ Required command not found: $command" >&2
+        exit 1
+      fi
+    done
+
+    echo "Checking tracked zsh files..."
+    while IFS= read -r -d '' file; do
+      zsh -n "$file"
+      echo "✓ $file"
+    done < <(git ls-files -z '*.zsh')
+
+    echo "Rendering zsh templates with isolated test data..."
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    printf '{}\n' > "$tmpdir/chezmoi.json"
+
+    render_and_check() {
+      local label="$1"
+      local template="$2"
+      local data="$3"
+      local rendered="$tmpdir/$label-${template//\//-}"
+
+      chezmoi \
+        --config "$tmpdir/chezmoi.json" \
+        --config-format json \
+        --source "$PWD" \
+        --override-data "$data" \
+        execute-template --file "$template" > "$rendered"
+      zsh -n "$rendered"
+      echo "✓ $template ($label, current runner OS)"
+    }
+
+    # Render each nested template directly so it cannot hide behind a false
+    # condition in a top-level template.
+    standalone_data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"test-instance","grafana_api_token":"test-api-token","grafana_sa_token":"test-sa-token"}'
+    while IFS= read -r -d '' template; do
+      render_and_check standalone "$template" "$standalone_data"
+    done < <(git ls-files -z '*.zsh.tmpl')
+
+    # Render the complete top-level shell configuration for each data branch.
+    for profile in personal-basic personal-telemetry business; do
+      case "$profile" in
+        personal-basic)
+          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"","grafana_api_token":"","grafana_sa_token":""}'
+          ;;
+        personal-telemetry)
+          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"test-instance","grafana_api_token":"test-api-token","grafana_sa_token":"test-sa-token"}'
+          ;;
+        business)
+          data='{"business_use":true,"auto_tmux":true,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"","grafana_api_token":"","grafana_sa_token":""}'
+          ;;
+      esac
+      while IFS= read -r -d '' template; do
+        render_and_check "$profile" "$template" "$data"
+      done < <(git ls-files -z 'dot_z*.tmpl')
+    done
+
+# Check Lua syntax. CI explicitly sets LUA_COMPILER=luac5.4 on Ubuntu.
+lint-lua:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    lua_compiler="${LUA_COMPILER:-luac}"
+    if ! command -v "$lua_compiler" >/dev/null 2>&1; then
+      echo "✗ Lua compiler not found: $lua_compiler" >&2
+      exit 1
+    fi
+
+    echo "Checking Lua syntax with $lua_compiler..."
+    while IFS= read -r -d '' file; do
+      "$lua_compiler" -p "$file"
+      echo "✓ $file"
+    done < <(git ls-files -z 'dot_config/nvim/*.lua' 'dot_config/nvim/**/*.lua')
 
 # Lint Provides header on zsh files (init/, modules/, features/)
 lint-headers:
@@ -49,8 +122,12 @@ lint-headers:
     done
     @echo "✓ Headers OK!"
 
+# Fast, hermetic checks that run unconditionally in CI.
+quality-gate: lint lint-headers test-hooks test-skill-scripts
+    @echo "✓ Fast quality gate passed!"
+
 # Run all checks
-test: lint lint-headers fmt-check test-hooks test-skill-scripts
+test: quality-gate fmt-check
     @echo "✓ All checks passed!"
 
 # Run hook tests
@@ -70,10 +147,10 @@ test-skills:
     @bash tests/skills/equity-decision/run-tests.sh
     @bash tests/skills/japanese-ai-writing-proofreader/run-tests.sh
 
-# Install formatter tools
+# Install local quality-gate and formatter tools
 install:
-    @echo "Installing formatters via devbox..."
-    @devbox global add stylua shfmt just
+    @echo "Installing quality-gate and formatter tools via devbox..."
+    @devbox global add stylua shfmt just lua54Packages.lua@5.4.7
     @echo "✓ Done!"
 
 # Apply dotfiles (dry-run)

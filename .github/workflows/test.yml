@@ -4,18 +4,45 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  quality:
+    name: Fast Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install just
+        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b # v3
+
+      - name: Install check dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq lua5.4 zsh
+          bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Run fast quality gate
+        env:
+          LUA_COMPILER: luac5.4
+        run: just quality-gate
+
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       shell: ${{ steps.filter.outputs.shell }}
+      zsh: ${{ steps.filter.outputs.zsh }}
       lua: ${{ steps.filter.outputs.lua }}
       nvim: ${{ steps.filter.outputs.nvim }}
       devbox: ${{ steps.filter.outputs.devbox }}
@@ -32,6 +59,15 @@ jobs:
               - 'dot_zshenv.tmpl'
               - 'install.sh'
               - '.chezmoiscripts/**'
+              - '.github/scripts/install-chezmoi.sh'
+              - '.github/workflows/**'
+            zsh:
+              - '**/*.zsh'
+              - '**/*.zsh.tmpl'
+              - 'dot_z*.tmpl'
+              - 'dot_p10k.zsh'
+              - 'justfile'
+              - '.github/scripts/install-chezmoi.sh'
               - '.github/workflows/**'
             lua:
               - 'dot_config/nvim/**/*.lua'
@@ -47,6 +83,7 @@ jobs:
               - '.chezmoi*'
               - 'dot_config/**'
               - 'private_dot_ssh/**'
+              - '.github/scripts/install-chezmoi.sh'
               - '.github/workflows/**'
             markdown:
               - '**/*.md'
@@ -78,7 +115,7 @@ jobs:
           echo "Checking shell format..."
 
           # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
-          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" \) -print0 | \
+          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" \) -print0 | \
             xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
@@ -109,20 +146,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install zsh
-        run: sudo apt-get update && sudo apt-get install -y zsh
-
-      - name: Check zsh syntax
-        run: |
-          echo "Checking zsh syntax..."
-          for file in dot_zshrc.tmpl dot_zshenv.tmpl; do
-            if [[ -f "$file" ]]; then
-              # Remove chezmoi template syntax for syntax check
-              sed 's/{{[^}]*}}//g' "$file" > /tmp/check.zsh
-              zsh -n /tmp/check.zsh && echo "✓ $file" || exit 1
-            fi
-          done
-
       - name: ShellCheck
         run: |
           echo "Running ShellCheck..."
@@ -131,15 +154,27 @@ jobs:
             sudo apt-get update && sudo apt-get install -y shellcheck
           fi
           
-          # Check install.sh and scripts in .chezmoiscripts
-          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" \) -print0 | xargs -0 shellcheck
+          # Check install.sh, chezmoi scripts, and the CI installer
+          find . -type f \( -name "install.sh" -o -path "./.chezmoiscripts/*.sh" -o -path "./.github/scripts/install-chezmoi.sh" \) -print0 | xargs -0 shellcheck
 
+  zsh-darwin:
+    name: Zsh Syntax (macOS)
+    needs: changes
+    if: needs.changes.outputs.zsh == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Check lua syntax
+      - name: Install just
+        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b # v3
+
+      - name: Install chezmoi in runner temp
         run: |
-          echo "Checking lua syntax..."
-          sudo apt-get install -y lua5.4
-          find dot_config/nvim -name "*.lua" -exec lua5.4 -p {} \; -print
+          bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Check Darwin zsh syntax
+        run: just lint-zsh
 
   chezmoi:
     name: Chezmoi (${{ matrix.os }}, ${{ matrix.env_name }})
@@ -160,8 +195,8 @@ jobs:
 
       - name: Install chezmoi
         run: |
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
       - name: Setup test config (provide prompted values)
         run: |
@@ -184,9 +219,62 @@ jobs:
         env:
           BUSINESS_USE: ${{ matrix.business_use }}
         run: |
+          set -euo pipefail
+
           chezmoi init --source="${PWD}"
-          chezmoi managed | head -20
-          chezmoi cat ~/.config/git/config || true
+
+          repo_root="$(pwd -P)"
+          expected_source="${repo_root}"
+          source_root_file="${repo_root}/.chezmoiroot"
+          home_source="${repo_root}/home"
+          if [[ -e "${source_root_file}" ]]; then
+            if [[ ! -f "${source_root_file}" ]]; then
+              echo ".chezmoiroot must be a regular file" >&2
+              exit 1
+            fi
+            source_subdir="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "${source_root_file}")"
+            if [[ "${source_subdir}" != "home" ]]; then
+              echo ".chezmoiroot must contain exactly 'home'" >&2
+              exit 1
+            fi
+            if [[ ! -d "${home_source}" ]]; then
+              echo ".chezmoiroot selects home, but home/ is not a directory" >&2
+              exit 1
+            fi
+            expected_source="$(cd "${home_source}" && pwd -P)"
+          elif [[ -e "${home_source}" ]]; then
+            echo "home/ exists, but .chezmoiroot is missing" >&2
+            exit 1
+          fi
+
+          actual_source="$(chezmoi --source="${repo_root}" source-path)"
+          if [[ "${actual_source}" != "${expected_source}" ]]; then
+            echo "Unexpected chezmoi source root" >&2
+            echo "expected: ${expected_source}" >&2
+            echo "actual:   ${actual_source}" >&2
+            exit 1
+          fi
+
+          expected_git_source="${expected_source}/dot_config/git/config"
+          actual_git_source="$(chezmoi --source="${repo_root}" source-path "${HOME}/.config/git/config")"
+          if [[ "${actual_git_source}" != "${expected_git_source}" ]]; then
+            echo "Unexpected source path for ~/.config/git/config" >&2
+            echo "expected: ${expected_git_source}" >&2
+            echo "actual:   ${actual_git_source}" >&2
+            exit 1
+          fi
+
+          managed_files="$(chezmoi --source="${repo_root}" managed)"
+          if ! grep -Fxq '.config/git/config' <<<"${managed_files}"; then
+            echo "Managed files do not contain .config/git/config" >&2
+            exit 1
+          fi
+          if grep -Fxq 'README.md' <<<"${managed_files}"; then
+            echo "Repository-only README.md must not be managed" >&2
+            exit 1
+          fi
+
+          chezmoi --source="${repo_root}" cat "${HOME}/.config/git/config"
 
   devbox:
     name: Devbox Validation
@@ -255,7 +343,7 @@ jobs:
   # This job always runs and reports success only if all required jobs passed or were skipped
   ci-complete:
     name: CI Complete
-    needs: [format, lint, chezmoi, devbox, neovim]
+    needs: [changes, quality, format, lint, zsh-darwin, chezmoi, devbox, neovim]
     if: always()
     runs-on: ubuntu-latest
     steps:

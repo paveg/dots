@@ -6,15 +6,17 @@
 
 # Homebrew setup (macOS)
 {{- if eq .chezmoi.os "darwin" }}
-# shellenv is cached; invalidated automatically when brew binary updates
+# shellenv is validated and invalidated automatically when brew updates.
 _brew_bin="/opt/homebrew/bin/brew"
 if [[ -x "$_brew_bin" ]]; then
   _brew_cache="$ZSH_INIT_CACHE/brew.zsh"
-  if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
-    mkdir -p "$(dirname "$_brew_cache")"
-    "$_brew_bin" shellenv > "$_brew_cache"
+  if _zsh_command_cache_prepare \
+    "$_brew_cache" \
+    "homebrew-shellenv-v1" \
+    "$_brew_bin" \
+    shellenv; then
+    source "$_brew_cache"
   fi
-  source "$_brew_cache"
 fi
 unset _brew_bin _brew_cache
 {{- end }}

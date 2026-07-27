@@ -87,15 +87,18 @@ zinit light romkatv/powerlevel10k
 # =============================================================================
 # Tool initialization (turbo mode)
 # =============================================================================
-_zsh_cache="$ZSH_INIT_CACHE"
-[[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
 
 # zoxide (turbo)
 _zinit_setup_zoxide() {
   if (( $+commands[zoxide] )); then
     local _zoxide_cache="$ZSH_INIT_CACHE/zoxide.zsh"
-    [[ -f "$_zoxide_cache" ]] || zoxide init zsh > "$_zoxide_cache"
-    source "$_zoxide_cache"
+    if _zsh_command_cache_prepare \
+      "$_zoxide_cache" \
+      "zoxide-init-v1" \
+      zoxide \
+      init zsh; then
+      source "$_zoxide_cache"
+    fi
   fi
 }
 
@@ -107,8 +110,13 @@ zinit wait"1" lucid light-mode for \
 _zinit_setup_atuin() {
   if (( $+commands[atuin] )); then
     local _atuin_cache="$ZSH_INIT_CACHE/atuin.zsh"
-    [[ -f "$_atuin_cache" ]] || atuin init zsh --disable-up-arrow > "$_atuin_cache"
-    source "$_atuin_cache"
+    if _zsh_command_cache_prepare \
+      "$_atuin_cache" \
+      "atuin-init-v1" \
+      atuin \
+      init zsh --disable-up-arrow; then
+      source "$_atuin_cache"
+    fi
   fi
 }
 
@@ -120,8 +128,13 @@ zinit wait"2" lucid light-mode for \
 _zinit_setup_fzf() {
   if (( $+commands[fzf] )); then
     local _fzf_cache="$ZSH_INIT_CACHE/fzf.zsh"
-    [[ -f "$_fzf_cache" ]] || fzf --zsh > "$_fzf_cache"
-    source "$_fzf_cache"
+    if _zsh_command_cache_prepare \
+      "$_fzf_cache" \
+      "fzf-shell-v1" \
+      fzf \
+      --zsh; then
+      source "$_fzf_cache"
+    fi
 
     # Tokyo Night colors
     export FZF_DEFAULT_OPTS=" \
@@ -155,8 +168,13 @@ zinit wait"1" lucid light-mode for \
 _zinit_setup_direnv() {
   if (( $+commands[direnv] )); then
     local _direnv_cache="$ZSH_INIT_CACHE/direnv.zsh"
-    [[ -f "$_direnv_cache" ]] || direnv hook zsh > "$_direnv_cache"
-    source "$_direnv_cache"
+    if _zsh_command_cache_prepare \
+      "$_direnv_cache" \
+      "direnv-hook-v1" \
+      direnv \
+      hook zsh; then
+      source "$_direnv_cache"
+    fi
   fi
 }
 
@@ -167,8 +185,6 @@ zinit wait"2" lucid light-mode for \
 # =============================================================================
 # Tool completions (cached, turbo mode)
 # =============================================================================
-_completions_cache="${XDG_CACHE_HOME}/zsh/completions"
-[[ -d "$_completions_cache" ]] || mkdir -p "$_completions_cache"
 
 _zinit_setup_completions() {
   local cache_dir="${XDG_CACHE_HOME}/zsh/completions"
@@ -176,63 +192,101 @@ _zinit_setup_completions() {
   # gh (GitHub CLI)
   if (( $+commands[gh] )); then
     local _gh_comp="$cache_dir/_gh"
-    [[ -f "$_gh_comp" ]] || gh completion -s zsh > "$_gh_comp"
-    source "$_gh_comp"
+    if _zsh_command_cache_prepare \
+      "$_gh_comp" \
+      "gh-completion-v1" \
+      gh \
+      completion -s zsh; then
+      source "$_gh_comp"
+    fi
   fi
 
   # chezmoi
   if (( $+commands[chezmoi] )); then
     local _chezmoi_comp="$cache_dir/_chezmoi"
-    [[ -f "$_chezmoi_comp" ]] || chezmoi completion zsh > "$_chezmoi_comp"
-    source "$_chezmoi_comp"
+    if _zsh_command_cache_prepare \
+      "$_chezmoi_comp" \
+      "chezmoi-completion-v1" \
+      chezmoi \
+      completion zsh; then
+      source "$_chezmoi_comp"
+    fi
   fi
 
   # just
   if (( $+commands[just] )); then
     local _just_comp="$cache_dir/_just"
-    [[ -f "$_just_comp" ]] || just --completions zsh > "$_just_comp"
-    source "$_just_comp"
+    if _zsh_command_cache_prepare \
+      "$_just_comp" \
+      "just-completion-v1" \
+      just \
+      --completions zsh; then
+      source "$_just_comp"
+    fi
   fi
 
   # herdr
   if (( $+commands[herdr] )); then
     local _herdr_comp="$cache_dir/_herdr"
-    [[ -f "$_herdr_comp" ]] || herdr completion zsh > "$_herdr_comp"
-    source "$_herdr_comp"
+    if _zsh_command_cache_prepare \
+      "$_herdr_comp" \
+      "herdr-completion-v1" \
+      herdr \
+      completion zsh; then
+      source "$_herdr_comp"
+    fi
   fi
 
   # mise
   if (( $+commands[mise] )); then
     local _mise_comp="$cache_dir/_mise"
-    [[ -f "$_mise_comp" ]] || mise completion zsh > "$_mise_comp"
-    source "$_mise_comp"
+    if _zsh_command_cache_prepare \
+      "$_mise_comp" \
+      "mise-completion-v1" \
+      mise \
+      completion zsh; then
+      source "$_mise_comp"
+    fi
   fi
 
   # pnpm
   if (( $+commands[pnpm] )); then
     local _pnpm_comp="$cache_dir/_pnpm"
-    [[ -f "$_pnpm_comp" ]] || pnpm completion zsh > "$_pnpm_comp"
-    source "$_pnpm_comp"
+    if _zsh_command_cache_prepare \
+      "$_pnpm_comp" \
+      "pnpm-completion-v1" \
+      pnpm \
+      completion zsh; then
+      source "$_pnpm_comp"
+    fi
   fi
 
   # moon (MoonBit)
   if (( $+commands[moon] )); then
     local _moon_comp="$cache_dir/_moon"
-    [[ -f "$_moon_comp" ]] || moon shell-completion --shell zsh > "$_moon_comp"
-    source "$_moon_comp"
+    if _zsh_command_cache_prepare \
+      "$_moon_comp" \
+      "moon-completion-v1" \
+      moon \
+      shell-completion --shell zsh; then
+      source "$_moon_comp"
+    fi
   fi
 
   # kubectl
   if (( $+commands[kubectl] )); then
     local _kubectl_comp="$cache_dir/_kubectl"
-    [[ -f "$_kubectl_comp" ]] || kubectl completion zsh > "$_kubectl_comp"
-    source "$_kubectl_comp"
-    compdef k=kubectl
+    if _zsh_command_cache_prepare \
+      "$_kubectl_comp" \
+      "kubectl-completion-v1" \
+      kubectl \
+      completion zsh; then
+      source "$_kubectl_comp"
+      compdef k=kubectl
+    fi
   fi
 }
 
 zinit wait"1" lucid light-mode for \
   atload"_zinit_setup_completions" \
     zdharma-continuum/null
-
-unset _zsh_cache _completions_cache

@@ -1,5 +1,5 @@
 # generated-cache.zsh — validate and atomically publish generated zsh caches
-# Provides:     _zsh_cache_prepare
+# Provides:     _zsh_cache_prepare, _zsh_command_cache_prepare
 # Requires:     mktemp, chmod, cat, mv, zsh
 # Side-effects: create or refresh the requested cache
 # Load-order:   BEFORE every generated-cache consumer
@@ -107,4 +107,48 @@ _zsh_cache_prepare() {
     return 1
   fi
   return 0
+}
+
+# Resolve COMMAND once, bind the cache fingerprint to its canonical executable,
+# and refresh when an in-place binary update is newer than TARGET. Execute via
+# the invocation path so multicall symlinks retain their argv[0] dispatch.
+#
+# Usage:
+#   _zsh_command_cache_prepare TARGET SCHEMA COMMAND [ARG...]
+_zsh_command_cache_prepare() {
+  emulate -L zsh
+
+  local target="$1"
+  local schema="$2"
+  local requested_command="$3"
+  shift 3
+
+  local invocation_command=""
+  local canonical_command=""
+  local refresh=0
+
+  if [[ "$requested_command" == */* ]]; then
+    invocation_command="${requested_command:a}"
+  else
+    invocation_command="${commands[$requested_command]:-}"
+    [[ -z "$invocation_command" ]] || invocation_command="${invocation_command:a}"
+  fi
+  [[ -z "$invocation_command" ]] || canonical_command="${invocation_command:A}"
+
+  if [[ -z "$schema" || "$schema" == *$'\n'* ]]; then
+    print -u2 -r -- "warning: generated cache command has invalid schema: $target"
+    return 1
+  fi
+  if [[ -z "$canonical_command" || ! -x "$invocation_command" || ! -x "$canonical_command" ]]; then
+    print -u2 -r -- "warning: generated cache command is unavailable: $target"
+    return 1
+  fi
+  [[ "$canonical_command" -nt "$target" ]] && refresh=1
+
+  _zsh_cache_prepare \
+    "$target" \
+    "$refresh" \
+    "${schema}|${canonical_command}" \
+    "$invocation_command" \
+    "$@"
 }

@@ -8,12 +8,12 @@
 # Must be activated before auto_mux to ensure the multiplexer is in PATH
 if command -v mise &>/dev/null; then
   _mise_cache="$ZSH_INIT_CACHE/mise.zsh"
-  # Invalidate cache when mise version changes
-  _mise_ver="$(mise --version 2>/dev/null)"
-  if [[ ! -f "$_mise_cache" ]] || ! grep -qF "# mise $_mise_ver" "$_mise_cache" 2>/dev/null; then
-    mkdir -p "$(dirname "$_mise_cache")"
-    { echo "# mise $_mise_ver"; mise activate zsh; } > "$_mise_cache"
+  if _zsh_command_cache_prepare \
+    "$_mise_cache" \
+    "mise-activate-v1" \
+    mise \
+    activate zsh; then
+    source "$_mise_cache"
   fi
-  source "$_mise_cache"
-  unset _mise_cache _mise_ver
 fi
+unset _mise_cache

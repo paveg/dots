@@ -93,8 +93,13 @@ render_profile() {
   assert_rendered_once \
     "$profile" \
     "$rendered_zsh" \
-    "direnv hook zsh > \"${literal_dollar}_direnv_cache\"" \
-    "direnv hook generator"
+    '"direnv-hook-v1"' \
+    "validated direnv cache schema"
+  assert_rendered_once \
+    "$profile" \
+    "$rendered_zsh" \
+    "source \"${literal_dollar}_direnv_cache\"" \
+    "direnv cache source"
   assert_rendered_once \
     "$profile" \
     "$rendered_zsh" \

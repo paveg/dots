@@ -377,7 +377,7 @@ render_profile() {
   zsh -n "$rendered"
   [[ "$(grep -Fc 'devbox global shellenv --pure' "$rendered")" == "1" ]] ||
     fail "$profile render does not call pure Devbox shellenv exactly once"
-  [[ "$(grep -Fc "_zsh_cache_prepare \\" "$rendered")" == "1" ]] ||
+  [[ "$(grep -Fc "if _zsh_cache_prepare \\" "$rendered")" == "1" ]] ||
     fail "$profile render does not wire generated-cache helper exactly once"
   grep -Fq 'shellenv-pure.zsh' "$rendered" ||
     fail "$profile render does not use the new pure cache"

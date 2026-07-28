@@ -8,9 +8,11 @@
 # Must be activated before auto_mux to ensure the multiplexer is in PATH
 if command -v mise &>/dev/null; then
   _mise_cache="$ZSH_INIT_CACHE/mise.zsh"
+  # `mise activate` embeds the current PATH in its output. Include that input
+  # in the fingerprint so adding or removing a tool path invalidates the cache.
   if _zsh_command_cache_prepare \
     "$_mise_cache" \
-    "mise-activate-v1" \
+    "mise-activate-v2|path=${PATH}" \
     mise \
     activate zsh; then
     source "$_mise_cache"

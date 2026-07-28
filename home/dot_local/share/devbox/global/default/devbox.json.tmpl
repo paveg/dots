@@ -33,8 +33,10 @@
     "peco@latest",
     "kubectl@latest",
     "k9s@latest",
+{{- if not .business_use }}
     "kubernetes-helm@latest",
     "helmfile@latest",
+{{- end }}
     "eksctl@latest",
     "argocd@latest",
     "stern@latest",

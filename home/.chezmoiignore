@@ -22,6 +22,7 @@ homebrew/
 
 # Work-specific files on personal machines
 {{ if not .business_use }}
+.config/aquaproj-aqua/
 .config/git/freee
 .config/colima/
 homebrew/Brewfile.work

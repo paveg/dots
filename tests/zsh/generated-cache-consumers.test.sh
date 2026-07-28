@@ -275,6 +275,24 @@ cmp -s "$mise_lkg" "$mise_cache" ||
   fail "mise activation failure changed LKG bytes"
 pass "mise rejects partial activation and preserves LKG"
 
+mise_extra_path="$mise_root/extra-bin"
+mkdir -p "$mise_extra_path"
+env \
+  "PATH=$mise_bin:$mise_extra_path:/usr/bin:/bin" \
+  "HELPER=$helper" \
+  "MISE_SOURCE=$mise_source" \
+  "ZSH_INIT_CACHE=$mise_root/cache" \
+  "FAKE_LOG=$mise_log" \
+  zsh -f -c '
+    set -e
+    source "$HELPER"
+    source "$MISE_SOURCE"
+    [[ "$PR7_MISE_ACTIVATED" == v1 ]]
+  '
+grep -Fq "mise-activate-v2|path=$mise_bin:$mise_extra_path:/usr/bin:/bin" "$mise_cache" ||
+  fail "mise cache fingerprint does not track its input PATH"
+pass "mise PATH changes invalidate the activation cache"
+
 plugin_root="$test_root/plugins"
 plugin_bin="$plugin_root/bin"
 plugin_cache="$plugin_root/cache/init"
@@ -458,7 +476,7 @@ for profile in personal business; do
     --override-data "$data" \
     execute-template --file "$repo_root/home/private_dot_zshrc.tmpl" >"$rendered"
   zsh -n "$rendered"
-  grep -Fq '"mise-activate-v1"' "$rendered" ||
+  grep -Fq '"mise-activate-v2|path=${PATH}"' "$rendered" ||
     fail "$profile render is missing validated mise activation"
   grep -Fq '"direnv-hook-v1"' "$rendered" ||
     fail "$profile render is missing validated direnv hook"

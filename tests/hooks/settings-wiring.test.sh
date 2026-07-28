@@ -127,6 +127,32 @@ assert_profile_wiring() {
   )"
   [[ -z "$allow_output" ]] ||
     fail "$profile configured credential hook emitted a decision for a benign command"
+
+  if [[ "$business_use" == "true" ]]; then
+    jq -e '
+      (.mcpServers | keys) == ["fdev-helmfile", "fdev-terraform"]
+      and .mcpServers["fdev-helmfile"].command == "fdev-mcp-server"
+      and .mcpServers["fdev-helmfile"].args == ["server", "helmfile"]
+      and (.mcpServers["fdev-helmfile"].env.AQUA_GLOBAL_CONFIG
+        | endswith("/.config/aquaproj-aqua/aqua.yaml"))
+      and (.mcpServers["fdev-helmfile"].env.HELM_BIN
+        | endswith("/.local/share/aquaproj-aqua/bin/helm"))
+      and (.mcpServers["fdev-helmfile"].env.HELMFILE_COMMAND
+        | endswith("/.local/share/aquaproj-aqua/bin/helmfile"))
+      and .mcpServers["fdev-terraform"].command == "fdev-mcp-server"
+      and .mcpServers["fdev-terraform"].args == ["server", "terraform"]
+      and (.mcpServers["fdev-terraform"].env.AQUA_GLOBAL_CONFIG
+        | endswith("/.config/aquaproj-aqua/aqua.yaml"))
+      and (.mcpServers["fdev-terraform"].env.TERRAFORM_COMMAND
+        | endswith("/.local/share/aquaproj-aqua/bin/terraform"))
+    ' "$rendered" >/dev/null ||
+      fail "$profile settings do not pin fdev MCP commands to Aqua"
+  else
+    jq -e '
+      (.mcpServers | keys) == ["1password", "textlint"]
+    ' "$rendered" >/dev/null ||
+      fail "$profile settings contain unexpected MCP servers"
+  fi
 }
 
 for profile in personal business; do

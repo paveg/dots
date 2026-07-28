@@ -1,6 +1,7 @@
 tap "k1low/tap"
 brew "gmp"
 brew "actionlint"
+brew "aqua"
 brew "openssl@3"
 brew "xz"
 brew "awscli"

@@ -27,6 +27,9 @@
 # Features: order-independent (function definitions)
 # =============================================================================
 {{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
+{{- if .business_use }}
+{{ include "dot_config/zsh/features/ghtkn-gh.zsh" }}
+{{- end }}
 {{ include "dot_config/zsh/features/git-branch-fzf.zsh" }}
 {{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
 {{ include "dot_config/zsh/features/kube.zsh" }}

@@ -6,6 +6,9 @@ home/dot_local/share/devbox/global/default/devbox.lock
 .claude/
 .firecrawl/
 
+# Work-only ghtkn GitHub App configuration must not enter this public repository
+home/dot_config/ghtkn/
+
 # Python tooling caches (pytest harness under tests/skills/)
 __pycache__/
 .pytest_cache/

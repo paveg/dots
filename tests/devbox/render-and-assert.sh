@@ -78,6 +78,8 @@ ncdu@latest
 hyperfine@latest
 vhs@latest
 yamllint@latest
+kubernetes-helm@latest
+helmfile@latest
 EOF
 
 cat >"$scratch_dir/expected-business-only" <<'EOF'

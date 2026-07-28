@@ -1,0 +1,12 @@
+---
+# Global work tools.
+# Helm and Helmfile follow C-FO/clusterops; Terraform follows C-FO/aws-infra.
+registries:
+  - type: standard
+    ref: v4.513.0
+
+packages:
+  - name: helm/helm@v3.17.0
+  - name: helmfile/helmfile@v0.171.0
+  - name: hashicorp/terraform@v1.14.3
+  - name: suzuki-shunsuke/ghtkn@v0.3.3

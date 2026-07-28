@@ -233,11 +233,11 @@ render_profile() {
   data="{\"business_use\":$business_use,\"auto_tmux\":false,\"homebrew_prefix\":\"/opt/homebrew\",\"grafana_instance_id\":\"\",\"grafana_api_token\":\"\",\"grafana_sa_token\":\"\"}"
   env -u GH_TOKEN -u GITHUB_TOKEN \
     chezmoi \
-      --config "$chezmoi_config" \
-      --config-format json \
-      --source "$repo_root" \
-      --override-data "$data" \
-      execute-template --file "$zshrc_source" >"$rendered"
+    --config "$chezmoi_config" \
+    --config-format json \
+    --source "$repo_root" \
+    --override-data "$data" \
+    execute-template --file "$zshrc_source" >"$rendered"
   zsh -n "$rendered"
 }
 

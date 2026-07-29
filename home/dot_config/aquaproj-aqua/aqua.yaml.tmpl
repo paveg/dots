@@ -1,0 +1,18 @@
+---
+# Global CLI tools. A repository's own .aqua.yaml takes precedence, so keep this
+# list to tools that should resolve outside any repository.
+registries:
+  - type: standard
+    ref: v4.513.0
+
+{{- if .business_use }}
+
+# Versions mirror the repositories that pin them.
+packages:
+  - name: helm/helm@v3.17.0
+  - name: helmfile/helmfile@v0.171.0
+  - name: hashicorp/terraform@v1.14.3
+{{- else }}
+
+packages: []
+{{- end }}

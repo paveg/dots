@@ -28,7 +28,7 @@
 # =============================================================================
 {{ include "dot_config/zsh/features/ghq-fzf.zsh" }}
 {{- if .business_use }}
-{{ include "dot_config/zsh/features/ghtkn-gh.zsh" }}
+{{ include "dot_config/zsh/features/aqua-token-sync.zsh" }}
 {{- end }}
 {{ include "dot_config/zsh/features/git-branch-fzf.zsh" }}
 {{ include "dot_config/zsh/features/branch-cleanup.zsh" }}
@@ -59,6 +59,22 @@
 {{- end }}
 {{ include "dot_config/zsh/modules/local-config.zsh" }}
 {{ include "dot_config/zsh/modules/p10k-config.zsh" }}
+
+# =============================================================================
+# aqua PATH precedence
+# =============================================================================
+# .zshenv puts aqua at the front, but brew shellenv and mise's precmd hook both
+# rebuild PATH afterwards and push it behind Homebrew and devbox. Re-assert it
+# every prompt. Registered before _brew_force_openssl_path so that hook still
+# lands at position 1 and aqua takes position 2, ahead of both.
+_aqua_force_path() {
+  local aqua_bin="${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua/bin"
+  [[ -d "$aqua_bin" ]] || return
+  [[ "${PATH%%:*}" == "$aqua_bin" ]] && return
+  export PATH="$aqua_bin:${PATH//:$aqua_bin/}"
+}
+typeset -ag precmd_functions
+precmd_functions+=(_aqua_force_path)
 
 {{- if .business_use }}
 

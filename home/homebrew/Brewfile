@@ -1,120 +1,118 @@
+tap "atani/tap"
 tap "homebrew/bundle"
-tap "k1low/tap"
-tap "stripe/stripe-cli"
+tap "k1low/tap", "https://github.com/k1LoW/homebrew-tap"
+tap "stripe/stripe-cli", trusted: true
+# Static checker for GitHub Actions workflow files
+brew "actionlint"
+# Simple, modern, secure file encryption
+brew "age"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# YAML Parser
 brew "libyaml"
+# Dependency manager for Cocoa projects
 brew "cocoapods"
+# Container runtimes on MacOS (and Linux) with minimal setup
 brew "colima"
+# GNU File, Shell, and Text utilities
 brew "coreutils"
+# Pack, ship and run any application as a lightweight container
 brew "docker"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Manage Flutter SDK versions per project
+brew "fvm"
+# Package compiler and linker metadata toolkit
 brew "pkgconf"
+# Geospatial Data Abstraction Library
 brew "gdal"
+# Quickly rewrite git repository history
 brew "git-filter-repo"
+# Agent multiplexer that lives in your terminal
 brew "herdr"
+# C/C++ and Java libraries for Unicode and globalization
 brew "icu4c@76"
+# Istio configuration command-line utility
+brew "istioctl"
+# Mac App Store command-line interface
 brew "mas"
+# Object-relational database system
 brew "postgresql@15", link: true
+# Rsync for cloud storage
+brew "rclone"
+# Daemon to provide vmnet.framework support for rootless QEMU
 brew "socket_vmnet"
+# Tool to enforce Swift style and conventions
 brew "swiftlint"
+# CLI for out-of-band management of Kubernetes nodes created by Talos
+brew "talosctl"
+# Image processing library
 brew "vips"
+# Generate your Xcode project from a spec file and your folder structure
 brew "xcodegen"
+# UNIX shell (command interpreter)
 brew "zsh"
-brew "k1low/tap/mo"
+# Glow-like Markdown CLI with Mermaid diagrams (iTerm2/Kitty inline images + PDF)
+brew "atani/tap/glowm", trusted: true
+# mo is a Markdown viewer that opens .md files in a browser.
+brew "k1low/tap/mo", trusted: true
+# Stripe CLI utility
 brew "stripe/stripe-cli/stripe"
+# Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Command-line interface for 1Password
 cask "1password-cli"
-cask "android-commandlinetools"
-cask "android-studio"
+# 3D model slicing software for 3D printers, maintained by Bambu Lab
+cask "bambu-studio"
+# Anthropic's official Claude AI desktop app
 cask "claude"
-cask "cursor"
+# Voice and text chat software
 cask "discord"
+# App to build and share containerised applications and microservices
 cask "docker-desktop"
+# Collaborative team software
 cask "figma"
+# Web browser
 cask "firefox"
 cask "font-udev-gothic-nf"
+# Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
+# Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Web browser
 cask "google-chrome"
+# Client for the Google Drive storage service
 cask "google-drive"
+# Japanese input software
 cask "google-japanese-ime"
+# Allows keymap customization on HHKB HYBRID Type-S and HYBRID models
 cask "hhkb"
+# Video and photo editor
 cask "insta360-studio"
+# Keyboard customiser
 cask "karabiner-elements"
+# Software for Logitech devices
 cask "logi-options+"
+# System monitor with temperature & fans plugins
 cask "menubar-stats"
+# Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Programmable solid 3D CAD modeller
+cask "openscad@snapshot"
+# Control your tools with a few keystrokes
 cask "raycast"
+# Music streaming service
 cask "spotify"
+# Mesh VPN based on WireGuard
 cask "tailscale-app"
+# JDK from the Eclipse Foundation (Adoptium)
 cask "temurin"
+# To-do list
 cask "todoist-app"
-cask "visual-studio-code"
 mas "Kindle", id: 302584613
 mas "Obsidian Web Clipper", id: 6720708363
 mas "Todoist", id: 585829637
 mas "Tuck", id: 6757695682
 mas "Xcode", id: 497799835
-vscode "42crunch.vscode-openapi"
-vscode "anthropic.claude-code"
-vscode "astro-build.astro-vscode"
-vscode "bierner.markdown-mermaid"
-vscode "biomejs.biome"
-vscode "bradlc.vscode-tailwindcss"
-vscode "buenon.scratchpads"
-vscode "christian-kohler.path-intellisense"
-vscode "davidanson.vscode-markdownlint"
-vscode "dbaeumer.vscode-eslint"
-vscode "docker.docker"
-vscode "donjayamanne.githistory"
-vscode "eamodio.gitlens"
-vscode "editorconfig.editorconfig"
-vscode "esbenp.prettier-vscode"
-vscode "expo.vscode-expo-tools"
-vscode "github.copilot-chat"
-vscode "github.github-vscode-theme"
-vscode "github.remotehub"
-vscode "github.vscode-github-actions"
-vscode "github.vscode-pull-request-github"
-vscode "golang.go"
-vscode "gruntfuggly.todo-tree"
-vscode "hashicorp.terraform"
-vscode "jackie-onai.i18next"
-vscode "jasonnutter.vscode-codeowners"
-vscode "jebbs.plantuml"
-vscode "leetcode.vscode-leetcode"
-vscode "mechatroner.rainbow-csv"
-vscode "mikestead.dotenv"
-vscode "ms-azuretools.vscode-containers"
-vscode "ms-azuretools.vscode-docker"
-vscode "ms-playwright.playwright"
-vscode "ms-vscode-remote.remote-containers"
-vscode "ms-vscode-remote.remote-ssh"
-vscode "ms-vscode-remote.remote-ssh-edit"
-vscode "ms-vscode-remote.remote-wsl"
-vscode "ms-vscode-remote.vscode-remote-extensionpack"
-vscode "ms-vscode.makefile-tools"
-vscode "ms-vscode.remote-explorer"
-vscode "ms-vscode.remote-repositories"
-vscode "ms-vscode.remote-server"
-vscode "ms-vsliveshare.vsliveshare"
-vscode "oderwat.indent-rainbow"
-vscode "redhat.vscode-yaml"
-vscode "rooveterinaryinc.roo-cline"
-vscode "rust-lang.rust-analyzer"
-vscode "shd101wyy.markdown-preview-enhanced"
-vscode "shopify.ruby-lsp"
-vscode "sorbet.sorbet-vscode-extension"
-vscode "steoates.autoimport"
-vscode "streetsidesoftware.code-spell-checker"
-vscode "svelte.svelte-vscode"
-vscode "tamasfe.even-better-toml"
-vscode "timonwong.shellcheck"
-vscode "tomoki1207.pdf"
-vscode "usernamehw.errorlens"
-vscode "vscode-icons-team.vscode-icons"
-vscode "wakatime.vscode-wakatime"
-vscode "wallabyjs.console-ninja"
-vscode "wayou.vscode-todo-highlight"
-vscode "wix.vscode-import-cost"
-vscode "yzhang.markdown-all-in-one"
-vscode "zainchen.json"
+uv "online-judge-tools", with: ["online-judge-api-client git+https://github.com/online-judge-tools/api-client", "selenium", "setuptools"]
+npm "corepack"

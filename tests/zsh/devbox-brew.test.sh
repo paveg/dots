@@ -85,9 +85,7 @@ assert_tracked_brewfile_has_no_overlap() {
     -e 's/^[[:space:]]*(brew|cargo|npm|uv) "([^"]+)".*/\2/p' \
     -e 's/^[[:space:]]*go "([^"]*\/)?([^/"]+)".*/\2/p' \
     "$brewfile" |
-    sed \
-      -e 's/^corepack$/nodejs/' \
-      -e 's/^git-delta$/delta/' |
+    sed -e 's/^git-delta$/delta/' |
     LC_ALL=C sort -u >"$homebrew_entries"
   jq -r '.packages[] | split("@")[0]' "$rendered_root/$profile/devbox.json" |
     LC_ALL=C sort -u >"$devbox_packages"

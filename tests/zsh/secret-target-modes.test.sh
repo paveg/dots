@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
-# Verify rendered targets that contain credentials are private.
+# Verify that no rendered target carries a credential, and that the two files which
+# historically did are still mode 0600.
+#
+# This began as the inverse: it asserted sentinel tokens reached the npm and telemetry
+# targets. Both credentials are gone — telemetry moved to obs-01, which authenticates no
+# one, and the npm token expired and had its 1Password item deleted. What is worth a test
+# now is that neither comes back into a file every shell reads.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
@@ -26,11 +32,7 @@ printf '{}\n' >"$config_file"
 data='{
   "business_use": false,
   "auto_tmux": false,
-  "homebrew_prefix": "/opt/homebrew",
-  "npm_token": "sentinel-npm-token",
-  "grafana_instance_id": "sentinel-grafana-instance",
-  "grafana_api_token": "sentinel-grafana-api-token",
-  "grafana_sa_token": "sentinel-grafana-sa-token"
+  "homebrew_prefix": "/opt/homebrew"
 }'
 
 chezmoi \
@@ -57,21 +59,24 @@ jq -e '
 ' "$target_state" >/dev/null
 
 jq -e '
-  .[".npmrc"].contents | contains("sentinel-npm-token")
+  .[".npmrc"].contents | (contains("_authToken") | not)
 ' "$target_state" >/dev/null
 
+# Inverted on purpose. Telemetry used to carry a Grafana Cloud token and this asserted the
+# token reached the rendered file; it now goes to obs-01, which authenticates no one, so the
+# same test earns its keep as a guard that no credential comes back into a file whose whole
+# job is to be sourced by every shell.
 jq -e '
   .[".zshrc"].contents |
-  contains("sentinel-grafana-instance") and
-  contains("sentinel-grafana-api-token") and
-  contains("sentinel-grafana-sa-token")
+  (contains("Authorization") | not) and
+  (contains("OTEL_EXPORTER_OTLP_HEADERS") | not)
 ' "$target_state" >/dev/null
 
 jq -e '
   .[".config/zsh/modules/telemetry.zsh"].contents |
-  contains("sentinel-grafana-instance") and
-  contains("sentinel-grafana-api-token") and
-  contains("sentinel-grafana-sa-token")
+  (contains("Authorization") | not) and
+  (contains("OTEL_EXPORTER_OTLP_HEADERS") | not) and
+  contains("192.168.10.60")
 ' "$target_state" >/dev/null
 
-echo "PASS: secret-bearing npm and telemetry targets render with mode 0600"
+echo "PASS: npm and telemetry targets render 0600 and carry no credential"

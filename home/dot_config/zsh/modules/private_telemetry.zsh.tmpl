@@ -1,25 +1,47 @@
-# private_telemetry.zsh.tmpl — Claude Code OTLP → Grafana Cloud (personal only)
+# private_telemetry.zsh.tmpl — Claude Code OTLP → obs-01 (personal only)
 # Provides:     none (exports only)
-# Requires:     grafana_instance_id, grafana_api_token, grafana_sa_token (chezmoi data)
-# Side-effects: export CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_*, GRAFANA_SA_TOKEN
+# Requires:     nothing (no credential — the receivers authenticate no one)
+# Side-effects: export CLAUDE_CODE_ENABLE_TELEMETRY, OTEL_*
 # Load-order:   free (only needs to run before claude code launches)
 
-# Claude Code Telemetry → Grafana Cloud (personal only)
+# Metrics to the five-year Prometheus, events to Loki, both on obs-01. Signal-specific
+# endpoints rather than the general one, because the two land on different services — and
+# note these are used verbatim: only OTEL_EXPORTER_OTLP_ENDPOINT appends /v1/metrics for
+# you, so the paths are written out here.
+#
+# http rather than https on purpose: on the LAN this never leaves VLAN 1, and from outside
+# it rides inside WireGuard, which has already encrypted it. TLS here would protect against
+# nothing that Proxmox and the UniFi controller on the same VLAN are not already exposed to,
+# and it would not add authentication — neither receiver validates a credential.
+#
+# http/protobuf is not a preference. Prometheus and Loki both refuse OTLP over gRPC.
 export CLAUDE_CODE_ENABLE_TELEMETRY=1
 export OTEL_SERVICE_NAME="claude-code"
-export OTEL_RESOURCE_ATTRIBUTES="service.namespace=LLMs"
+export OTEL_RESOURCE_ATTRIBUTES="host.name=${HOST:-$(hostname -s)}"
 export OTEL_METRICS_EXPORTER=otlp
-export OTEL_TRACES_EXPORTER=otlp
 export OTEL_LOGS_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
-export OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(printf '%s' '{{ .grafana_instance_id }}:{{ .grafana_api_token }}' | base64)"
-# Trace/log detail flags
+export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://192.168.10.60:9091/api/v1/otlp/v1/metrics"
+export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="http://192.168.10.60:3100/otlp/v1/logs"
+
+# Nothing on obs-01 stores traces. Prometheus takes metrics, Loki takes logs, and spans
+# would need Tempo — another service, another volume, for a signal nothing here asks a
+# question of. Left explicitly off rather than pointed at an endpoint that would 404 on
+# every export, which is the version that looks configured and silently is not.
+export OTEL_TRACES_EXPORTER=none
+
+# Prompt text, tool arguments and tool output. On for the same reason they were on when
+# this pointed at Grafana Cloud, and now with one fewer party holding them: the store is
+# a container on hardware in this house. What has not changed is that Loki authenticates
+# no one, so anything on VLAN 1 can read them back — which is the same standing as the
+# shell history on the machine that produced them.
 export OTEL_LOG_TOOL_CONTENT=true
 export OTEL_LOG_TOOL_DETAILS=true
 export OTEL_LOG_USER_PROMPTS=true
-# Enable session/version dimensions for future metrics aggregation
-export OTEL_METRICS_INCLUDE_SESSION_ID=true
+
+# Off, and this one is not a preference either. The default is true, and Claude Code starts
+# a process per session: with session.id on the metrics, every session mints a permanent new
+# series. The dashboard aggregates across sessions anyway, so the dimension buys nothing it
+# does not charge for. Version stays because one value per release is bounded.
+export OTEL_METRICS_INCLUDE_SESSION_ID=false
 export OTEL_METRICS_INCLUDE_VERSION=true
-# Grafana SA token for dashboard provisioning (just grr-push)
-export GRAFANA_SA_TOKEN="{{ .grafana_sa_token }}"

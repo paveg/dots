@@ -467,7 +467,7 @@ for profile in personal business; do
   else
     business_use=true
   fi
-  data="{\"business_use\":$business_use,\"auto_tmux\":false,\"homebrew_prefix\":\"/opt/homebrew\",\"grafana_instance_id\":\"\",\"grafana_api_token\":\"\",\"grafana_sa_token\":\"\"}"
+  data="{\"business_use\":$business_use,\"auto_tmux\":false,\"homebrew_prefix\":\"/opt/homebrew\"}"
   rendered="$render_root/$profile.zshrc"
   chezmoi \
     --config "$chezmoi_config" \

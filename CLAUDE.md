@@ -60,7 +60,7 @@ CLI tools follow an availability waterfall — use the first layer that provides
 
 Out of the waterfall (always Homebrew): GUI apps (`cask`), Mac App Store (`mas`), VSCode extensions, and macOS-specific CLI that isn't portable (e.g. `vips`, `swiftlint`, `xcodegen`).
 
-After source changes, refresh with `chezmoi apply` followed by `devbox global install`, then inspect `devbox global list` for resolved-version changes. `brewbundle` refuses exact-name CLI overlaps from `brew`, `cargo`, `go`, `npm`, and `uv` with the authoritative rendered Devbox profile before replacing a tracked Brewfile. Go module paths are compared by their final component. Known providers are normalized (`git-delta` to `delta`, `corepack` to `nodejs`). It cannot detect other aliases or packages with different names, so review every dump manually.
+After source changes, refresh with `chezmoi apply` followed by `devbox global install`, then inspect `devbox global list` for resolved-version changes. `brewbundle` refuses exact-name CLI overlaps from `brew`, `cargo`, `go`, `npm`, and `uv` with the authoritative rendered Devbox profile before replacing a tracked Brewfile. Go module paths are compared by their final component. Known providers are normalized (`git-delta` to `delta`). Runtime-bundled CLIs are not treated as duplicates: every Node distribution ships `corepack`, so `brew bundle dump` reports it wherever Node exists and it says nothing about who owns the runtime. It cannot detect other aliases or packages with different names, so review every dump manually.
 
 ## Authoring rules & skills
 

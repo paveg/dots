@@ -1,4 +1,3 @@
-tap "atani/tap"
 tap "homebrew/bundle"
 tap "k1low/tap", "https://github.com/k1LoW/homebrew-tap"
 tap "stripe/stripe-cli", trusted: true
@@ -52,8 +51,6 @@ brew "vips"
 brew "xcodegen"
 # UNIX shell (command interpreter)
 brew "zsh"
-# Glow-like Markdown CLI with Mermaid diagrams (iTerm2/Kitty inline images + PDF)
-brew "atani/tap/glowm", trusted: true
 # mo is a Markdown viewer that opens .md files in a browser.
 brew "k1low/tap/mo", trusted: true
 # Stripe CLI utility

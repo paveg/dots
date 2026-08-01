@@ -42,8 +42,3 @@ engine-strict=true
 save-exact=true
 audit-level=high
 
-{{- if ne .npm_token "" }}
-
-# Auth (from 1Password)
-//registry.npmjs.org/:_authToken={{ .npm_token }}
-{{- end }}

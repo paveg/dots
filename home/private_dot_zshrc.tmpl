@@ -53,9 +53,7 @@
 {{ include "dot_config/zsh/modules/vite-plus.zsh" }}
 {{ include "dot_config/zsh/modules/cf-cli.zsh" }}
 {{- if not .business_use }}
-{{- if and (ne .grafana_instance_id "") (ne .grafana_api_token "") }}
 {{ includeTemplate "dot_config/zsh/modules/private_telemetry.zsh.tmpl" . }}
-{{- end }}
 {{- end }}
 {{ include "dot_config/zsh/modules/local-config.zsh" }}
 {{ include "dot_config/zsh/modules/p10k-config.zsh" }}

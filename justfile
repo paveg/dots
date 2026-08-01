@@ -69,7 +69,7 @@ lint-zsh:
 
     # Render each nested template directly so it cannot hide behind a false
     # condition in a top-level template.
-    standalone_data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"test-instance","grafana_api_token":"test-api-token","grafana_sa_token":"test-sa-token"}'
+    standalone_data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew"}'
     while IFS= read -r -d '' template; do
       render_and_check standalone "$template" "$standalone_data"
     done < <(git ls-files -z 'home/*.zsh.tmpl')
@@ -78,13 +78,13 @@ lint-zsh:
     for profile in personal-basic personal-telemetry business; do
       case "$profile" in
         personal-basic)
-          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"","grafana_api_token":"","grafana_sa_token":""}'
+          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew"}'
           ;;
         personal-telemetry)
-          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"test-instance","grafana_api_token":"test-api-token","grafana_sa_token":"test-sa-token"}'
+          data='{"business_use":false,"auto_tmux":false,"homebrew_prefix":"/opt/homebrew"}'
           ;;
         business)
-          data='{"business_use":true,"auto_tmux":true,"homebrew_prefix":"/opt/homebrew","grafana_instance_id":"","grafana_api_token":"","grafana_sa_token":""}'
+          data='{"business_use":true,"auto_tmux":true,"homebrew_prefix":"/opt/homebrew"}'
           ;;
       esac
       while IFS= read -r -d '' template; do
@@ -192,22 +192,6 @@ edit file:
 # Update dotfiles from remote
 update:
     @chezmoi update
-
-# Push Grafana dashboard via API
-grr-push:
-    #!/usr/bin/env zsh
-    source ~/.zshrc 2>/dev/null
-    if [[ -z "${GRAFANA_SA_TOKEN:-}" ]]; then
-      echo "✗ GRAFANA_SA_TOKEN is not set. Run: source ~/.zshrc" >&2
-      exit 1
-    fi
-    echo "Deploying Claude Code dashboard to Grafana Cloud..."
-    curl -sf -X POST "https://paveg.grafana.net/api/dashboards/db" \
-      -H "Authorization: Bearer $GRAFANA_SA_TOKEN" \
-      -H "Content-Type: application/json" \
-      -d @"$HOME/.config/grafana/dashboards/claude-code-cost.json" \
-      && echo "✓ Dashboard deployed!" \
-      || { echo "✗ Deploy failed." >&2; exit 1; }
 
 # Clean all caches
 clean:

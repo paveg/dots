@@ -106,7 +106,7 @@ run_success_case() {
   local source_override="$2"
   local business_use="$3"
   local expected_brewfile="$4"
-  local dump_content='brew "openssl@3"'
+  local dump_content="${5:-brew \"openssl@3\"}"
   local -a environment=(
     env
     -u CHEZMOI_SOURCE_DIR
@@ -267,11 +267,14 @@ run_success_case "repo-root override, personal" "$source_repo" personal "$source
 run_success_case "repo-root override, business" "$source_repo" business "$source_root/homebrew/Brewfile.work"
 run_success_case "resolved-root override, personal" "$source_root" personal "$source_root/homebrew/Brewfile"
 run_success_case "resolved-root override, business" "$source_root" business "$source_root/homebrew/Brewfile.work"
+# Every Node distribution ships corepack in its global node_modules, so `brew
+# bundle dump` reports it on any machine that has Node at all. Treating it as a
+# duplicate of the Devbox nodejs package would block brewbundle unconditionally.
+run_success_case "node-bundled corepack, personal" unset personal "$source_root/homebrew/Brewfile" 'npm "corepack"'
 run_overlap_case personal brew protobuf
 run_overlap_case business brew colima
 run_overlap_case business cargo atuin
 run_overlap_case business cargo git-delta delta
-run_overlap_case business npm corepack nodejs
 run_overlap_case personal go github.com/fullstorydev/grpcurl/cmd/grpcurl grpcurl
 run_overlap_case personal npm pnpm
 run_overlap_case personal uv yamllint

@@ -130,8 +130,10 @@ Homebrew owns GUI/host-specific exceptions. `brewbundle` dumps to a temporary
 file and refuses to replace the tracked Brewfile when an exact CLI entry from
 `brew`, `cargo`, `go`, `npm`, or `uv` is already owned by the authoritative
 rendered Devbox profile. Go module paths use their final component for this
-comparison. Known providers are normalized (`git-delta` to `delta`, `corepack`
-to `nodejs`). Other aliases or differently named packages still require manual
+comparison. Known providers are normalized (`git-delta` to `delta`). Runtime-bundled
+CLIs are not treated as duplicates: every Node distribution ships `corepack`, so
+`brew bundle dump` reports it wherever Node exists and it says nothing about who
+owns the runtime. Other aliases or differently named packages still require manual
 review.
 
 ## Features

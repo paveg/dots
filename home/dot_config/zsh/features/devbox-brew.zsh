@@ -163,9 +163,7 @@ brewbundle() {
     -e 's/^[[:space:]]*(brew|cargo|npm|uv) "([^"]+)".*/\2/p' \
     -e 's/^[[:space:]]*go "([^"]*\/)?([^/"]+)".*/\2/p' \
     "$dumped_brewfile" |
-    sed \
-      -e 's/^corepack$/nodejs/' \
-      -e 's/^git-delta$/delta/' |
+    sed -e 's/^git-delta$/delta/' |
     LC_ALL=C sort -u >"$homebrew_entries"; then
     echo "Could not read CLI package entries from the temporary Brewfile." >&2
     rm -rf "$temp_dir"

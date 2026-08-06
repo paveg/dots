@@ -4,10 +4,11 @@ description: >-
   Rewrite an existing PR's description into a fixed layout (overview → mermaid →
   review guide → notes → links), with a per-commit verification table that cuts
   the reviewer's tracking cost. Use when asked to 「PR description を更新して」
-  「PR 本文を書いて」「PR 説明を簡潔に」「mermaid を使って PR をまとめて」,
+  「PR 本文を書いて」「PR 説明を簡潔に」「PR description を簡潔に」
+  「mermaid を使って PR をまとめて」,
   "rewrite the PR description", or after stacking commits on a pipeline PR.
-  Args: <PR URL or number> [-R owner/repo] [extra context]
-argument-hint: "<PR URL or number> [-R owner/repo]"
+  Args: <PR URL or number>... [-R owner/repo] [extra context]
+argument-hint: "<PR URL or number>... [-R owner/repo]"
 ---
 
 # pr-description
@@ -16,13 +17,15 @@ argument-hint: "<PR URL or number> [-R owner/repo]"
 
 Rewrite the body of an existing PR into a layout reviewers can verify commit by commit. Creating a new PR is out of scope (that belongs to code-flow:commit-push-pr).
 
+Multiple PRs in one invocation are fine: run Steps 1–4 for each PR in turn. Ask the language question (Step 2) once and reuse the answer for the whole batch.
+
 ## Workflow
 
 ### Step 1: Gather current state and resolve the PR template
 
 ```bash
 gh pr view <N> -R <owner/repo> --json title,body,commits --jq '{title, body, commits: [.commits[].messageHeadline]}'
-gh pr diff <N> -R <owner/repo> --stat   # understand the change before writing verification steps; drop --stat to read hunks
+gh pr diff <N> -R <owner/repo> --name-only   # understand the change before writing verification steps; drop --name-only to read hunks (--stat does not exist in gh)
 ```
 
 - If the existing body contains **auto-generated blocks** (`<!-- code-flow-usage-json:start -->` … `end -->`, bot `<details>` blocks, etc.), set them aside and re-append them verbatim at the end of the new body. Never delete them
@@ -50,7 +53,7 @@ Formatting discipline:
 
 ### Step 3: Apply (always via body-file)
 
-**Write the body to a scratch file with the Write tool and pass it via `--body-file`.** Never embed it inline through a heredoc — backtick escaping corrupts fences (details: `~/.claude/rules/gh-pr-body.md`).
+**Write the body to a scratch file (in the session scratchpad directory) with the Write tool and pass it via `--body-file`.** Never embed it inline through a heredoc — backtick escaping corrupts fences (details: `~/.claude/rules/gh-pr-body.md`).
 
 ```bash
 gh pr edit <N> -R <owner/repo> --body-file <scratch>/pr-body.md
@@ -61,7 +64,7 @@ gh pr edit <N> -R <owner/repo> --body-file <scratch>/pr-body.md
 Fetch the body back and confirm the fences are intact before reporting completion:
 
 ````bash
-gh pr view <N> -R <owner/repo> --json body -q '.body' | awk '/^\\`/ {print NR": "$0}'   # zero output = OK
+gh pr view <N> -R <owner/repo> --json body -q '.body' | grep -n '^\\`'   # zero output = OK (no $-sigils here: argument splicing rewrites them)
 gh pr view <N> -R <owner/repo> --json body -q '.body' | grep -n '^```mermaid'          # opening fence present (skip if no mermaid)
 ````
 
@@ -75,4 +78,4 @@ If any fence line starts with a backslash, fix the local file and re-push it.
 - [ ] Mermaid uses real-name labels and ≤10 nodes (or was deliberately omitted)
 - [ ] Every "How to verify" entry in the review guide is actionable
 - [ ] No mid-paragraph line breaks in prose
-- [ ] Ran both Step 4 verification commands and included the results in the completion report
+- [ ] Ran the Step 4 verification commands (the mermaid fence check only when a mermaid is present) and included the results in the completion report

@@ -2,13 +2,14 @@
 set -euo pipefail
 
 usage() {
-  printf 'Usage: %s [--write] [--cd DIR]\n' "${0##*/}" >&2
-  printf 'Read the Codex task from standard input.\n' >&2
+  printf 'Usage: %s [--write] [--cd DIR] [--task-file FILE]\n' "${0##*/}" >&2
+  printf 'Read the Codex task from --task-file, or from standard input.\n' >&2
 }
 
 sandbox_mode='read-only'
 permission_text='Read-only: do not create, edit, delete, or rename files, and do not perform external writes or other state-changing actions.'
 workdir='.'
+task_source=''
 
 while (($# > 0)); do
   case "$1" in
@@ -23,6 +24,14 @@ while (($# > 0)); do
         exit 64
       fi
       workdir=$2
+      shift 2
+      ;;
+    --task-file)
+      if (($# < 2)); then
+        usage
+        exit 64
+      fi
+      task_source=$2
       shift 2
       ;;
     -h|--help)
@@ -57,7 +66,15 @@ cleanup() {
 }
 trap cleanup EXIT HUP INT TERM
 
-cat >"$task_file"
+if [[ -n "$task_source" ]]; then
+  if [[ ! -r "$task_source" ]]; then
+    printf 'codex-subagent: task file is not readable: %s\n' "$task_source" >&2
+    exit 66
+  fi
+  cat "$task_source" >"$task_file"
+else
+  cat >"$task_file"
+fi
 if [[ ! -s "$task_file" ]]; then
   printf 'codex-subagent: task prompt is empty.\n' >&2
   exit 64

@@ -31,6 +31,18 @@ Fix the target reader first; ask when the request and the repo don't say.
 
 The same fact reads differently per reader. If you had to guess the reader, state the assumption when delivering.
 
+## Revision mode (existing documents)
+
+When the input is an existing document or PR/issue body（「簡潔に」「読みやすく」「ゴチャついている」）, diagnose the structure before touching any sentence — the recurring complaint behind these requests is shape and volume, not word choice. Run this checklist against the whole document first:
+
+- **文量**: can it say the same at half the length? Cut duplicated background, work logs, and restated context before polishing what remains（実例: 109 行の PR body が内容を失わず 56 行になった）
+- **表と散文の役割**: tables hold enumerable short facts; reasoning that ended up in table cells moves back to prose, and enumerable facts buried in prose become a table
+- **情報の出し順**: conclusion first, per the Structure section below
+- **図示**: apply the Diagrams trigger（互いに作用する要素が 3 つ以上）— offer the mermaid diagram unprompted instead of waiting to be asked
+- **用語**: run the terminology sweep (Terminology section)
+
+Only after the structure settles do sentence-level edits pay off.
+
 ## Structure: conclusion first
 
 Open every document and every section with the sentence the reader came for. Background earns a place only when it changes what the reader does next.
@@ -72,7 +84,7 @@ Prefer the shortest sentence that keeps the meaning:
 | 削除を実行する必要があります   | 削除してください |
 | 〜という点に留意する必要がある | 〜に注意         |
 
-- Apply the shared norms' one-register-per-document rule. In this domain: README・設計文書は だ・である、手順書・ガイドは です・ます が目安（existing repo docs win）. Source memos leak casual or 依頼 register（「〜してほしい」「しくじったら」）; convert to the document's register（「〜すること」「失敗した場合」）.
+- Apply the shared norms' one-register-per-document rule. In this domain: README・設計文書は だ・である、手順書・ガイドは です・ます が目安（existing repo docs win）. Source memos leak casual or 依頼 register（「〜してほしい」「しくじったら」）; convert to the document's register（「〜すること」「失敗した場合」）. The worked examples in this file illustrate structure, not register — re-cast them into the target document's register when borrowing（手順書なら です・ます に直す）.
 - Short paragraphs (2–4 sentences) with a blank line between logical units; tables for enumerable facts, numbered lists for sequences, prose for reasoning. Where prose works, prefer prose over decorated lists.
 
 ## Terminology and notation
@@ -84,6 +96,8 @@ Prefer the shortest sentence that keeps the meaning:
 | コードに実在する識別子 | backticks, exactly as written in code — grep must hit | `cache_ttl_seconds`, `CacheClient`, `POST /api/v1/cache/invalidate`            |
 
 Unify variants within a document（サーバ／サーバー等）, following the repo's existing choice.
+
+**Sweep, don't just consult**: after drafting or revising, scan the prose for bare English common-concept words left untranslated（service・workflow・tenant・patch・repository・schema → サービス・ワークフロー・テナント・パッチ・リポジトリ・スキーマ）. Boundary with 固有名詞: a word naming a specific product feature keeps its official spelling（GitHub の Issue / PR、Terraform の plan）; the same word as a general concept in running prose becomes カタカナ. When neither reading is clearly right, ask instead of guessing.
 
 ## Diagrams
 
@@ -101,5 +115,5 @@ Technical-writing specific: when a source memo and the code disagree, the code w
 
 ## Finishing pass
 
-- The always-loaded rules still apply: `~/.claude/rules/japanese-writing.md` (non-negotiables) and `markdown-formatting.md` (Semantic Line Breaks).
+- The always-loaded rules still apply: `~/.claude/rules/japanese-writing.md` (non-negotiables) and `markdown-formatting.md` (line-break policy — Semantic Line Breaks only where the repo opts in, never as the default).
 - Invoke the japanese-ai-writing-proofreader skill only when the user explicitly asks for 校正 — its full pipeline costs more than most documents warrant, and the always-loaded rules already hold the prose baseline.

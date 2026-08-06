@@ -12,18 +12,21 @@ Four passes, mechanical first. The textlint and rhythm-lint passes exist because
 
 ## Scale
 
-Utilitarian prose — PR bodies, commit messages, changelog entries, short README/doc sections — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and Pass 4's structural checks have no room to fire. Articles and standalone documents get all four passes regardless of length. When in doubt, run the full pipeline.
+Scale by size, not artifact type. Short utilitarian prose — commit messages, changelog entries, a few-line PR body or README tweak — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and a few lines leave Pass 4 nothing to check. But a long PR/issue body (目安: 40 行超, or more than one heading) is document-sized — run the full pipeline on it; routing PR bodies around Pass 4 (情報の出し順, buried conclusions, 整合性) by artifact type is what let 「読みづらい」 re-requests through minutes after a clean proofread. Articles and standalone documents get all four passes regardless of length. When in doubt, run the full pipeline.
 
 ## Mode
 
 - **report** (default for text the user wrote): list findings with before/after suggestions; change nothing
-- **fix** (default for Claude-drafted text, or when the user asks for 修正): apply the fixes, then summarize what changed by category. When the target is a file, edit it in place AND show the corrected text (or the changed passages, for long files) in the response; when it is pasted text, return the corrected text in full (no config probe needed — go straight to the fallback)
+- **fix** (default for Claude-drafted text, or when the user asks for 修正): apply the fixes, then summarize what changed by category. When the target is a file, edit it in place AND show the corrected text (or the changed passages, for long files) in the response; when it is pasted text, return the corrected text in full (no project-config probe needed — go straight to Pass 1's bundled fallback config)
 
 When unclear which applies, ask.
 
 ## Scope guards
 
 - Never touch code blocks, command output, quoted text (`>`), or verbatim excerpts — flag issues inside them at most
+- Table data cells are near-verbatim: fix plain 誤字 inside them, nothing more. Prose crammed into cells is a structural finding (see below), not a rewrite target
+- When invoked on a diff or with named target sections, touch only those parts — the surrounding existing text is context, not a target. Callers don't need to restate this in arguments
+- **Structure is a finding, not a rewrite target**: when the dominant problems are structural — prose stuffed into table cells, a document far longer than its content, buried conclusions, a flow that wants a diagram — report them and recommend running technical-writing (構成・文量・図示 live there) instead of polishing sentences harder. A clean sentence-level pass does not make a structurally unreadable document readable
 - **Say only what the source says**: a replacement may use only information already present in the text. Cutting padding is the job; replacing 「継続的な改善」 with 「値のチューニング」, or a vague plan with a specific one the draft never stated, invents commitments on the author's behalf
 - **Tone down the author's stance, don't delete it**: 「非常に大きな成果であると考えております」 is hype wrapped around a real evaluation. Reduce it to 「大きな成果だと考えています」 — same claim, less ceremony. The replacement must not smuggle in a new premise either（「想定した効果が出ました」 would assert a prior expectation the text never stated）. Deleting the sentence removes the author's judgment, which is theirs to make; delete only when nothing survives the padding
 - **Voice preservation**: if the text has an intentional style (e.g. article-writing's style profiles — 括弧ツッコミ, 取り消し線, 「普通に」, casual fragments), those devices are NOT findings. Proofreading removes AI-smell, not personality. The protection covers the device itself, not errors inside it: real 誤字・誤用 inside a device are still findings; orthography preferences inside one are LOW at most. When the caller has an active style profile (e.g. invoked from article-writing), read that profile before judging anything as a finding.
@@ -82,6 +85,7 @@ VIEW='"検出\(.findings|length)件（うち info \([.findings[]|select(.severit
 
 uv run $LINT --json <file> > $TMP/lint-1.json
 jq -r "$VIEW" $TMP/lint-1.json
+echo "$TMP"   # the fix-mode baseline re-run needs this path literally
 ```
 
 Add `--genre essay|tech|business` when the genre is clear — it switches to calibrated per-genre thresholds and reduces false positives. Dependencies (sudachipy) resolve automatically via PEP 723 inline metadata; no venv setup needed.
@@ -90,7 +94,7 @@ Add `--genre essay|tech|business` when the genre is clear — it switches to cal
 - Exit code is 0 regardless of finding count (this is a lint, not a gate); 1 only on input errors
 - Open `$TMP/lint-1.json` directly only when one finding needs its `related_lines`; the jq view is the working set. If an excerpt doesn't match the document you're proofreading, you read another run's output — check the JSON's `.file` field
 - The script's `severity` and this skill's 重要度 are separate scales that happen to share a word. Map by the Output section's definitions: a script `critical` is normally IMPORTANT here (it marks a pattern, not broken meaning); a `warn` is IMPORTANT when it points at a specific passage and LOW when it reports a whole-document statistic such as burstiness; `info` goes to the LOW aggregate line
-- In fix mode, after applying fixes, re-run **this pass** once with `--baseline $TMP/lint-1.json`, writing to `$TMP/lint-2.json`. The jq view shows the `new` and `persisting` rows; resolved items move out of `.findings` into `.baseline`, so read their count separately: `jq -r '.baseline.summary | "resolved \(.resolved) / new \(.new) / persisting \(.persisting)"' $TMP/lint-2.json`. Report what persists with your reason for leaving it rather than starting another round, then delete the JSONs with plain `rm "$TMP"/lint-*.json`（`rm -rf` は環境によって hook に拒否される）
+- In fix mode, after applying fixes, re-run **this pass** once with `--baseline <dir>/lint-1.json`, writing to `<dir>/lint-2.json` — `<dir>` is the literal path the first run echoed. The re-run is a new shell call, so `TMP` no longer exists（an unexpanded `$TMP/` writes to the filesystem root）; re-declare `LINT` and `VIEW` in the same invocation. The jq view shows the `new` and `persisting` rows; resolved items move out of `.findings` into `.baseline`, so read their count separately: `jq -r '.baseline.summary | "resolved \(.resolved) / new \(.new) / persisting \(.persisting)"' $TMP/lint-2.json`. Report what persists with your reason for leaving it rather than starting another round, then delete the JSONs with plain `rm "$TMP"/lint-*.json`（`rm -rf` は環境によって hook に拒否される）
 - If `uv` is unavailable, skip this pass; Pass 4's manual checks are the fallback
 - If `jq` is unavailable, drop `--json` and the redirect and run the script bare — the human-readable format carries the same findings at roughly 3× the size of the jq view
 

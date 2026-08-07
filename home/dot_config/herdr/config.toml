@@ -34,9 +34,25 @@ height = "80%"
 switch_ascii_input_source_in_prefix = true
 pane_history = true
 
+# macOS: keep the IME candidate window anchored to the pane cursor for TUIs that
+# paint their own cursor. Scoped to Claude panes, so panes running an app that
+# hides the cursor without painting a replacement keep the default behavior.
+reveal_hidden_cursor_for_cjk_ime = true
+cjk_ime_agents = ["claude"]
+
 [ui]
 show_agent_labels_on_pane_borders = true
 hide_tab_bar_when_single_tab = true
+
+# Attention-queue ordering for the agent panel, chosen through the Settings TUI.
+# Recorded here so `chezmoi apply` does not revert it to the "spaces" default.
+agent_panel_sort = "priority"
+
+# Every pane here runs Claude, so the default ["agent"] row renders one identical
+# "claude" label per entry and the priority ordering above becomes unreadable. The
+# stripped terminal title carries the actual task, which is what distinguishes them.
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"]]
 
 [ui.toast]
 delivery = "terminal"

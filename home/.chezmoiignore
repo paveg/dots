@@ -3,11 +3,13 @@
 **/*.pyc
 
 # macOS specific
+# Scripts are matched by target name, which has the run_* prefix stripped —
+# naming the source file here would never match. Verify with `chezmoi ignored`.
 {{ if ne .chezmoi.os "darwin" }}
 .config/karabiner/
 Library/
 homebrew/
-.chezmoiscripts/run_onchange_after_configure-macos-keyboard.sh
+.chezmoiscripts/configure-macos-keyboard.sh
 {{ end }}
 
 # Linux specific (servers don't need GUI terminal config)
@@ -34,9 +36,9 @@ homebrew/Brewfile.work
 {{ if .business_use }}
 .config/atcoder-cli-nodejs/
 .config/zsh/atcoder.zsh
-.chezmoiscripts/run_once_after_configure-atcoder-cli.sh
-.chezmoiscripts/run_once_after_create-atcoder-workspace.sh
-.chezmoiscripts/run_onchange_after_install-atcoder-tools.sh
+.chezmoiscripts/configure-atcoder-cli.sh
+.chezmoiscripts/create-atcoder-workspace.sh
+.chezmoiscripts/install-atcoder-tools.sh
 {{- if eq .chezmoi.os "darwin" }}
 Library/Preferences/atcoder-cli-nodejs
 {{- end }}

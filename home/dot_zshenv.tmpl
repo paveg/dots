@@ -12,8 +12,16 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 # export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
 # Locale
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# en_US.UTF-8 is always present on macOS but is not generated on a stock
+# Ubuntu/WSL2, where only C.UTF-8 exists — forcing it there makes every
+# child process warn and fall back to the C locale. glibc spells it
+# "en_US.utf8", macOS "en_US.UTF-8". LC_ALL is left unset so per-category
+# system settings still apply.
+if locale -a 2>/dev/null | grep -qiEx 'en_US\.utf-?8'; then
+  export LANG=en_US.UTF-8
+else
+  export LANG=C.UTF-8
+fi
 
 # Editor
 export EDITOR=nvim

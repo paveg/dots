@@ -15,6 +15,9 @@ if command -v acc >/dev/null 2>&1; then
   :
 elif command -v pnpm >/dev/null 2>&1; then
   echo "Installing atcoder-cli via pnpm..."
+  # This runs under bash, so modules/pnpm.zsh has not set PNPM_HOME here.
+  export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}"
+  export PATH="$PNPM_HOME/bin:$PATH"
   pnpm add -g atcoder-cli
 else
   echo "pnpm not found — skipping acc install" >&2

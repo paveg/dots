@@ -44,4 +44,13 @@ else
   chezmoi init --apply paveg/dots
 fi
 
+# Install the CLI tools declared by the rendered devbox global manifest.
+# Must run after chezmoi apply, which is what writes that manifest.
+echo "==> Installing CLI tools via devbox..."
+if ! devbox global install; then
+  echo "!!! devbox global install failed."
+  echo "!!! The dotfiles are applied, but CLI tools are missing."
+  echo "!!! Re-run it manually: devbox global install"
+fi
+
 echo "==> Done! Restart your shell or run: exec zsh"

@@ -15,6 +15,7 @@ concurrency:
 jobs:
   quality:
     name: Fast Quality Gate
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,8 +25,14 @@ jobs:
 
       - name: Install check dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y direnv jq lua5.4 zsh
+          ok=0
+          for i in 1 2 3; do
+            sudo timeout 120 apt-get update && { ok=1; break; }
+            echo "apt-get update attempt $i failed; retrying"
+            sleep 5
+          done
+          [ "$ok" = 1 ]
+          sudo timeout 300 apt-get install -y direnv jq lua5.4 zsh
           bash .github/scripts/install-chezmoi.sh "$RUNNER_TEMP/bin"
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
@@ -36,6 +43,7 @@ jobs:
 
   changes:
     name: Detect Changes
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -103,6 +111,7 @@ jobs:
     name: Format Check
     needs: changes
     if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true' || needs.changes.outputs.devbox == 'true' || needs.changes.outputs.markdown == 'true'
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -143,6 +152,7 @@ jobs:
     name: Lint
     needs: changes
     if: needs.changes.outputs.shell == 'true' || needs.changes.outputs.lua == 'true'
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -152,7 +162,14 @@ jobs:
           echo "Running ShellCheck..."
           # Install shellcheck if not present (ubuntu-latest usually has it)
           if ! command -v shellcheck &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y shellcheck
+            ok=0
+            for i in 1 2 3; do
+              sudo timeout 120 apt-get update && { ok=1; break; }
+              echo "apt-get update attempt $i failed; retrying"
+              sleep 5
+            done
+            [ "$ok" = 1 ]
+            sudo timeout 300 apt-get install -y shellcheck
           fi
           
           # Check install.sh, chezmoi scripts, CI helpers, and Bash regression tests
@@ -162,6 +179,7 @@ jobs:
     name: Zsh Syntax (macOS)
     needs: changes
     if: needs.changes.outputs.zsh == 'true'
+    timeout-minutes: 10
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -181,6 +199,7 @@ jobs:
     name: Chezmoi (${{ matrix.os }}, ${{ matrix.env_name }})
     needs: changes
     if: needs.changes.outputs.chezmoi == 'true'
+    timeout-minutes: 10
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -281,6 +300,7 @@ jobs:
     name: Devbox Validation (${{ matrix.profile }})
     needs: changes
     if: needs.changes.outputs.devbox == 'true'
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -312,6 +332,7 @@ jobs:
     name: Neovim Config
     needs: changes
     if: needs.changes.outputs.nvim == 'true'
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -346,6 +367,7 @@ jobs:
     name: CI Complete
     needs: [changes, quality, format, lint, zsh-darwin, chezmoi, devbox, neovim]
     if: always()
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - name: Check job results

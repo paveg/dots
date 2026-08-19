@@ -161,6 +161,7 @@ test-skill-scripts:
     @bash tests/skills/pr-monitor/run-tests.sh
     @bash tests/skills/context-diet/run-tests.sh
     @bash tests/skills/codex-subagent/run-tests.sh
+    @bash tests/skills/writing-bench/run-tests.sh
 
 # Run skill fetcher tests
 test-skills:

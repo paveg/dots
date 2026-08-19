@@ -12,8 +12,8 @@ One skill, two modes. Route by the artifact's destination, then read ONLY the ch
 
 ## Mode selection
 
-| Destination                                                        | Mode      | Process reference         |
-| ------------------------------------------------------------------ | --------- | ------------------------- |
+| Destination                                                         | Mode      | Process reference         |
+| ------------------------------------------------------------------- | --------- | ------------------------- |
 | Repository file（README・docs/・手順書・設計文書・PR/issue 本文級） | technical | `references/technical.md` |
 | Public platform（funailog / Zenn / note / 外部ブログ）              | article   | `references/article.md`   |
 

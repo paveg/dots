@@ -20,12 +20,12 @@ Form follows the information's structure, not the genre: parallel enumerable fac
 
 Initial values, not lint gates — exceeding one is a signal to cut, split, or switch form. Recalibrate them from writing-bench measurements (`tests/writing-bench/` in the dotfiles repo), not by debate.
 
-| Unit      | Target                                                              |
-| --------- | ------------------------------------------------------------------- |
-| Sentence  | ≤ 60 字目安                                                          |
-| Paragraph | ≤ 150 字, 2–4 sentences                                              |
+| Unit      | Target                                                                 |
+| --------- | ---------------------------------------------------------------------- |
+| Sentence  | ≤ 60 字目安                                                            |
+| Paragraph | ≤ 150 字, 2–4 sentences                                                |
 | Section   | ≤ 400 字 — beyond that, split with a subheading or switch to a diagram |
-| PR body   | ≤ 40 lines                                                           |
+| PR body   | ≤ 40 lines                                                             |
 
 Shape: heading depth ≤ h3（h4 が要るなら文書分割のシグナル）; 3–7 sections per document; list nesting ≤ 2 levels（3 段目が要る構造は表か図）; conclusion first at section level too, not only document level; one document serves one purpose — split when it forks.
 

@@ -22,12 +22,12 @@ Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical
 
 A diagram is due when prose would make the reader sketch it themselves:
 
-| Signal in the content                       | Diagram                   |
-| ------------------------------------------- | ------------------------- |
-| ≥3 participants exchanging calls/messages   | `sequenceDiagram`         |
-| ≥4 states in a transition                   | `stateDiagram-v2`         |
-| Structural before/after comparison          | two graphs side by side   |
-| Procedure of ≥5 steps containing branches   | `flowchart`               |
+| Signal in the content                     | Diagram                 |
+| ----------------------------------------- | ----------------------- |
+| ≥3 participants exchanging calls/messages | `sequenceDiagram`       |
+| ≥4 states in a transition                 | `stateDiagram-v2`       |
+| Structural before/after comparison        | two graphs side by side |
+| Procedure of ≥5 steps containing branches | `flowchart`             |
 
 ### Authoring rules
 

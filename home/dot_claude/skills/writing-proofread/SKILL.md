@@ -83,14 +83,16 @@ VIEW='"検出\(.findings|length)件（うち info \([.findings[]|select(.severit
       (.findings[] | select(.severity != "info")
        | "L\(.line) [\(.severity)]\(if .status then " "+.status else "" end) \(.category): \(.excerpt) — \(.detail)")'
 
-uv run $LINT --json <file> > $TMP/lint-1.json
+uv run $LINT --json --reading-load <file> > $TMP/lint-1.json
 jq -r "$VIEW" $TMP/lint-1.json
+jq -r '.reading_load.findings[] | "L\(.line) [load] \(.category): \(.excerpt)"' $TMP/lint-1.json
 echo "$TMP"   # the fix-mode baseline re-run needs this path literally
 ```
 
 Add `--genre essay|tech|business` when the genre is clear — it switches to calibrated per-genre thresholds and reduces false positives. Dependencies (sudachipy) resolve automatically via PEP 723 inline metadata; no venv setup needed.
 
 - Findings are suspicions, not orders — apply the same 直す / 残す（理由） discipline as Pass 1
+- The `[load]` rows come from the opt-in reading-load lane (`.reading_load` section — 一文長・埋もれた列挙・二重否定・漢字連続・「の」連鎖). They are pointers for Pass 4's manual read, not findings: severity is always info, they never enter `--baseline` diffs, and they don't count toward this pass's totals
 - Exit code is 0 regardless of finding count (this is a lint, not a gate); 1 only on input errors
 - Open `$TMP/lint-1.json` directly only when one finding needs its `related_lines`; the jq view is the working set. If an excerpt doesn't match the document you're proofreading, you read another run's output — check the JSON's `.file` field
 - The script's `severity` and this skill's 重要度 are separate scales that happen to share a word. Map by the Output section's definitions: a script `critical` is normally IMPORTANT here (it marks a pattern, not broken meaning); a `warn` is IMPORTANT when it points at a specific passage and LOW when it reports a whole-document statistic such as burstiness; `info` goes to the LOW aggregate line

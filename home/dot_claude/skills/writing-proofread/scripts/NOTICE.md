@@ -4,7 +4,7 @@
 this directory are vendored **unmodified** from
 [coji/natural-japanese](https://github.com/coji/natural-japanese)
 (`skills/natural-japanese/scripts/`), commit
-`c2ad5da4e4f9a29a84a0a9e74d93b6ce921d22d3` (2026-07-15), under the MIT license
+`0f1cc1c5a4e2aa7590598c88a15c213a60d9545a` (2026-08-17, v1.4.0), under the MIT license
 reproduced below.
 
 ## Update procedure

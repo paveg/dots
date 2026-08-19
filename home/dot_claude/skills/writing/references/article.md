@@ -4,7 +4,7 @@ Write articles in distinct phases with user checkpoints. Never skip ahead: each 
 
 ## Phase 0: Repo conventions
 
-If the working repo has article-related conventions (`.claude/rules/`, `CLAUDE.md`, frontmatter schemas, category/series definitions, build commands), read and follow them. They override this skill on **everything they specify — including prose style**（調・一人称・締めの形式）. The style profiles in `references/` fill in only what the repo leaves unspecified (rhythm, structure, character devices). This skill always owns the process (the phases and gates).
+If the working repo has article-related conventions (`.claude/rules/`, `CLAUDE.md`, frontmatter schemas, category/series definitions, build commands), read and follow them. They override this skill on **everything they specify — including prose style**（調・一人称・締めの形式）. The style profiles in `~/.claude/skills/writing/references/` fill in only what the repo leaves unspecified (rhythm, structure, character devices). This skill always owns the process (the phases and gates).
 
 ## Phase 1: 企画 — CHECKPOINT
 
@@ -13,8 +13,8 @@ Confirm with the user before writing anything:
 - **題材とソース**: what the article is about, and what raw material exists (repo, logs, memos, URLs, receipts, chat history)
 - **想定読者と媒体**: who reads it, where it lands (funailog / Zenn / etc.)
 - **文体**: ask the user to choose
-  - `personal` — キャラあり。`references/style-personal.md`
-  - `serious` — キャラ控えめ。`references/style-serious.md`
+  - `personal` — キャラあり。`~/.claude/skills/writing/references/style-personal.md`
+  - `serious` — キャラ控えめ。`~/.claude/skills/writing/references/style-serious.md`
 - **分量の目安** and any deadline
 
 ## Phase 2: 素材収集
@@ -45,7 +45,7 @@ Iterate here until approved. Restructuring an outline is cheap; restructuring a 
 
 ## Phase 4: 起稿
 
-1. Read the chosen style profile in `references/` — every time, not from memory
+1. Read the chosen style profile (`~/.claude/skills/writing/references/style-*.md`) — every time, not from memory
 2. If past articles are available (repo-local or the profile's excerpts), read 2-3 as few-shot calibration before writing
 3. Draft the full article following the outline
 4. Constraints while drafting:
@@ -59,7 +59,7 @@ Iterate here until approved. Restructuring an outline is cheap; restructuring a 
 
 ## Phase 5: ファクトチェック＋公開可否 — GATE
 
-Follow `references/fact-check.md`: extract every verifiable claim, verify each against a primary source, resolve all failures (fix / downgrade / delete / flag). For articles describing personal infrastructure or accounts (自宅ネットワーク・自宅サーバ・スマートホーム), also run the disclosure sweep (§5) in that reference: scan for real identifiers (SSID・認証情報・公開IP・ホスト名・機器ブランド) and genericize or redact. Present the claims table. **Do not proceed with unresolved items.**
+Follow `~/.claude/skills/writing/references/fact-check.md`: extract every verifiable claim, verify each against a primary source, resolve all failures (fix / downgrade / delete / flag). For articles describing personal infrastructure or accounts (自宅ネットワーク・自宅サーバ・スマートホーム), also run the disclosure sweep (§5) in that reference: scan for real identifiers (SSID・認証情報・公開IP・ホスト名・機器ブランド) and genericize or redact. Present the claims table. **Do not proceed with unresolved items.**
 
 ## Phase 6: 校正
 

@@ -18,6 +18,17 @@ Prose has **no column limit** and is **not hard-wrapped** by default. Write one 
 
 Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs, .md files — where GitHub, Obsidian, VS Code preview, etc. render it as a real diagram. In chat/terminal responses it is the reverse: mermaid does not render there, so use ASCII art, prose, or short bullet lists instead.
 
+### When to diagram
+
+A diagram is due when prose would make the reader sketch it themselves:
+
+| Signal in the content                       | Diagram                   |
+| ------------------------------------------- | ------------------------- |
+| ≥3 participants exchanging calls/messages   | `sequenceDiagram`         |
+| ≥4 states in a transition                   | `stateDiagram-v2`         |
+| Structural before/after comparison          | two graphs side by side   |
+| Procedure of ≥5 steps containing branches   | `flowchart`               |
+
 ### Authoring rules
 
 - ≤ ~10 nodes per diagram; split larger into multiple

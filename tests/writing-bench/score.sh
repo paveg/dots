@@ -32,10 +32,13 @@ for artifact in "${outputs_dir}"/[0-9][0-9]-*.md; do
     > "${scores_dir}/${stem}-metrics.json"
 
   rhythm="skipped"
+  rload="skipped"
   if command -v uv >/dev/null; then
-    uv run "${SCRIPTS}/lint.py" --json --genre "${genre}" "${artifact}" \
+    uv run "${SCRIPTS}/lint.py" --json --reading-load --genre "${genre}" "${artifact}" \
       > "${scores_dir}/${stem}-rhythm.json" || true
     rhythm=$(jq -r '[.findings[] | select(.severity != "info")] | length' \
+      "${scores_dir}/${stem}-rhythm.json" 2>/dev/null || echo "error")
+    rload=$(jq -r '.reading_load.findings | length' \
       "${scores_dir}/${stem}-rhythm.json" 2>/dev/null || echo "error")
   fi
 
@@ -50,13 +53,13 @@ for artifact in "${outputs_dir}"/[0-9][0-9]-*.md; do
     rm -f "${prh_config}"
   fi
 
-  jq -r --arg rhythm "${rhythm}" --arg prh "${prh}" '
+  jq -r --arg rhythm "${rhythm}" --arg rload "${rload}" --arg prh "${prh}" '
     "\(.file | split("/") | last)\t" +
     "sent>60:\(.sentences.over_60)\t" +
     "para>150:\(.paragraphs.over_150_chars) para>4s:\(.paragraphs.over_4_sentences)\t" +
     "sect>400:\(.sections.over_400_chars)\t" +
     "h>3:\(.headings.over_h3) nest>2:\(.list_nesting.items_deeper_than_2)\t" +
     "lines:\(.lines.total)/\(.lines.budget // "-")\t" +
-    "rhythm:\($rhythm)\tprh:\($prh)"
+    "rhythm:\($rhythm) load:\($rload)\tprh:\($prh)"
   ' "${scores_dir}/${stem}-metrics.json"
 done

@@ -32,7 +32,7 @@ What to compress, what to move, what to leave alone. Read this before writing ed
 
 **Negative triggers in a `description`.** "Never fire proactively on PR bodies" only works where the loading decision is made. Moving it into the body means the skill has already loaded before reading it.
 
-**Sibling disambiguation.** "Blog articles go to article-writing; proofreading goes to japanese-ai-writing-proofreader." This is what stops the wrong skill from firing, and it costs one sentence.
+**Sibling disambiguation.** "Article mode vs technical mode routes inside writing; proofreading goes to writing-proofread." This is what stops the wrong skill from firing, and it costs one sentence.
 
 **Measured numbers.** "Three agents that did nothing burned 114K tokens." A number that came from a real run is the reason a rule exists; without it the rule reads as taste and gets ignored.
 

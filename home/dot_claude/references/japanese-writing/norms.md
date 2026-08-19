@@ -1,6 +1,6 @@
 # Japanese Writing Norms
 
-Canonical reference for natural, readable Japanese prose. Loaded just-in-time by the writing skills (`technical-writing`, `article-writing`, `japanese-ai-writing-proofreader`) and by injection hooks — never always-on. This file is the single source of truth for the norms below; skills apply them and cite this file rather than restating it.
+Canonical reference for natural, readable Japanese prose. Loaded just-in-time by the writing skills (`writing`, `writing-proofread`) and by injection hooks — never always-on. This file is the single source of truth for the norms below; skills apply them and cite this file rather than restating it.
 
 ## Audience
 

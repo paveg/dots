@@ -25,7 +25,7 @@ contains_norms_pointer "$out" || { echo "pointer not injected for japanese .md w
 
 # Regression: the pointer must NOT summon the proofreader skill — hook-driven
 # proofreading burns a full pipeline run on every Japanese .md write
-echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
+echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("writing-proofread")' >/dev/null \
   && { echo "proofreader skill mention resurfaced: $out"; exit 1; }
 
 # Edge: .py file with Japanese content must NOT fire

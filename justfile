@@ -166,7 +166,7 @@ test-skill-scripts:
 test-skills:
     @echo "Running skill fetcher tests..."
     @bash tests/skills/equity-decision/run-tests.sh
-    @bash tests/skills/japanese-ai-writing-proofreader/run-tests.sh
+    @bash tests/skills/writing-proofread/run-tests.sh
 
 # Install local quality-gate and formatter tools
 install:

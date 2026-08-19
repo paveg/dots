@@ -1,12 +1,4 @@
----
-name: article-writing
-description: >-
-  Step-by-step article writing workflow with style selection (personal voice vs serious), a hallucination-prevention fact-check gate, and AI-smell proofreading. Use when writing or co-writing blog/tech articles — triggers: 「記事を書く」「ブログ記事」「記事化して」, turning memos/logs/repos into an article, or drafting for funailog/Zenn/note. For proofreading-only requests, use the japanese-ai-writing-proofreader skill directly.
-
-argument-hint: <topic or source material>
----
-
-# Article Writing
+# Article Mode（公開記事）
 
 Write articles in distinct phases with user checkpoints. Never skip ahead: each phase's output is the next phase's input, and the fact-check gate exists precisely because drafting and verifying in one pass lets hallucinations through.
 
@@ -71,7 +63,7 @@ Follow `references/fact-check.md`: extract every verifiable claim, verify each a
 
 ## Phase 6: 校正
 
-Invoke the `japanese-ai-writing-proofreader` skill on the draft in fix mode (the draft is Claude-written), naming the draft's path and the chosen style profile — without the profile it will read the voice devices as findings. It runs textlint, removes AI-smell, and checks deep naturalness against the shared norms. Re-read the result against the style profile: proofreading must not have flattened the chosen voice.
+Invoke the `writing-proofread` skill on the draft in fix mode (the draft is Claude-written), naming the draft's path and the chosen style profile — without the profile it will read the voice devices as findings. It runs textlint, removes AI-smell, and checks deep naturalness against the shared norms. Re-read the result against the style profile: proofreading must not have flattened the chosen voice.
 
 ## Phase 7: 完成レポート — CHECKPOINT
 

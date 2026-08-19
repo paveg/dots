@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Fixture regression check: verify home/dot_claude/skills/japanese-ai-writing-proofreader/scripts/lint.py
+# Fixture regression check: verify home/dot_claude/skills/writing-proofread/scripts/lint.py
 # detects the expected number of findings on the vendored fixtures. Catches
 # drift caused by re-vendoring lint.py/textcore.py or editing the fixtures
 # (e.g. a fixture edit that accidentally introduces/removes a detectable
 # pattern) before it lands in a commit.
 #
 # NOTE: If you intentionally re-vendor scripts or edit
-# home/dot_claude/skills/japanese-ai-writing-proofreader/scripts/fixtures/, update
+# home/dot_claude/skills/writing-proofread/scripts/fixtures/, update
 # the expected counts below to match (see scripts/NOTICE.md for the update
 # procedure).
 #
@@ -16,9 +16,9 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-LINT="${REPO_ROOT}/home/dot_claude/skills/japanese-ai-writing-proofreader/scripts/lint.py"
-SMELLY_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/japanese-ai-writing-proofreader/scripts/fixtures/ai-smelly.md"
-NATURAL_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/japanese-ai-writing-proofreader/scripts/fixtures/natural.md"
+LINT="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/lint.py"
+SMELLY_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures/ai-smelly.md"
+NATURAL_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures/natural.md"
 
 # Expected finding counts. Update these if you deliberately re-vendor
 # lint.py/textcore.py or edit the fixtures.

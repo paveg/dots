@@ -19,10 +19,10 @@ Fixed benchmark for the Japanese writing stack (ADR 0006). Ten prompts in `promp
 
 ## Prompt set (v1, 2026-08-19)
 
-| # | Artifact | Planted pressure |
-| --- | --- | --- |
-| 01–03 | PR body ×3 | 40-line budget; 02 before/after diagram trigger, 03 sequence trigger |
-| 04–05 | Design doc ×2 | 04 state-transition trigger; 05 scope-mixing temptation (1 doc 1 purpose) |
+| #     | Artifact                 | Planted pressure                                                                  |
+| ----- | ------------------------ | --------------------------------------------------------------------------------- |
+| 01–03 | PR body ×3               | 40-line budget; 02 before/after diagram trigger, 03 sequence trigger              |
+| 04–05 | Design doc ×2            | 04 state-transition trigger; 05 scope-mixing temptation (1 doc 1 purpose)         |
 | 06–07 | README section / runbook | 06 general-engineer audience; 07 branching-procedure trigger, です・ます register |
-| 08–09 | Article ×2 | 08 non-engineer audience vocabulary; 09 numbers-heavy sourcing |
-| 10 | English-source explainer | Translationese trap (canonical / mitigation / deprecated / remediation) |
+| 08–09 | Article ×2               | 08 non-engineer audience vocabulary; 09 numbers-heavy sourcing                    |
+| 10    | English-source explainer | Translationese trap (canonical / mitigation / deprecated / remediation)           |

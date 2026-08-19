@@ -25,6 +25,10 @@ jobs:
 
       - name: Install check dependencies
         run: |
+          # The default azure.archive.ubuntu.com mirror hangs apt when degraded
+          # (observed 2026-08-19: 6h wedged job) — fall back to the canonical archive.
+          sudo sed -i 's|azure\.archive\.ubuntu\.com|archive.ubuntu.com|g' \
+            /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
           ok=0
           for i in 1 2 3; do
             sudo timeout 120 apt-get update && { ok=1; break; }
@@ -162,6 +166,8 @@ jobs:
           echo "Running ShellCheck..."
           # Install shellcheck if not present (ubuntu-latest usually has it)
           if ! command -v shellcheck &> /dev/null; then
+            sudo sed -i 's|azure\.archive\.ubuntu\.com|archive.ubuntu.com|g' \
+              /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
             ok=0
             for i in 1 2 3; do
               sudo timeout 120 apt-get update && { ok=1; break; }

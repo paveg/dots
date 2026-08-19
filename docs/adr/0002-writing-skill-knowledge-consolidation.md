@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — 2026-07-22. Revises the "Assets" decision in [ADR 0001](0001-japanese-writing-auto-trigger.md).
+Accepted — 2026-07-22. Partially revised by [ADR 0007](0007-writing-skill-consolidation.md) (2026-08-19): the two generator wrappers are consolidated into one `writing` skill; the generator↔evaluator boundary and the single norms home stand. Revises the "Assets" decision in [ADR 0001](0001-japanese-writing-auto-trigger.md).
 
 ## Context
 

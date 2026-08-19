@@ -20,9 +20,9 @@ Renames are breaking (Claude Code skills have no alias — every invocation, cro
 
 | Current                           | Target                        |
 | --------------------------------- | ----------------------------- |
-| `technical-writing`               | `writing-technical`           |
-| `article-writing`                 | `writing-article`             |
-| `japanese-ai-writing-proofreader` | `writing-proofreader`         |
+| `technical-writing`               | merged into `writing` (ADR 0007) |
+| `article-writing`                 | merged into `writing` (ADR 0007) |
+| `japanese-ai-writing-proofreader` | `writing-proofread` (ADR 0007)   |
 | `equity-decision`                 | `decision-equity`             |
 | `ipo-decision`                    | `decision-ipo`                |
 | `feature`                         | `feature-workflow` (optional) |

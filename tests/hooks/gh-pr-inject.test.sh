@@ -42,7 +42,7 @@ contains_norms_pointer "$out" || { echo "japanese pointer not injected for gh pr
 # Regression: the pointer must NOT summon the proofreader skill — hook-driven
 # proofreading burns a full pipeline run on every Japanese PR body
 out=$(run '{"tool_input":{"command":"gh pr create --body \"日本語の本文です\""}}')
-echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("japanese-ai-writing-proofreader")' >/dev/null \
+echo "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("writing-proofread")' >/dev/null \
   && { echo "proofreader skill mention resurfaced: $out"; exit 1; }
 
 # Edge: Japanese content on a non-first line of a multi-line --body must

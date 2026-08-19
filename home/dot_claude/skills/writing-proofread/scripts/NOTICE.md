@@ -11,7 +11,7 @@ reproduced below.
 
 1. Re-copy the four files above from the upstream repo at the new commit,
    byte-for-byte (no reformatting, no local patches).
-2. Run `tests/skills/japanese-ai-writing-proofreader/run-tests.sh` from the
+2. Run `tests/skills/writing-proofread/run-tests.sh` from the
    repo root; if the pinned finding counts no longer match, update the
    fixtures' expected counts in that script to the new output (cross-check
    against upstream's `dev/check-fixtures.sh` expectations first).

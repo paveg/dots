@@ -1,7 +1,7 @@
 ---
-name: japanese-ai-writing-proofreader
+name: writing-proofread
 description: >-
-  Proofread Japanese prose for AI smell, rhythm, and naturalness. Invoke only on an explicit user request — 「校正して」「推敲して」「AI臭を消して」「自然な日本語にして」 — or as the proofreading phase of the article-writing skill. Never fire proactively on PR bodies, commit messages, or docs you just wrote: the always-loaded japanese-writing rules already hold that baseline.
+  Proofread Japanese prose for AI smell, rhythm, and naturalness. Invoke only on an explicit user request — 「校正して」「推敲して」「AI臭を消して」「自然な日本語にして」 — or as the proofreading phase of the writing skill's article mode. Never fire proactively on PR bodies, commit messages, or docs you just wrote: the always-loaded japanese-writing rules already hold that baseline.
 
 argument-hint: <file or text to proofread>
 ---
@@ -26,10 +26,10 @@ When unclear which applies, ask.
 - Never touch code blocks, command output, quoted text (`>`), or verbatim excerpts — flag issues inside them at most
 - Table data cells are near-verbatim: fix plain 誤字 inside them, nothing more. Prose crammed into cells is a structural finding (see below), not a rewrite target
 - When invoked on a diff or with named target sections, touch only those parts — the surrounding existing text is context, not a target. Callers don't need to restate this in arguments
-- **Structure is a finding, not a rewrite target**: when the dominant problems are structural — prose stuffed into table cells, a document far longer than its content, buried conclusions, a flow that wants a diagram — report them and recommend running technical-writing (構成・文量・図示 live there) instead of polishing sentences harder. A clean sentence-level pass does not make a structurally unreadable document readable
+- **Structure is a finding, not a rewrite target**: when the dominant problems are structural — prose stuffed into table cells, a document far longer than its content, buried conclusions, a flow that wants a diagram — report them and recommend running the writing skill's technical mode (構成・文量・図示 live there) instead of polishing sentences harder. A clean sentence-level pass does not make a structurally unreadable document readable
 - **Say only what the source says**: a replacement may use only information already present in the text. Cutting padding is the job; replacing 「継続的な改善」 with 「値のチューニング」, or a vague plan with a specific one the draft never stated, invents commitments on the author's behalf
 - **Tone down the author's stance, don't delete it**: 「非常に大きな成果であると考えております」 is hype wrapped around a real evaluation. Reduce it to 「大きな成果だと考えています」 — same claim, less ceremony. The replacement must not smuggle in a new premise either（「想定した効果が出ました」 would assert a prior expectation the text never stated）. Deleting the sentence removes the author's judgment, which is theirs to make; delete only when nothing survives the padding
-- **Voice preservation**: if the text has an intentional style (e.g. article-writing's style profiles — 括弧ツッコミ, 取り消し線, 「普通に」, casual fragments), those devices are NOT findings. Proofreading removes AI-smell, not personality. The protection covers the device itself, not errors inside it: real 誤字・誤用 inside a device are still findings; orthography preferences inside one are LOW at most. When the caller has an active style profile (e.g. invoked from article-writing), read that profile before judging anything as a finding.
+- **Voice preservation**: if the text has an intentional style (e.g. the writing skill's style profiles — 括弧ツッコミ, 取り消し線, 「普通に」, casual fragments), those devices are NOT findings. Proofreading removes AI-smell, not personality. The protection covers the device itself, not errors inside it: real 誤字・誤用 inside a device are still findings; orthography preferences inside one are LOW at most. When the caller has an active style profile (e.g. invoked from the writing skill's article mode), read that profile before judging anything as a finding.
 
 ## Pass 1: textlint (mechanical)
 
@@ -55,7 +55,7 @@ npx --loglevel=error -y -p textlint \
   -p textlint-rule-ja-hiragana-hojodoushi \
   -p @textlint-ja/textlint-rule-no-dropping-i \
   -p textlint-filter-rule-comments \
-  textlint --config ~/.claude/skills/japanese-ai-writing-proofreader/assets/textlintrc.json \
+  textlint --config ~/.claude/skills/writing-proofread/assets/textlintrc.json \
   --format compact <file>
 ```
 
@@ -77,7 +77,7 @@ Covers what textlint structurally cannot: sentence-length homogeneity (burstines
 Write the JSON to a file and read back only the actionable rows — the raw JSON runs 2–3× the size of the document, and `info` rows belong in the LOW aggregate line rather than your working set. Run the block as one shell invocation: `TMP` is shell state and does not survive into a later call.
 
 ```bash
-LINT=~/.claude/skills/japanese-ai-writing-proofreader/scripts/lint.py
+LINT=~/.claude/skills/writing-proofread/scripts/lint.py
 TMP=$(mktemp -d)   # unique dir — a fixed filename collides with other runs sharing a directory
 VIEW='"検出\(.findings|length)件（うち info \([.findings[]|select(.severity=="info")]|length)件は LOW 集約）",
       (.findings[] | select(.severity != "info")
@@ -100,7 +100,7 @@ Add `--genre essay|tech|business` when the genre is clear — it switches to cal
 
 ## Pass 3: AI-smell (the 5 categories)
 
-Read `~/.claude/references/japanese-writing/norms.md` here, once — Pass 4 works from the same read, so don't return to it. Then hunt each of its five categories explicitly: mechanical list templates, hype vocabulary, over-emphasis, English-style colon syntax, and particle omission / padding (dropped 助詞, passive → active,「することができる」→「できる」等).
+Read `~/.claude/references/japanese-writing/norms.md` here, once — Pass 4 works from the same read, so don't return to it. Then hunt each of its six categories explicitly: mechanical list templates, hype vocabulary, over-emphasis, English-style colon syntax, translationese vocabulary（翻訳借用語 — words failing the norms' Audience test; unambiguous ones also feed `assets/prh.yml`）, and particle omission / padding (dropped 助詞, passive → active,「することができる」→「できる」等).
 
 This manual read is also where plain 誤字・誤用・文法ミス get caught — textlint misses many（「とゆう」等）. Report them under Pass 3 in the findings table.
 

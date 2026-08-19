@@ -1,5 +1,6 @@
 # Terminology dictionary for the proofreader fallback config.
-# Grow this file as new 表記ゆれ are found in real drafts.
+# Grow this file as new 表記ゆれ and 翻訳借用語 are found in real drafts
+# (the capture loop in the norms' AI-smell taxonomy points here).
 # prh is string/regex based (no POS analysis) — only add unambiguous patterns;
 # context-dependent words (e.g. 是非を問う vs ぜひ) belong to the LLM passes.
 version: 1

@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — 2026-07-22.
+Accepted — 2026-07-22. The writing-family rename map is updated by [ADR 0007](0007-writing-skill-consolidation.md).
 
 ## Context
 

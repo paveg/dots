@@ -1,12 +1,33 @@
 # Japanese Writing Norms
 
-Canonical reference for natural, readable Japanese prose. Loaded just-in-time by the writing skills (`technical-writing`, `article-writing`, `japanese-ai-writing-proofreader`) and by injection hooks — never always-on. This file is the single source of truth for the norms below; skills apply them and cite this file rather than restating it.
+Canonical reference for natural, readable Japanese prose. Loaded just-in-time by the writing skills (`writing`, `writing-proofread`) and by injection hooks — never always-on. This file is the single source of truth for the norms below; skills apply them and cite this file rather than restating it.
+
+## Audience
+
+Fix the reader in one line before writing; never ask the user for a persona per document. Default reader: a general reader, not necessarily an engineer. When the artifact is explicitly a technical document (README, design doc, runbook, API doc), the default narrows to 一般的な日本のソフトウェアエンジニア. Genre-specific material (style profiles, reader-calibration tables) may override the default.
+
+The vocabulary test is the reader: would they say the word aloud, and understand it on first hearing? Pick the word that passes — the settled Japanese term, カタカナ, or a plain paraphrase — over one that merely translates the English.
 
 ## Structure
 
 Open with the conclusion — the sentence the reader came for — then supply background only where it changes what the reader does next. One register per document (だ・である or です・ます; pick from the target repo/media's existing convention, not per-sentence).
 
 Before: 3 sentences of context before the procedure starts. After: the outcome first, procedure below it.
+
+Form follows the information's structure, not the genre: parallel enumerable facts (3 項目以上, no logical connective between them) → bullet list; causal or argumentative flow（「だから」「しかし」で繋がる内容）→ prose; several subjects compared on the same attribute axis → table. A logical connective appearing inside a bullet is the signal to fall back to prose.
+
+## Volume and shape (effort targets)
+
+Initial values, not lint gates — exceeding one is a signal to cut, split, or switch form. Recalibrate them from writing-bench measurements (`tests/writing-bench/` in the dotfiles repo), not by debate.
+
+| Unit      | Target                                                                 |
+| --------- | ---------------------------------------------------------------------- |
+| Sentence  | ≤ 60 字目安                                                            |
+| Paragraph | ≤ 150 字, 2–4 sentences                                                |
+| Section   | ≤ 400 字 — beyond that, split with a subheading or switch to a diagram |
+| PR body   | ≤ 40 lines                                                             |
+
+Shape: heading depth ≤ h3（h4 が要るなら文書分割のシグナル）; 3–7 sections per document; list nesting ≤ 2 levels（3 段目が要る構造は表か図）; conclusion first at section level too, not only document level; one document serves one purpose — split when it forks.
 
 ## Sourcing / faithfulness
 
@@ -43,4 +64,5 @@ Detectable post-hoc; the mechanical-lint safety net beneath the structural axis 
 - **Hype vocabulary**: 「革命的」「画期的」「世界初」「パラダイムシフト」「圧倒的」「究極の」「最強の」「次世代」 → replace with a concrete number, fact, or comparison
 - **Over-emphasis**: bolded adverbs（`**非常に**`、`**極めて**`）, an emoji on every heading, repeated 「！」 → keep only the one emphasis that matters
 - **English-style colon syntax**: `:` placed right after a clause ending in a verb/adjective（❌「実装した: 〜」）→ receive with a noun before the colon, or break into a separate sentence（✅「実装した内容は次のとおり: 〜」）
+- **Translationese vocabulary（翻訳借用語）**: rare kanji compounds that exist only as literal translations of English terms（canonical → 正本・正典、mitigation → 緩和策の直訳連発）and fail the Audience vocabulary test → the settled Japanese term, カタカナ, or a plain paraphrase（「唯一の情報源」）. Each one caught in a real draft goes into the proofreader dictionary (`writing-proofread` skill, `assets/prh.yml`) so the next detection is deterministic
 - **Particle omission and padding**: dropped 助詞（「ファイル作成」→「ファイルを作成する」), passive where active reads plainer（「〜される」→「〜する」）, and padding like 「〜することができる」→「〜できる」、「〜を行う」→ the verb itself

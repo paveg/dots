@@ -13,4 +13,4 @@ Full norms: `~/.claude/references/japanese-writing/norms.md` (loaded JIT by writ
 ## Scope
 
 - Applies to Japanese that Claude outputs
-- Don't proofread the user's Japanese input (only on request, via the `japanese-ai-writing-proofreader` skill)
+- Don't proofread the user's Japanese input (only on request, via the `writing-proofread` skill)

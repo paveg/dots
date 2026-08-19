@@ -18,14 +18,14 @@ Renames are breaking (Claude Code skills have no alias — every invocation, cro
 
 ## Rename map (target names; execute per migration above)
 
-| Current                           | Target                        |
-| --------------------------------- | ----------------------------- |
-| `technical-writing`               | `writing-technical`           |
-| `article-writing`                 | `writing-article`             |
-| `japanese-ai-writing-proofreader` | `writing-proofreader`         |
-| `equity-decision`                 | `decision-equity`             |
-| `ipo-decision`                    | `decision-ipo`                |
-| `feature`                         | `feature-workflow` (optional) |
-| `empirical-prompt-tuning`         | `prompt-tuning` (optional)    |
+| Current                           | Target                           |
+| --------------------------------- | -------------------------------- |
+| `technical-writing`               | merged into `writing` (ADR 0007) |
+| `article-writing`                 | merged into `writing` (ADR 0007) |
+| `japanese-ai-writing-proofreader` | `writing-proofread` (ADR 0007)   |
+| `equity-decision`                 | `decision-equity`                |
+| `ipo-decision`                    | `decision-ipo`                   |
+| `feature`                         | `feature-workflow` (optional)    |
+| `empirical-prompt-tuning`         | `prompt-tuning` (optional)       |
 
 Skills not listed already conform; keep their names. Full rationale and the global survey: `docs/adr/0003-skill-naming-convention.md`.

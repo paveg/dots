@@ -36,7 +36,7 @@ if printf '%s' "$cmd" | perl -CSD -0777 -ne '
   body="$body
 
 Japanese writing norms: $norms
-Apply these norms (structure, rhythm, cognitive rhythm, AI-smell) to the Japanese prose."
+Apply these norms (audience, structure, volume, rhythm, cognitive rhythm, AI-smell) to the Japanese prose."
 fi
 
 jq -n --arg body "$body" '{

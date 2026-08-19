@@ -1,12 +1,4 @@
----
-name: technical-writing
-description: >-
-  Write or revise Japanese technical documents — README sections, design docs, runbooks/手順書, operations guides, API docs — including turning engineer memos into repo documentation. Triggers: 「技術ドキュメントを書いて」「READMEに追記して」「手順書を作って」「設計ドキュメントをまとめて」. Blog articles go to article-writing; prose-level proofreading of finished text goes to japanese-ai-writing-proofreader.
-
-argument-hint: <doc type / target file / source material>
----
-
-# Technical Writing (Japanese)
+# Technical Mode（技術文書）
 
 ## Persona
 
@@ -116,4 +108,4 @@ Technical-writing specific: when a source memo and the code disagree, the code w
 ## Finishing pass
 
 - The always-loaded rules still apply: `~/.claude/rules/japanese-writing.md` (non-negotiables) and `markdown-formatting.md` (line-break policy — Semantic Line Breaks only where the repo opts in, never as the default).
-- Invoke the japanese-ai-writing-proofreader skill only when the user explicitly asks for 校正 — its full pipeline costs more than most documents warrant, and the always-loaded rules already hold the prose baseline.
+- Invoke the writing-proofread skill only when the user explicitly asks for 校正 — its full pipeline costs more than most documents warrant, and the always-loaded rules already hold the prose baseline.

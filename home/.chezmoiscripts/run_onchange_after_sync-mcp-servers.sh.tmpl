@@ -30,7 +30,13 @@ for name in previously_managed:
         servers.pop(name, None)
 servers.update(desired)
 
-json.dump(cfg, open(target_path, "w"), ensure_ascii=False, indent=2)
-json.dump(sorted(desired), open(state_path, "w"))
+def write_atomic(path, data):
+    tmp = path + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+
+write_atomic(target_path, cfg)
+write_atomic(state_path, sorted(desired))
 print(f"mcp sync: {len(desired)} managed server(s) -> ~/.claude.json")
 PY

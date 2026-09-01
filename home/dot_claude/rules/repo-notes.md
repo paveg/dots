@@ -9,3 +9,10 @@
   - Detailed write-ups of non-trivial investigations Claude performed (sources checked, commands run, findings, dead ends) — one topic per file, kebab-case names. Write these proactively when an investigation took multiple sources or produced conclusions worth re-reading
 - Division of labor with persistent memory: memory holds the compact durable fact (one file, one fact); `.ai/` holds the detail behind it. Link the memory to the `.ai/` file path when both exist
 - No secrets, no facts the code/git already records
+
+## Index (README.md)
+
+Every `.ai/` keeps a `README.md` index so the user can find docs later — one line per topical doc: `- [title](file.md) — hook`. `worklog/` is exempt (chronological, self-indexing).
+
+- When writing, renaming, or deleting a topical `.ai/` doc, update the index in the same action
+- When skimming `.ai/` at the start of work, read `README.md` first; if docs exist unindexed, offer a one-time backfill

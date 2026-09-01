@@ -34,6 +34,16 @@ homebrew/Brewfile.work
 .claude/skills/acli/
 {{ end }}
 
+# Personal-only skills (excluded on work machines)
+{{ if .business_use }}
+.claude/skills/equity-decision/
+.claude/skills/ipo-decision/
+.claude/skills/trend-arbitrage/
+.claude/skills/x-post-craft/
+.claude/skills/zero-cost-scaling/
+.claude/skills/ios-submission-review/
+{{ end }}
+
 # Personal-only AtCoder tooling (excluded on work machines)
 {{ if .business_use }}
 .config/atcoder-cli-nodejs/

@@ -149,35 +149,6 @@
   },
   "skipDangerousModePermissionPrompt": true,
 {{- end }}
-  "mcpServers": {
-{{- if not .business_use }}
-    "textlint": {
-      "command": "textlint",
-      "args": ["--mcp"]
-    },
-    "1password": {
-      "command": "1password-mcp"
-    }
-{{- else }}
-    "fdev-helmfile": {
-      "command": "fdev-mcp-server",
-      "args": ["server", "helmfile"],
-      "env": {
-        "AQUA_GLOBAL_CONFIG": "{{ .chezmoi.homeDir }}/.config/aquaproj-aqua/aqua.yaml",
-        "HELM_BIN": "{{ .chezmoi.homeDir }}/.local/share/aquaproj-aqua/bin/helm",
-        "HELMFILE_COMMAND": "{{ .chezmoi.homeDir }}/.local/share/aquaproj-aqua/bin/helmfile"
-      }
-    },
-    "fdev-terraform": {
-      "command": "fdev-mcp-server",
-      "args": ["server", "terraform"],
-      "env": {
-        "AQUA_GLOBAL_CONFIG": "{{ .chezmoi.homeDir }}/.config/aquaproj-aqua/aqua.yaml",
-        "TERRAFORM_COMMAND": "{{ .chezmoi.homeDir }}/.local/share/aquaproj-aqua/bin/terraform"
-      }
-    }
-{{- end }}
-  },
   "alwaysThinkingEnabled": true,
   "switchModelsOnFlag": false,
   "worktree": {

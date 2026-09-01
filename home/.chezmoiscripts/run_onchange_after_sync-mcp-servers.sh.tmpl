@@ -1,0 +1,42 @@
+#!/bin/bash
+# Sync Claude Code MCP server definitions into ~/.claude.json — the only
+# user-scope file Claude Code reads them from (settings.json mcpServers is
+# not a supported source). The desired state is the chezmoi-rendered
+# ~/.claude/mcp-servers.json; a sidecar state file records which keys this
+# script manages so removals follow the desired state while hand-added
+# servers stay untouched.
+#
+# Triggered on chezmoi apply when the desired state changes.
+# mcp-servers.json.tmpl hash: {{ include "dot_claude/mcp-servers.json.tmpl" | sha256sum }}
+
+set -euo pipefail
+
+python3 - <<'PY'
+import json
+import os
+
+home = os.path.expanduser("~")
+desired_path = os.path.join(home, ".claude", "mcp-servers.json")
+target_path = os.path.join(home, ".claude.json")
+state_path = os.path.join(home, ".claude", "mcp-servers.state.json")
+
+desired = json.load(open(desired_path))["mcpServers"]
+cfg = json.load(open(target_path)) if os.path.exists(target_path) else {}
+previously_managed = json.load(open(state_path)) if os.path.exists(state_path) else []
+
+servers = cfg.setdefault("mcpServers", {})
+for name in previously_managed:
+    if name not in desired:
+        servers.pop(name, None)
+servers.update(desired)
+
+def write_atomic(path, data):
+    tmp = path + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+
+write_atomic(target_path, cfg)
+write_atomic(state_path, sorted(desired))
+print(f"mcp sync: {len(desired)} managed server(s) -> ~/.claude.json")
+PY

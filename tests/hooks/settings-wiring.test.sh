@@ -5,6 +5,8 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 repo_root="$(cd "$script_dir/../.." && pwd -P)"
 settings_source="$repo_root/home/dot_claude/settings.json.tmpl"
+mcp_source="$repo_root/home/dot_claude/mcp-servers.json.tmpl"
+sync_source="$repo_root/home/.chezmoiscripts/run_onchange_after_sync-mcp-servers.sh.tmpl"
 credential_command="\$HOME/.claude/hooks/block-credential-read.sh"
 
 for command in chezmoi jq; do
@@ -48,6 +50,22 @@ render_profile() {
     execute-template --file "$settings_source" >"$rendered"
 
   jq empty "$rendered" || fail "$profile settings are not valid JSON"
+  printf '%s\n' "$rendered"
+}
+
+render_mcp_profile() {
+  local profile="$1"
+  local business_use="$2"
+  local rendered="$test_root/mcp-servers-$profile.json"
+
+  chezmoi \
+    --config "$chezmoi_config" \
+    --config-format json \
+    --source "$repo_root" \
+    --override-data "{\"business_use\":$business_use}" \
+    execute-template --file "$mcp_source" >"$rendered"
+
+  jq empty "$rendered" || fail "$profile mcp-servers.json is not valid JSON"
   printf '%s\n' "$rendered"
 }
 
@@ -128,30 +146,41 @@ assert_profile_wiring() {
   [[ -z "$allow_output" ]] ||
     fail "$profile configured credential hook emitted a decision for a benign command"
 
+  local mcp_rendered
+  mcp_rendered="$(render_mcp_profile "$profile" "$business_use")"
+
+  jq -e 'has("mcpServers") | not' "$rendered" >/dev/null ||
+    fail "$profile settings.json contains mcpServers (not a supported source)"
+
   if [[ "$business_use" == "true" ]]; then
     jq -e '
-      (.mcpServers | keys) == ["fdev-helmfile", "fdev-terraform"]
-      and .mcpServers["fdev-helmfile"].command == "fdev-mcp-server"
-      and .mcpServers["fdev-helmfile"].args == ["server", "helmfile"]
-      and (.mcpServers["fdev-helmfile"].env.AQUA_GLOBAL_CONFIG
+      (.mcpServers | keys) == [
+        "fdev-argocd-production", "fdev-argocd-staging", "fdev-aws",
+        "fdev-aws-doc", "fdev-datadog", "fdev-helmfile",
+        "fdev-kubernetes", "fdev-slack", "fdev-terraform"
+      ]
+      and ([.mcpServers[].command] | all(. == "fdev-mcp-server"))
+      and (.mcpServers["fdev-helmfile"]["env"]["AQUA_GLOBAL_CONFIG"]
         | endswith("/.config/aquaproj-aqua/aqua.yaml"))
-      and (.mcpServers["fdev-helmfile"].env.HELM_BIN
+      and (.mcpServers["fdev-helmfile"]["env"]["HELM_BIN"]
         | endswith("/.local/share/aquaproj-aqua/bin/helm"))
-      and (.mcpServers["fdev-helmfile"].env.HELMFILE_COMMAND
+      and (.mcpServers["fdev-helmfile"]["env"]["HELMFILE_COMMAND"]
         | endswith("/.local/share/aquaproj-aqua/bin/helmfile"))
-      and .mcpServers["fdev-terraform"].command == "fdev-mcp-server"
-      and .mcpServers["fdev-terraform"].args == ["server", "terraform"]
-      and (.mcpServers["fdev-terraform"].env.AQUA_GLOBAL_CONFIG
+      and (.mcpServers["fdev-terraform"]["env"]["AQUA_GLOBAL_CONFIG"]
         | endswith("/.config/aquaproj-aqua/aqua.yaml"))
-      and (.mcpServers["fdev-terraform"].env.TERRAFORM_COMMAND
+      and (.mcpServers["fdev-terraform"]["env"]["TERRAFORM_COMMAND"]
         | endswith("/.local/share/aquaproj-aqua/bin/terraform"))
-    ' "$rendered" >/dev/null ||
-      fail "$profile settings do not pin fdev MCP commands to Aqua"
+      and (.mcpServers["fdev-aws"]["env"]["UV_CONSTRAINT"]
+        | endswith("/.config/fdev-mcp/uv-constraints.txt"))
+      and (.mcpServers["fdev-aws"]["env"]["SSL_CERT_FILE"]
+        | endswith("/.config/fdev-mcp/ca-bundle.crt"))
+    ' "$mcp_rendered" >/dev/null ||
+      fail "$profile mcp-servers.json does not match the expected fdev server set"
   else
     jq -e '
       (.mcpServers | keys) == ["1password", "textlint"]
-    ' "$rendered" >/dev/null ||
-      fail "$profile settings contain unexpected MCP servers"
+    ' "$mcp_rendered" >/dev/null ||
+      fail "$profile mcp-servers.json contains unexpected MCP servers"
   fi
 }
 
@@ -171,3 +200,30 @@ for profile in personal business; do
 done
 
 echo "all assertions passed"
+
+merge_home="$test_root/merge-home"
+mkdir -p "$merge_home/.claude"
+printf '%s\n' \
+  '{"mcpServers": {"alpha": {"command": "a"}, "beta": {"command": "b"}}}' \
+  >"$merge_home/.claude/mcp-servers.json"
+printf '%s\n' \
+  '{"other": true, "mcpServers": {"manual": {"command": "m"}, "stale": {"command": "s"}, "alpha": {"command": "old"}}}' \
+  >"$merge_home/.claude.json"
+printf '["stale", "alpha"]\n' >"$merge_home/.claude/mcp-servers.state.json"
+
+sync_rendered="$test_root/sync-mcp-servers.sh"
+chezmoi \
+  --config "$chezmoi_config" \
+  --config-format json \
+  --source "$repo_root" \
+  --override-data '{"business_use":true}' \
+  execute-template --file "$sync_source" >"$sync_rendered"
+
+HOME="$merge_home" bash "$sync_rendered" >/dev/null || fail "mcp sync script failed"
+
+jq -e '
+  (.mcpServers | keys) == ["alpha", "beta", "manual"]
+  and .mcpServers.alpha.command == "a"
+  and .other == true
+' "$merge_home/.claude.json" >/dev/null ||
+  fail "mcp sync script produced a wrong merge result"

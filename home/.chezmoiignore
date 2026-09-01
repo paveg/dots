@@ -26,6 +26,8 @@ homebrew/
 # Work-specific files on personal machines
 {{ if not .business_use }}
 .config/aquaproj-aqua/
+.config/fdev-mcp/
+.chezmoiscripts/generate-fdev-ca-bundle.sh
 .config/git/freee
 .config/colima/
 homebrew/Brewfile.work
@@ -60,6 +62,7 @@ Library/Preferences/atcoder-cli-nodejs
 .claude/file-history/
 .claude/history.jsonl
 .claude/ide/
+.claude/mcp-servers.state.json
 .claude/image-cache/
 .claude/plans/
 .claude/plugins/

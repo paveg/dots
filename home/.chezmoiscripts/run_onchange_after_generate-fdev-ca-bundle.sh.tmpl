@@ -1,0 +1,15 @@
+#!/bin/bash
+# Build a CA bundle (system roots + admin-installed corporate proxy CA) for
+# the fdev-aws MCP subprocess. Its Python runtime verifies against certifi,
+# not the macOS keychain, so the corporate MITM proxy breaks the
+# servicereference fetch and the read-only gate then denies every operation.
+#
+# Triggered on chezmoi apply when this script changes.
+
+set -euo pipefail
+
+bundle="$HOME/.config/fdev-mcp/ca-bundle.crt"
+mkdir -p "$(dirname "$bundle")"
+security find-certificate -a -p /System/Library/Keychains/SystemRootCertificates.keychain >"$bundle"
+security find-certificate -a -p /Library/Keychains/System.keychain >>"$bundle" 2>/dev/null || true
+echo "fdev ca-bundle: $(grep -c 'BEGIN CERTIFICATE' "$bundle") certificate(s)"

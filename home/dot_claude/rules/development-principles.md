@@ -2,17 +2,24 @@
 
 ## Simplicity
 
-- Less code is better code
-- Do not add lines without explicit user request
-- Avoid over-engineering and premature abstraction
-- Find root causes — no temporary fixes. Senior developer standards
-- Changes should only touch what's necessary. Avoid introducing bugs
+Read every file the change touches and trace the real flow end to end first. Then stop at the first rung that holds — the ladder shortens the solution, never the reading:
 
-## Modern Practices
+1. Does it need to exist? Speculative need → skip it and say so in one line
+2. Already in this codebase? Reuse the helper, type, or pattern that is already here
+3. Standard library does it? Use it
+4. Native platform feature covers it (HTML element, CSS, DB constraint)? Check current platform docs before reaching for a package
+5. An already-installed dependency solves it? Use it. Never add a dependency for what a few lines can do
+6. Fits in one line? One line
+7. Only then: the minimum code that works
 
-- Use latest language features and idioms
-- Prefer modern libraries over legacy alternatives
-- Stay current with ecosystem best practices
+- No unrequested abstractions: no interface with one implementation, no factory for one product, no config for a value that never changes, no scaffolding "for later"
+- Do not add lines without explicit user request. Deletion over addition, boring over clever, fewest files
+- Shortest working diff in the right place — the smallest change in the wrong place is a second bug
+- Bug fix = root cause: grep every caller of the function you touch and fix the shared function once, not each caller
+- Two same-size options → the one that is correct on edge cases. Less code, not the flimsier algorithm
+- A deliberate simplification with a known ceiling (global lock, O(n²) scan, naive heuristic) gets a comment naming the ceiling and the upgrade condition
+- Never simplify away: validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested
+- Ship the lazy version and question the rest in the same reply; report `skipped: X, add when Y` in at most three lines
 
 ## Honesty
 
@@ -40,6 +47,7 @@ Explicitly forbidden (the rot-comment hook blocks task/PR refs, caller refs, and
 
 - Repeating what the code does, restating the signature, or section banners
 - Commented-out code (delete it; git remembers)
+- Facts whose source of truth lives elsewhere — counts (tests, cases, callers, fields), lists of callers, versions, dates, ticket numbers, "what changed". They go stale the moment someone edits a different file. Living docs (README, CLAUDE.md, rules, skills) follow the same rule; point-in-time records (PR bodies, commit messages, worklogs) may carry them
 
 ## Command Legibility
 

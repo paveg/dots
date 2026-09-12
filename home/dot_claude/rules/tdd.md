@@ -1,3 +1,16 @@
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.py"
+  - "**/*.go"
+  - "**/*.rs"
+  - "**/*.rb"
+  - "**/*.swift"
+---
+
 # Test-Driven Development
 
 ## Red-Green-Refactor Cycle

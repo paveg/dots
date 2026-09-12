@@ -1,0 +1,10 @@
+# Targets chezmoi must delete from the destination, not merely stop managing.
+# Removing a source file makes chezmoi forget an entry; it leaves whatever was
+# already deployed in place. A superseded skill therefore keeps charging its
+# always-on `description` against the context window on every machine that
+# applied before the rename.
+#
+# Superseded by home/dot_claude/skills/writing and .../writing-proofread.
+.claude/skills/article-writing
+.claude/skills/technical-writing
+.claude/skills/japanese-ai-writing-proofreader

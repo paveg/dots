@@ -26,4 +26,6 @@ A diagram is due when prose would make the reader sketch it themselves:
 | Structural before/after comparison        | two graphs side by side |
 | Procedure of ≥5 steps containing branches | `flowchart`             |
 
+### Authoring rules
+
 ≤ ~10 nodes per diagram (split larger ones); concrete node labels (`UserService`, not `ServiceA`); `LR` for pipelines, `TD` for hierarchies. For embedding in GitHub PR bodies safely, see `gh-pr-body.md`.

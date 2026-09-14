@@ -1,22 +1,19 @@
 # Markdown Formatting
 
-Language-independent formatting rules for Markdown output (responses, PR bodies, docs).
+Language-independent rules for Markdown output (responses, PR bodies, docs).
 
-- Don't hardcode numbers at the start of headings or list items. If order matters, let Markdown's ordered-list syntax (`1.` `2.`) render the numbering; don't type the numerals into the body text yourself.
+- Don't type numerals into headings or list items. If order matters, use ordered-list syntax (`1.` `2.`) and let Markdown render the numbering
 
 ## Line breaks in prose
 
-Prose has **no column limit** and is **not hard-wrapped** by default. Write one paragraph per line and let the editor/renderer soft-wrap. A hard wrap gains nothing in rendered Markdown (CommonMark collapses a soft break to a space) and is a footgun on hard-break surfaces (below).
-
-- **Never wrap hard-break surfaces**: GitHub issue / PR / comment bodies render every single newline as a `<br>`, so a wrapped paragraph shows as jagged forced breaks. Write them as long unwrapped lines with a blank line between paragraphs. (Tables and code blocks are not prose — leave them.)
-- **Follow the repo's prose convention when it declares one**: Prettier `proseWrap`, or an existing consistently-wrapped corpus (e.g. these rule files). Match it.
-- [Semantic Line Breaks](https://sembr.org/) (one sentence per line) is **opt-in** — worth it only where the repo wants sentence-granularity prose diffs, never the global default. When wrapping, break only at sentence boundaries (。．.！？!?), never mid-clause. Japanese: a mid-sentence wrap can render as a bogus half-width space (CJK segment-break removal is unevenly implemented), so the sentence boundary is the only safe break.
-
-**Code line length** is not governed here — it follows each language's own formatter / linter (`.editorconfig`, `.stylua.toml`, Prettier, `shfmt`, etc.), never a Markdown-wide column rule.
+- Prose has **no column limit** and is **not hard-wrapped**: one paragraph per line, soft-wrapped by the renderer. CommonMark collapses a soft break to a space, so wrapping gains nothing
+- **Never wrap GitHub issue / PR / comment bodies**: every newline renders as `<br>`. Tables and code blocks are not prose
+- Follow the repo's declared prose convention (Prettier `proseWrap`, a consistently wrapped corpus) when there is one. [Semantic Line Breaks](https://sembr.org/) are opt-in per repo, never the default; when wrapping, break only at sentence boundaries (。．.！？!?), since a mid-sentence wrap in Japanese can render a bogus half-width space
+- Code line length follows each language's own formatter, never a Markdown rule
 
 ## Diagrams: mermaid in artifacts, ASCII in chat
 
-Use mermaid in **written artifacts only** — PR bodies, ADRs, README, technical docs, .md files — where GitHub, Obsidian, VS Code preview, etc. render it as a real diagram. In chat/terminal responses it is the reverse: mermaid does not render there, so use ASCII art, prose, or short bullet lists instead.
+Use mermaid only in written artifacts (PR bodies, ADRs, README, `.md` files) where GitHub, Obsidian, or VS Code render it. Chat/terminal responses do not render it: use ASCII art, prose, or short bullets there.
 
 ### When to diagram
 
@@ -29,11 +26,4 @@ A diagram is due when prose would make the reader sketch it themselves:
 | Structural before/after comparison        | two graphs side by side |
 | Procedure of ≥5 steps containing branches | `flowchart`             |
 
-### Authoring rules
-
-- ≤ ~10 nodes per diagram; split larger into multiple
-- Concrete node labels (`UserService`, not `ServiceA`)
-- Show before/after side-by-side for structural refactors
-- Prefer `LR` for pipelines, `TD` for hierarchies
-
-For embedding in GitHub PR bodies safely (backslash-escape pitfall), see `gh-pr-body.md`.
+≤ ~10 nodes per diagram (split larger ones); concrete node labels (`UserService`, not `ServiceA`); `LR` for pipelines, `TD` for hierarchies. For embedding in GitHub PR bodies safely, see `gh-pr-body.md`.

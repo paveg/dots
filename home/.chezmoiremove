@@ -8,3 +8,7 @@
 .claude/skills/article-writing
 .claude/skills/technical-writing
 .claude/skills/japanese-ai-writing-proofreader
+#
+# Moved to home/dot_claude/skills/zero-cost-scaling (identical body); the rule
+# copy kept billing 1.7K chars on every turn on machines that applied before.
+.claude/rules/zero-cost-scaling.md

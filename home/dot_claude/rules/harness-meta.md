@@ -32,7 +32,7 @@ Where to place a new constraint, by violation history and reversibility:
 
 - Skip levels when the action is irreversible — go straight to L3+ instead of trusting prose
 - Prefer machine-checkable enforcement (L3/L4) over instructions (L1/L2) whenever a deterministic check is possible
-- See `harness-engineering.md` for why this matches "the stronger the mechanical verification, the more autonomy"
+- Harness (pre-design that shapes how the agent runs) vs guardrail (post-hoc mechanical check): push checks toward guardrails whenever a deterministic tool can do the job. The stronger the mechanical verification, the more autonomy the agent can safely be given
 
 ## Harness Simplification
 

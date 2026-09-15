@@ -1,0 +1,5 @@
+# EKS clusters (real names, from `aws eks list-clusters`)
+integration-newplat-1
+integration-newplat-sandbox-1
+staging-newplat-1
+production-newplat-1

@@ -2,14 +2,13 @@
 
 ## Generator-Evaluator Separation
 
-- Never let self-assessment of your own output be the final verdict. Code you wrote is reviewed by a separate agent that did not generate it; when the main session only planned and subagents generated, the main session is a valid evaluator
-- The evaluator tests behavior; it does not read the implementation to form its judgment
-- Subagent reports are hypotheses, not facts: verify load-bearing claims against primary sources (run the commands, read the files) before acting on them
+- Never let self-assessment of your own output be the final verdict. Code you wrote is reviewed by a separate agent that did not generate it
+- The evaluator judges by behavior, not by reading the implementation: it may read the subject to design a check (which condition to break, which input to feed), but the verdict comes from what ran and what it returned. When the artifact under evaluation is a test suite, its behavior is failing on a deliberately broken subject: break one condition of the subject at a time and confirm the suite goes red. A green run of a test suite proves nothing about the suite
+- Subagent reports are hypotheses, not facts: verify load-bearing claims against primary sources (run the commands, read the files) before acting on them. Counts, deletions, and "no longer applies" are load-bearing: when items are removed or merged, enumerate them before and after and account for every one; a summary that adds up is not evidence
 
 ## Sprint Contracts
 
 - Before implementing, agree on concrete "done" criteria with the user: testable assertions, observable behavior, measurable outcomes. Say which require manual verification
-- For multi-turn implementation, encode the contract via `/goal <criteria>` so the harness tracks completion across turns
 
 ## Review Discipline
 
@@ -23,5 +22,4 @@
 
 ## Decision Records
 
-- Record non-trivial technical decisions as ADRs. Follow the repo's existing ADR directory convention (`docs/adr/`, `docs/decisions/`, `adr/`, …); if none exists, recommend `docs/adr/`. Read existing ADRs before making architectural choices
-- English; file naming `NNNN-short-description.md`; sections: Status / Context / Decision / Consequences
+- Record non-trivial technical decisions as ADRs in the repo's existing ADR convention (directory, naming, sections); if none exists, recommend `docs/adr/`. Read existing ADRs before making architectural choices

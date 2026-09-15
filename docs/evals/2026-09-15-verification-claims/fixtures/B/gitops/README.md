@@ -1,0 +1,1 @@
+Directory layout: clusters/newplat/<env>-newplat/<service>/ holds the helmfile for each tenant. The directory name is an environment identifier used by tooling; it is not necessarily the EKS cluster name.

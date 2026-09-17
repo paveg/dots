@@ -1,12 +1,7 @@
 ---
 name: adversarial-review
 description: >-
-  Break a change before it ships: extract the claims a diff, PR body, or
-  subagent report makes, add the ones an attacker would test that nobody
-  wrote down, run each through its decisive check, and return a verdict
-  table ending in PASS or FAIL. Use on
-  「敵対的レビューして」「反証して」"adversarial review", and as issue-ship's
-  gate before PR creation.
+  Break a change before it ships: extract the claims a diff, PR body, or subagent report makes, add the ones an attacker would test that nobody wrote down, run each through its decisive check, and return a verdict table ending in PASS or FAIL. Use on 「敵対的レビューして」「反証して」"adversarial review", and as issue-ship's gate before PR creation.
 argument-hint: "[<diff ref> | <PR number> | <md paths>] (defaults to git diff main)"
 ---
 

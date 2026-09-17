@@ -10,8 +10,9 @@ A distilled, machine-actionable diff of how agent-facing config (CLAUDE.md, rule
 
 - `claude-md-layout` — designs directory-level CLAUDE.md
 - `empirical-prompt-tuning` — reviews/improves skills and prompts
+- `context-diet` — cuts always-on context; the Remove table is its deletion signal after a model upgrade
 
-Both open by loading `~/.claude/references/model-profiles/<session-model-id>.md`. If no exact match, fall back to the nearest same-family profile and note the gap.
+All three open by loading `~/.claude/references/model-profiles/<session-model-id>.md`. If no exact match, fall back to the nearest same-family profile and note the gap.
 
 ## Updating (the anti-obsolescence contract)
 

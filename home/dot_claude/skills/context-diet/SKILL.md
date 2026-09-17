@@ -55,6 +55,8 @@ Before touching any line, answer one question about it: **which concrete failure
 
 Collect these sentences as you go. They are the regression suite for the whole diet, and they cost nothing to produce because you had to reason about each line anyway.
 
+A named failure the current model no longer produces is also a deletion signal. Load `~/.claude/references/model-profiles/<session-model-id>.md` before this pass: its Remove table lists the scaffolding that model makes redundant, and its Rewrite table says what a guardrail should become instead of vanishing. No profile match → the nearest same-family one, noting the gap.
+
 ## The four ways to move something out of always-on
 
 Pick by what the trigger is, not by preference:

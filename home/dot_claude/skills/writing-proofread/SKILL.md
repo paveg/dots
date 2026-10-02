@@ -100,9 +100,9 @@ Add `--genre essay|tech|business` when the genre is clear — it switches to cal
 - If `uv` is unavailable, skip this pass; Pass 4's manual checks are the fallback
 - If `jq` is unavailable, drop `--json` and the redirect and run the script bare — the human-readable format carries the same findings at roughly 3× the size of the jq view
 
-## Pass 3: AI-smell (the 5 categories)
+## Pass 3: AI-smell taxonomy
 
-Read `~/.claude/references/japanese-writing/norms.md` here, once — Pass 4 works from the same read, so don't return to it. Then hunt each of its six categories explicitly: mechanical list templates, hype vocabulary, over-emphasis, English-style colon syntax, translationese vocabulary（翻訳借用語 — words failing the norms' Audience test; unambiguous ones also feed `assets/prh.yml`）, and particle omission / padding (dropped 助詞, passive → active,「することができる」→「できる」等).
+Read `~/.claude/references/japanese-writing/norms.md` here, once — Pass 4 works from the same read, so don't return to it. Then hunt each category of its AI-smell taxonomy explicitly: mechanical list templates, hype vocabulary, over-emphasis, English-style colon syntax, translationese vocabulary（翻訳借用語 — words failing the norms' Audience test; unambiguous ones also feed `assets/prh.yml`）, mannered prose (metaphor or flourish in place of a direct statement), metaphor verbs and pseudo-concrete words（AI 偏愛語 — context-dependent, so judge from the norms rather than add to `assets/prh.yml`）, and particle omission / padding (dropped 助詞, passive → active,「することができる」→「できる」等).
 
 This manual read is also where plain 誤字・誤用・文法ミス get caught — textlint misses many（「とゆう」等）. Report them under Pass 3 in the findings table.
 

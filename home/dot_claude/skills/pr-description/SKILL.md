@@ -2,12 +2,9 @@
 name: pr-description
 description: >-
   Rewrite an existing PR's description into a fixed layout (overview → mermaid →
-  review guide → notes → links), with a per-commit verification table that cuts
-  the reviewer's tracking cost. Use when asked to 「PR description を更新して」
-  「PR 本文を書いて」「PR 説明を簡潔に」「PR description を簡潔に」
-  「mermaid を使って PR をまとめて」,
+  review guide → notes → links) with a per-commit verification table. Use on
+  「PR description を更新して」「PR 本文を書いて」「PR 説明を簡潔に」「mermaid で PR をまとめて」,
   "rewrite the PR description", or after stacking commits on a pipeline PR.
-  Args: <PR URL or number>... [-R owner/repo] [extra context]
 argument-hint: "<PR URL or number>... [-R owner/repo]"
 ---
 

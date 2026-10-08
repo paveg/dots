@@ -6,9 +6,7 @@ description: >
 
 # iOS Submission Review
 
-Automated pre-submission review that catches the most common App Store rejection reasons before you submit. Modeled after the thoroughness of tools like Rork, but running entirely in CLI against your actual codebase.
-
-Apple rejects ~25% of submissions (1.93M out of 7.77M in 2024). Over 40% of those are for easily avoidable issues. This skill checks for them systematically.
+Pre-submission review that checks the codebase for the most common App Store rejection reasons. Guideline numbers and yearly requirements change: when a check depends on Apple's current rules (SDK minimums, privacy manifests, age ratings), confirm against developer.apple.com with `WebFetch` before reporting it as FAIL.
 
 ## How it works
 

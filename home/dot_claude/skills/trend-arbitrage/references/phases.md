@@ -12,7 +12,7 @@ Ask the user (or infer from context):
 
 ### Step 1.2: Mine Gap Signals
 
-Use web_search to investigate signal sources **based on the classified opportunity type**.
+Use `WebSearch` to investigate signal sources **based on the classified opportunity type**.
 
 #### For ALL types:
 

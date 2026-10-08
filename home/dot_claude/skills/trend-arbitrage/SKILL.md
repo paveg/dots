@@ -24,9 +24,9 @@ Three conditions must ALL be true:
 
 ## Initial Classification
 
-Before starting any phase, use `ask_user_input` to classify the opportunity type unless the user has already made it clear. This determines which discovery methods, validation criteria, and strategy templates to use.
+Before starting any phase, use `AskUserQuestion` to classify the opportunity type unless the user has already made it clear. This determines which discovery methods, validation criteria, and strategy templates to use.
 
-**Always ask upfront:**
+**Ask upfront whichever of these is still unknown** (in Recon mode, skip question 1 — all four types are scanned):
 
 1. **What type of gap are you looking for?**
    - Content gap (blog, newsletter, guide, course)
@@ -58,9 +58,9 @@ Read `references/phases.md` for the detailed procedure of each phase.
 
 **Goal**: Generate a list of 5-10 candidate opportunities showing breakout signals.
 
-**Inputs**: Determined by classification above. If anything is ambiguous, ask via `ask_user_input`.
+**Inputs**: Determined by classification above. If anything is ambiguous, ask via `AskUserQuestion`.
 
-**Methods by type** (use web_search for all):
+**Methods by type** (use `WebSearch` for all; open promising results with `WebFetch` rather than judging from snippets):
 
 ### Content gaps:
 

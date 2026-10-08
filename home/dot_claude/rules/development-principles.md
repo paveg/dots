@@ -13,6 +13,7 @@ Read every file the change touches and trace the real flow end to end first. The
 7. Only then: the minimum code that works
 
 - No unrequested abstractions: no interface with one implementation, no factory for one product, no config for a value that never changes, no scaffolding "for later"
+- Complexity is a stop signal, not a task. When you are about to add a second layer, file, mechanism, or workaround the request did not name, stop before building it and decide which it is: the means is out of proportion to the goal (go back down the ladder; consult the advisor if unsure), or the goal itself needs questioning (put the simpler goal to the user — changing the goal is their call). Do not push through to finish the original plan. Items on the never-simplify list below are exempt
 - Do not add lines without explicit user request. Deletion over addition, boring over clever, fewest files
 - Shortest working diff in the right place — the smallest change in the wrong place is a second bug
 - Bug fix = root cause: grep every caller of the function you touch and fix the shared function once, not each caller

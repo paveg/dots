@@ -12,7 +12,7 @@ A distilled, machine-actionable diff of how agent-facing config (CLAUDE.md, rule
 - `empirical-prompt-tuning` — reviews/improves skills and prompts
 - `context-diet` — cuts always-on context; the Remove table is its deletion signal after a model upgrade
 
-All three open by loading `~/.claude/references/model-profiles/<session-model-id>.md`. If no exact match, fall back to the nearest same-family profile and note the gap.
+All three open by loading `~/.claude/references/model-profiles/<session-model-id>.md`. If no exact match, fall back to the nearest same-family profile and note the gap. When the target is an agent definition that pins `model:` (e.g. `agents/implementer.md`), load the profile for that pinned model instead — it is the one that will read the text.
 
 ## Updating (the anti-obsolescence contract)
 

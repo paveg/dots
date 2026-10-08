@@ -12,7 +12,7 @@ description: |
 
 # Zero-Cost Scaling Pattern
 
-When designing personal/indie web apps, especially those that may go viral:
+When designing personal/indie web apps, especially those that may go viral. The prices, quotas, and product statuses below were true when written and drift: confirm the current numbers on the provider's pricing page (`WebFetch`) before putting them in a recommendation.
 
 ## Client-Side Processing First
 

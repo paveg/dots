@@ -20,7 +20,7 @@ E2E testing workflow for web applications using Chrome in Claude.
 1. tabs_context_mcp to get browser context
 2. tabs_create_mcp to create a new test tab
 3. Confirm project structure (root, API endpoints)
-4. TodoWrite to create a test plan
+4. Write the test plan as a task list (the harness's task tool, or a checklist in the reply)
 ```
 
 ### 2. Test Execution
@@ -77,5 +77,5 @@ Create a GitHub Issue for each discovered problem via `gh issue create`. See [re
 After testing is complete:
 
 1. Delete any test data created during the session
-2. Mark all TodoWrite tasks as complete
+2. Close out every item in the test plan, marking any that were skipped and why
 3. Output a test results summary

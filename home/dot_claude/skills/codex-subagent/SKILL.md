@@ -1,12 +1,10 @@
 ---
 name: codex-subagent
 description: |
-  Delegate a bounded coding task to the local Codex CLI and return its result
-  to Claude for verification and synthesis. Use whenever the user explicitly
-  asks Claude to use, consult, or get a second opinion from Codex, and when a
-  coding task calls for an independent cross-model investigation, review,
-  plan, or clearly scoped implementation. For routine work Claude can finish
-  directly, invoke this skill only when the user specifically requests Codex.
+  Delegate a bounded coding task to the local Codex CLI and verify its result.
+  Use when the user asks to use, consult, or get a second opinion from Codex, or
+  when an independent cross-model investigation, review, or plan is the point.
+  Not for routine work Claude can finish directly unless the user names Codex.
 ---
 
 # Codex Subagent

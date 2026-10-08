@@ -20,7 +20,7 @@ Delegation is decided here and nowhere else. The harness default of not spawning
 ### Subagent-driven implementation
 
 - Dispatch `implementer` with `isolation: "worktree"` and the task spec inline. It has no conversation history; its system prompt already carries workspace discipline and the reporting protocol
-- The dispatcher never implements what it will evaluate; the implementer never evaluates its own diff. The main session reviews the diff itself instead of spawning review subagents
+- The dispatcher never implements what it will evaluate; the implementer never evaluates its own diff. For implementer output the main session is already the separate evaluator: it reviews the diff itself instead of spawning review subagents
 - Before dispatching into an existing worktree, its `git status --short` must be empty and HEAD on the intended branch; otherwise create a fresh one. After a worktree agent finishes, `git worktree list` and `git branch -v` must show the main tree untouched and the feature branch at the agent's commits; repoint with `git branch -f` if not
 - **Push and PR creation require explicit user confirmation**, including post-phase follow-ups (docs, cleanup, completion records)
 - Manually created worktrees go in `<project-root>/.claude/worktrees/<branch-name>` (add it to `.gitignore`), never `~/.claude/worktrees/` or a sibling of the repo: project-scoped, no cross-project name collisions, cleanup obvious. The Agent tool's `isolation: "worktree"` places its own

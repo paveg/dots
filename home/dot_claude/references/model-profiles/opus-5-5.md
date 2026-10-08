@@ -4,7 +4,12 @@ Model id: claude-opus-5-5 Source: https://platform.claude.com/docs/en/build-with
 
 Re-distill when the source doc changes or this date is older than ~6 months.
 
-This profile is a delta on `opus-5.md`. The guide states Opus 5 prompts "should perform well without changes", so every Opus 5 row not contradicted below still applies — but as carried-over guidance, not re-measured on 5.5. In particular these Opus 5 rows are **carried until re-measured**: delete verification/self-check instructions (over-verification), cap subagent spawns, "report every finding; a later stage filters" in review prompts, explicit conciseness prompt instead of effort for visible length, scope-discipline instruction.
+This profile is a delta on `opus-5.md`. The guide states Opus 5 prompts "should perform well without changes", so every Opus 5 row not contradicted below still applies — but as carried-over guidance, not re-measured on 5.5. In particular these Opus 5 rows are **carried until re-measured**: cap subagent spawns, "report every finding; a later stage filters" in review prompts, explicit conciseness prompt instead of effort for visible length, scope-discipline instruction.
+
+Re-measured in one Claude Code session (2026-10-08) — the Opus 5 row "delete verification instructions; never subagents for verification" splits in two:
+
+- The cost half looks right: 5.5 ran its own checks (test runs, re-reads, renders), though harness rules asking for verification were in context. Spawned readers cost 176–193K tokens each as `general-purpose` against 27K (`spec-reviewer`) and 94K (`skeptic`) for narrow-tool agents. Model, task, and tool list all differed, so read this as "agent type is a large cost lever", not a clean attribution.
+- The "never" half did not hold in this session: on top of 5.5's own checks, separate agents found real defects in every round run — a misattributed source number the author believed, contradictions between an added line and an unread neighbor, a nonexistent tool parameter. The hypothesis is that these are belief errors an author's re-read would repeat; with no self-review-only control arm and one session, that is untested. The harness keeps separation, scoped to load-bearing output and the narrowest agent (`harness-engineering.md`).
 
 ## Params (set these, don't reproduce their effect in prose)
 

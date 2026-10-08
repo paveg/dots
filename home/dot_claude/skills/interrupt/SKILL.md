@@ -25,10 +25,9 @@ Delegate a task to a background agent running in an isolated git worktree. Your 
 
 ## Phase 2: Launch Background Agent
 
-Launch an Agent with these parameters:
+Dispatch the `implementer` agent (it runs in the background; results arrive as a notification) with these parameters:
 
 - `isolation: "worktree"` — runs in a fresh worktree copy
-- `run_in_background: true` — does not block the main session
 - `description` — short summary (3-5 words)
 
 The agent prompt MUST include:
@@ -36,7 +35,7 @@ The agent prompt MUST include:
 - The full task description
 - Instruction to: implement the fix and make atomic commits on the new branch — never push, never create a PR (integration belongs to the main session)
 - Instruction to keep changes minimal and focused
-- The base branch the PR will target (usually `main`), so the agent branches from it
+- The base: current HEAD, which the agent branches from (the PR target is confirmed at the push gate)
 
 Example agent prompt structure:
 
@@ -67,6 +66,7 @@ After launching the agent:
 
 When the background agent completes:
 
+- Check placement: `git worktree list` and `git branch -v` show the main tree untouched and the new branch at the agent's commits
 - Review the agent's diff and verification output as the evaluator
 - Show the user the branch, a diff summary, and the proposed PR title/body, and ask before pushing or creating the PR (`workflow.md`: push and PR creation need explicit confirmation)
 - After the PR exists or the user declines, remove the worktree with `git worktree remove <path>`

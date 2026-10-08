@@ -26,7 +26,7 @@ Three conditions must ALL be true:
 
 Before starting any phase, use `AskUserQuestion` to classify the opportunity type unless the user has already made it clear. This determines which discovery methods, validation criteria, and strategy templates to use.
 
-**Always ask upfront:**
+**Ask upfront whichever of these is still unknown** (in Recon mode, skip question 1 — all four types are scanned):
 
 1. **What type of gap are you looking for?**
    - Content gap (blog, newsletter, guide, course)

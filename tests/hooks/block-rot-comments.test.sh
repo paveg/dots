@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# Tests for executable_block-rot-comments.py: PreToolUse(Write|Edit) guard
-# that blocks code comments containing patterns known to rot — references
-# to current task/PR/issue numbers, caller names, temporal phrasing
-# ("previously", "now does"), and TODO/FIXME without owner or date.
+# Tests for executable_block-rot-comments.py: PreToolUse(Write|Edit|Bash)
+# guard that blocks code comments containing patterns known to rot, in
+# written files and in the diff a Bash `git commit` will record.
 set -uo pipefail
 
 hook="$HOOKS_DIR/executable_block-rot-comments.py"
@@ -133,5 +132,125 @@ _temp='TE''MP: remove after launch'
 _temp_payload=$(printf '{"tool_name":"Write","tool_input":{"file_path":"a.ts","content":"/* %s */\\nfunction f() {}\\n"}}' "$_temp")
 out=$(run "$_temp_payload")
 is_block "$out" || fail "did not block block-comment rot marker: $out"
+
+# === Japanese: legit why-comment → ALLOW ===
+out=$(run '{"tool_name":"Write","tool_input":{"file_path":"a.py","content":"# 上流 API が無言で接続を切るため、再試行が必要\ndef f(): pass\n"}}')
+[[ -z $out ]] || fail "blocked legit Japanese why-comment: $out"
+
+# === Japanese: each rot label → BLOCK ===
+jp_block() { # jp_block <comment> <expected label fragment>
+  local payload
+  payload=$(jq -cn --arg c "$1" '{tool_name:"Write",tool_input:{file_path:"a.py",content:("# " + $c + "\ndef f(): pass\n")}}')
+  out=$(run "$payload")
+  is_block "$out" || fail "did not block Japanese comment '$1': $out"
+  reason_has "$out" "$2" || fail "Japanese comment '$1' missing label '$2': $out"
+}
+jp_block '以前は slug で判定していた' 'temporal phrasing'
+jp_block '従来は null を返す' 'temporal phrasing'
+jp_block '旧仕様との互換のため残す' 'temporal phrasing'
+jp_block '今回の変更で追加した' 'temporal phrasing'
+jp_block 'handleSubmit から呼ばれる' 'caller / usage reference'
+jp_block 'validate_owners.py と一致させる' 'keep-in-sync instruction'
+jp_block 'CODEOWNERS と同期させること' 'keep-in-sync instruction'
+jp_block 'こちらにも追加する' 'keep-in-sync instruction'
+jp_block 'ここも合わせて更新する' 'keep-in-sync instruction'
+jp_block 'ここと CODEOWNERS の行に 1 つずつ足す' 'keep-in-sync instruction'
+jp_block 'この行と validate_owners.py の MIGRATION_OPS_TEAMS に足す' 'keep-in-sync instruction'
+jp_block 'team_id は gh api orgs/C-FO/teams/<slug> で取得した実値' 'provenance'
+
+# === Japanese: why-comments that merely share vocabulary → ALLOW ===
+jp_allow() { # jp_allow <comment>
+  local payload
+  payload=$(jq -cn --arg c "$1" '{tool_name:"Write",tool_input:{file_path:"a.py",content:("# " + $c + "\ndef f(): pass\n")}}')
+  out=$(run "$payload")
+  [[ -z $out ]] || fail "blocked legit Japanese comment '$1': $out"
+}
+jp_allow 'このキャッシュは複数スレッドから呼び出されるため、ロックが必要'
+jp_allow '空配列で使われると panic するため先に検査する'
+jp_allow '呼び出し元の責任でロックを取得すること'
+jp_allow '文字列を新たに追加した場合は encode が必要'
+jp_allow '値を修正したあと再検証が必要'
+jp_allow '上流がバグっているため、この値を追加した後に再取得する'
+jp_allow '値を 0 に変更した場合はキャッシュを捨てる'
+jp_allow 'API で取得したトークンは 1 時間で失効する'
+
+# === Commit gate: git repo fixtures ===
+tmp_root=$(mktemp -d)
+trap 'rm -rf "$tmp_root"' EXIT
+
+new_repo() { # new_repo <name> — create an initial-commit repo, print its path
+  local dir="$tmp_root/$1"
+  mkdir -p "$dir"
+  git -C "$dir" init -q
+  git -C "$dir" config user.email t@example.com
+  git -C "$dir" config user.name Test
+  git -C "$dir" config commit.gpgsign false
+  printf 'def base(): pass\n' >"$dir/base.py"
+  git -C "$dir" add base.py
+  git -C "$dir" commit -q -m init
+  printf '%s' "$dir"
+}
+bash_payload() { # bash_payload <cwd> <command>
+  jq -cn --arg cwd "$1" --arg cmd "$2" '{tool_name:"Bash",cwd:$cwd,tool_input:{command:$cmd}}'
+}
+rot_jp='# 以前は slug で判定していた'
+
+# Staged rot comment → BLOCK, reason names the file
+repo=$(new_repo staged_rot)
+printf '%s\ndef f(): pass\n' "$rot_jp" >"$repo/rotten.py"
+git -C "$repo" add rotten.py
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+is_block "$out" || fail "commit gate did not block staged rot comment: $out"
+reason_has "$out" "rotten.py" || fail "commit gate reason missing file name: $out"
+reason_has "$out" "re-stage" || fail "commit gate reason missing re-stage hint: $out"
+
+# Staged clean code → ALLOW
+repo=$(new_repo staged_clean)
+printf '# 上流 API が無言で接続を切るため、再試行が必要\ndef f(): pass\n' >"$repo/clean.py"
+git -C "$repo" add clean.py
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+[[ -z $out ]] || fail "commit gate blocked clean staged code: $out"
+
+# -am picks up an unstaged modification to a tracked file → BLOCK
+repo=$(new_repo all_flag)
+printf 'def base(): pass\n%s\n' "$rot_jp" >"$repo/base.py"
+out=$(run "$(bash_payload "$repo" 'git commit -am x')")
+is_block "$out" || fail "commit gate did not block -am unstaged rot comment: $out"
+reason_has "$out" "base.py" || fail "-am reason missing file name: $out"
+# Same change without -a is not part of the commit → ALLOW
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+[[ -z $out ]] || fail "commit gate scanned unstaged change without -a: $out"
+
+# Staged prose file with temporal wording → ALLOW
+repo=$(new_repo staged_md)
+printf '以前は slug で判定していた\n' >"$repo/notes.md"
+git -C "$repo" add notes.md
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+[[ -z $out ]] || fail "commit gate blocked a .md file: $out"
+
+# Non-commit Bash commands → ALLOW
+repo=$(new_repo non_commit)
+printf '%s\ndef f(): pass\n' "$rot_jp" >"$repo/rotten.py"
+git -C "$repo" add rotten.py
+out=$(run "$(bash_payload "$repo" 'git status')")
+[[ -z $out ]] || fail "gate fired on git status: $out"
+out=$(run "$(bash_payload "$repo" 'git commit-tree HEAD^{tree}')")
+[[ -z $out ]] || fail "gate fired on git commit-tree: $out"
+
+# cd <repo> && git commit with payload cwd elsewhere → BLOCK
+repo=$(new_repo cd_prefix)
+printf '%s\ndef f(): pass\n' "$rot_jp" >"$repo/rotten.py"
+git -C "$repo" add rotten.py
+out=$(run "$(bash_payload "$tmp_root" "cd $repo && git commit -m x")")
+is_block "$out" || fail "commit gate ignored leading cd: $out"
+
+# git -C <repo> commit → BLOCK
+out=$(run "$(bash_payload "$tmp_root" "git -C $repo commit -m x")")
+is_block "$out" || fail "commit gate ignored git -C: $out"
+
+# Non-repo directory → fail open
+mkdir -p "$tmp_root/not_a_repo"
+out=$(run "$(bash_payload "$tmp_root/not_a_repo" 'git commit -m x')")
+[[ -z $out ]] || fail "commit gate did not fail open outside a repo: $out"
 
 echo "all assertions passed"

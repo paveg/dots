@@ -44,10 +44,12 @@ Default: **no comments**. Only add a comment when ALL of the following are true:
 2. Removing the comment would leave a future reader confused
 3. The information cannot be conveyed by better naming alone
 
-Explicitly forbidden (the rot-comment hook blocks task/PR refs, caller refs, and temporal phrasing mechanically):
+A comment that passes is one line by default, in any language. Explicitly forbidden (the rot-comment hook catches a subset at write time and again at `git commit`; the rest is on you):
 
 - Repeating what the code does, restating the signature, or section banners
 - Commented-out code (delete it; git remembers)
+- Keep-in-sync instructions (「X と Y の両方に足す」): enforce the sync with a test or check instead
+- Provenance (「〜で取得した値」) and decision history: the commit message, PR body, or ADR — not a summary above the code
 - Facts whose source of truth lives elsewhere — counts (tests, cases, callers, fields), lists of callers, versions, dates, ticket numbers, "what changed". They go stale the moment someone edits a different file. Living docs (README, CLAUDE.md, rules, skills) follow the same rule; point-in-time records (PR bodies, commit messages, worklogs) may carry them
 
 ## Command Legibility

@@ -149,16 +149,7 @@ jp_block '以前は slug で判定していた' 'temporal phrasing'
 jp_block '従来は null を返す' 'temporal phrasing'
 jp_block '旧仕様との互換のため残す' 'temporal phrasing'
 jp_block '今回の変更で追加した' 'temporal phrasing'
-jp_block '新たに追加したフィールド' 'temporal phrasing'
-jp_block 'slug 判定に変更した' 'temporal phrasing'
-jp_block 'リトライを追加した' 'temporal phrasing'
-jp_block 'null チェックを修正した' 'temporal phrasing'
-jp_block '互換性対応のため残す' 'temporal phrasing'
 jp_block 'handleSubmit から呼ばれる' 'caller / usage reference'
-jp_block 'auth ハンドラから呼び出される' 'caller / usage reference'
-jp_block 'フォームで使われる' 'caller / usage reference'
-jp_block 'この値は別モジュールで使われている' 'caller / usage reference'
-jp_block '呼び出し元で検証済み' 'caller / usage reference'
 jp_block 'validate_owners.py と一致させる' 'keep-in-sync instruction'
 jp_block 'CODEOWNERS と同期させること' 'keep-in-sync instruction'
 jp_block 'こちらにも追加する' 'keep-in-sync instruction'
@@ -166,6 +157,22 @@ jp_block 'ここも合わせて更新する' 'keep-in-sync instruction'
 jp_block 'ここと CODEOWNERS の行に 1 つずつ足す' 'keep-in-sync instruction'
 jp_block 'この行と validate_owners.py の MIGRATION_OPS_TEAMS に足す' 'keep-in-sync instruction'
 jp_block 'team_id は gh api orgs/C-FO/teams/<slug> で取得した実値' 'provenance'
+
+# === Japanese: why-comments that merely share vocabulary → ALLOW ===
+jp_allow() { # jp_allow <comment>
+  local payload
+  payload=$(jq -cn --arg c "$1" '{tool_name:"Write",tool_input:{file_path:"a.py",content:("# " + $c + "\ndef f(): pass\n")}}')
+  out=$(run "$payload")
+  [[ -z $out ]] || fail "blocked legit Japanese comment '$1': $out"
+}
+jp_allow 'このキャッシュは複数スレッドから呼び出されるため、ロックが必要'
+jp_allow '空配列で使われると panic するため先に検査する'
+jp_allow '呼び出し元の責任でロックを取得すること'
+jp_allow '文字列を新たに追加した場合は encode が必要'
+jp_allow '値を修正したあと再検証が必要'
+jp_allow '上流がバグっているため、この値を追加した後に再取得する'
+jp_allow '値を 0 に変更した場合はキャッシュを捨てる'
+jp_allow 'API で取得したトークンは 1 時間で失効する'
 
 # === Commit gate: git repo fixtures ===
 tmp_root=$(mktemp -d)

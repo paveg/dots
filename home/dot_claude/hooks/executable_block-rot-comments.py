@@ -76,14 +76,11 @@ ROT_PATTERNS = [
         "temporal phrasing",
     ),
     (
-        re.compile(
-            r"以前は|従来は|旧仕様|今回の(?:変更|修正|対応)|新たに追加|"
-            r"に変更した|を追加した|を修正した|対応のため"
-        ),
+        re.compile(r"以前は|従来は|旧仕様|今回の(?:変更|修正|対応)"),
         "temporal phrasing",
     ),
     (
-        re.compile(r"から呼ばれ|から呼び出され|で使われ(?:る|て)|呼び出し元"),
+        re.compile(r"[A-Za-z_][\w.]*(?:\(\))?\s*から呼ばれ"),
         "caller / usage reference",
     ),
     (
@@ -95,7 +92,7 @@ ROT_PATTERNS = [
         "keep-in-sync instruction — enforce with a test or check instead",
     ),
     (
-        re.compile(r"で取得した"),
+        re.compile(r"で取得した(?:実)?値"),
         "provenance — belongs in the commit message",
     ),
     (

@@ -53,7 +53,7 @@ When it returns:
 
 - Review the diff yourself as the evaluator (behavior over implementation).
 - Verify placement: `git worktree list` + `git branch -v` show the main tree untouched and the feature branch at the agent's commits.
-- Run the `adversarial-review` skill on the branch with the implementer's report as a claim source. `ADVERSARIAL: FAIL` sends the refuted claims and their evidence back to a fresh `implementer` dispatch; repeat until PASS. Step 5 never starts on FAIL.
+- Run the `adversarial-review` skill on the branch with the implementer's report as a claim source. `ADVERSARIAL: FAIL` sends the refuted claims and their evidence back to a fresh `implementer` dispatch; repeat until PASS, at most 5 rounds (the oscillation guard in `harness-engineering.md`) — then stop and present the remaining refuted rows to the user. A fix that reverts an earlier round's fix stops the loop immediately. Step 5 never starts on FAIL.
 
 ### 5. Open the PR (confirmation gate)
 

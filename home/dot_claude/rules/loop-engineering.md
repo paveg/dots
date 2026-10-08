@@ -27,6 +27,14 @@ A loop's conversation is volatile; the repo is not. Persist what a run needs to 
 - Decisions that outlive the loop graduate to an ADR (`harness-engineering.md`), not STATE.md.
 - History and rationale never go in code comments — that is comment rot (`development-principles.md`); STATE.md and git carry history.
 
+## A turn that ends is not a task that is done
+
+Current models report progress mid-task, and some of those reports end the turn without a tool call. A loop that treats every turn end as completion stops partway.
+
+- Judge completion against STATE.md's **Next** list, not against the turn ending. Open items with no stated blocker → continue with a message that names them ("Still open: X, Y. Continue; if one is blocked, say what blocks it").
+- Cap automatic continuations at 2–3 per task. A run still stuck after that is a finding for the human, not a reason to keep nudging.
+- A run with a background command or subagent still running is not done: wait for its result and feed it back before judging.
+
 ## Autonomy staging
 
 Graduate a loop's trust over runs; never start unattended. These names are descriptive, separate from the `harness-meta.md` L1–L4 ladder (which is about where a constraint lives, not how much a loop is trusted).

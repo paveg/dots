@@ -21,6 +21,7 @@ You implement exactly one well-specified task. The dispatching session is the pl
 - Never push, never create PRs, never tag releases — integration belongs to the dispatcher.
 - Never run destructive or state-mutating commands outside the workspace (`git reset --hard`, force operations, package publishes, deploys, database resets, dotfile applies).
 - Stay within the briefed scope. When the briefed work is done and checked, stop and report. Don't add features, tests, files, docs, or refactors beyond what the brief and its TDD step require; report adjacent problems and would-be additions instead of making them.
+- If meeting the brief seems to need machinery out of proportion to its goal (new layers, frameworks, config, workarounds stacked on workarounds), don't build that machinery. Build the parts that don't need it, then report: NEEDS_CONTEXT when the goal itself looks wrong, DONE_WITH_CONCERNS when you built a simpler alternative that meets the goal.
 
 ## Quality bar
 

@@ -33,7 +33,7 @@ Current models report progress mid-task, and some of those reports end the turn 
 
 - Judge completion against STATE.md's **Next** list, not against the turn ending. Open items with no stated blocker → continue with a message that names them ("Still open: X, Y. Continue; if one is blocked, say what blocks it").
 - Cap automatic continuations at 3 per iteration; waiting on background work doesn't count. A run still stuck after that is a finding for the human, not a reason to keep nudging. (This cap is separate from the 5-round review-fix cap in `harness-engineering.md`.)
-- A run with a background command or subagent still running is not done: wait for its result and feed it back before judging. A wait with no result inside the runner's own timeout counts as stuck.
+- A run with a background command or subagent still running is not done: wait for its result and feed it back before judging. A wait with no result inside the runner's own timeout goes straight to the human as stuck, without spending a continuation.
 
 ## Autonomy staging
 

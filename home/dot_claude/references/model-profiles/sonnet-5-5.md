@@ -15,11 +15,11 @@ Relevant here because the `implementer`, `spec-reviewer`, and `skeptic` agents r
 
 ## Remove — scaffolding this model makes redundant or harmful
 
-| pattern in config                                                           | why remove                                                                            |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| "hold all findings for the final response" (when updates should be visible) | suppresses the between-tool notes it writes natively                                  |
-| "only use tools when strictly necessary" / "minimize tool calls"            | it already under-searches in knowledge work and answers from training data            |
-| instructions to include reasoning in the response                           | invite `reasoning_extraction` declines; read `display: "summarized"` thinking instead |
+| pattern in config                                                           | why remove                                                                                                        |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| "hold all findings for the final response" (when updates should be visible) | suppresses the between-tool notes it writes natively                                                              |
+| "only use tools when strictly necessary" / "minimize tool calls"            | on chat and knowledge work it sometimes answers from training knowledge when a search would catch changed details |
+| instructions to include reasoning in the response                           | invite `reasoning_extraction` declines; read `display: "summarized"` thinking instead                             |
 
 ## Rewrite
 
@@ -28,7 +28,7 @@ Relevant here because the `implementer`, `spec-reviewer`, and `skeptic` agents r
 | implicit scope on coding tasks              | "When the work the user asked for is done and checked, stop and report. Don't add features, tests, files, docs or refactors that weren't asked for. If you think one would help, mention it at the end instead of doing it."                                                                                                                                                                                           | it adds tests/docs/small files that fit the repo even unasked, at every effort level, more at higher effort                         |
 | implicit carry-through at `low`/`medium`    | "Keep working until everything the user asked for is done, and only stop to ask when you can't go on without the user or before a risky step." (try raising effort first)                                                                                                                                                                                                                                              | at lower effort it checks in before a coding task is done; this makes runs longer and costlier                                      |
 | "verify your work"                          | "When you change code that can be run, built, or type-checked, run a real check that exercises the change before reporting it done … A syntax-only check, or a check command that failed to start, does not count; if all that is missing is the project's declared dependencies, install them with its own package manager and lockfile … Only if no real check can run here, say which one you did not run and why." | at `low` it sometimes reports done without a check that exercises the change; the paragraph makes that rare at slightly higher cost |
-| self-started review rounds at `xhigh`/`max` | "When the work the user asked for is done and its checks pass, stop and report. Don't start extra rounds of review or hardening on your own, and don't launch reviewer sub-agents unless the user asked for a review."                                                                                                                                                                                                 | cut session cost ~1/3 at `max` with no quality change                                                                               |
+| self-started review rounds at `xhigh`/`max` | "When the work the user asked for is done and its checks pass, stop and report. Don't start extra rounds of review or hardening on your own, and don't launch reviewer sub-agents unless the user asked for a review. If you think a deeper review is worth doing, say so at the end."                                                                                                                                 | cut session cost ~1/3 at `max` with no quality change                                                                               |
 
 ## Keep / add
 

@@ -4,7 +4,7 @@ Model id: claude-sonnet-5-5 Source: https://platform.claude.com/docs/en/build-wi
 
 Re-distill when the source doc changes or this date is older than ~6 months.
 
-Relevant here because the `implementer`, `spec-reviewer`, and `skeptic` agents run on `model: sonnet`. Load this profile when tuning those agent prompts, not the session model's — after confirming which model the `sonnet` alias currently resolves to (the agent's transcript or `/model` shows it); this file applies only while that is Sonnet 5.5.
+Relevant here because the `implementer` and `spec-reviewer` agents run on `model: sonnet` (`skeptic` runs on `fable` — use `fable-5-1.md` for it). Load this profile when tuning those agent prompts, not the session model's — after confirming which model the `sonnet` alias currently resolves to (the agent's transcript or `/model` shows it); this file applies only while that is Sonnet 5.5.
 
 ## Params (set these, don't reproduce their effect in prose)
 

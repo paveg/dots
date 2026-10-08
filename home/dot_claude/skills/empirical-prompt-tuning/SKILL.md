@@ -117,7 +117,6 @@ Apply the minimal fix that addresses one theme of unclear points.
 
 - **1 theme per iteration** (related micro-fixes count as 1 theme; unrelated fixes go to the next iter)
 - Before applying: state which checklist item / judgment criterion this fix satisfies. Axis names and judgment criteria are different things — map to the criterion text, not the axis label
-- **Edit the chezmoi source** (`~/.local/share/chezmoi/home/dot_claude/`), never `~/.claude/` directly. After editing, confirm with the user before running `chezmoi apply`.
 
 ### Step 6 — Re-evaluate
 

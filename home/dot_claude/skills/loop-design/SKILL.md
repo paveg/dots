@@ -2,8 +2,6 @@
 name: loop-design
 description: >
   Use when the user wants to set up a recurring or autonomous agent loop and needs to design it before running it. Triggers: 「ループを設計」「自律ループを 作りたい」「loop を組みたい」, turning a vague "I want a loop that does X" into a concrete spec, or choosing a runner (/loop, /schedule, ralph-loop, pr-monitor) for repeated work. NOT for running an already-designed loop, and NOT for one-off tasks.
-
-disable-model-invocation: false
 ---
 
 # Loop Design

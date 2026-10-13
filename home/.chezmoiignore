@@ -30,6 +30,7 @@ homebrew/
 .chezmoiscripts/generate-fdev-ca-bundle.sh
 .config/git/freee
 .config/colima/
+.config/ghtkn/
 homebrew/Brewfile.work
 .claude/skills/acli/
 {{ end }}

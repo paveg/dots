@@ -10,6 +10,7 @@
 {{- $email := "" -}}
 {{- $workEmail := "" -}}
 {{- $signingKey := "" -}}
+{{- $ghtknClientId := "" -}}
 
 {{- if and (not $businessUse) $hasOp -}}
 {{-   $name = onepasswordRead "op://Dotfiles/Git/name" -}}
@@ -20,6 +21,10 @@
 {{-   if $businessUse -}}
 {{-     $workEmail = promptStringOnce . "work_email" "Your work email" -}}
 {{-   end -}}
+{{- end -}}
+
+{{- if $businessUse -}}
+{{-   $ghtknClientId = promptStringOnce . "ghtkn_client_id" "ghtkn GitHub App client ID (C-FO shared app)" -}}
 {{- end -}}
 
 {{- if and $hasOp (eq .chezmoi.os "darwin") -}}
@@ -36,6 +41,7 @@ data:
   email: {{ $email | quote }}
   work_email: {{ $workEmail | quote }}
   signing_key: {{ $signingKey | quote }}
+  ghtkn_client_id: {{ $ghtknClientId | quote }}
 
   # Auto tmux on terminal startup
   auto_tmux: true

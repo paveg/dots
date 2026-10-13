@@ -32,6 +32,7 @@ just diff        # Show pending chezmoi changes
 | `.business_use`                  | `true` if `BUSINESS_USE=1` was set during init |
 | `.osid`                          | OS identifier (e.g., `darwin`, `linux-ubuntu`) |
 | `.name`, `.email`, `.work_email` | User info prompted on first run                |
+| `.ghtkn_client_id`               | ghtkn GitHub App client ID (business only)     |
 
 ### Template Testing
 
@@ -41,7 +42,7 @@ just diff        # Show pending chezmoi changes
 
 ```bash
 tmpdir=$(mktemp -d) && mkdir -p "$tmpdir/chezmoi"
-printf 'data:\n  name: "Test"\n  email: "t@example.com"\n  work_email: "t@work.example.com"\n' > "$tmpdir/chezmoi/chezmoi.yaml"
+printf 'data:\n  name: "Test"\n  email: "t@example.com"\n  work_email: "t@work.example.com"\n  ghtkn_client_id: "Iv1.test"\n' > "$tmpdir/chezmoi/chezmoi.yaml"
 XDG_CONFIG_HOME="$tmpdir" BUSINESS_USE=1 chezmoi init --source=. --dry-run        # business mode
 XDG_CONFIG_HOME="$tmpdir" env -u BUSINESS_USE chezmoi init --source=. --dry-run   # personal mode
 ```

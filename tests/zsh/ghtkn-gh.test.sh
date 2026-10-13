@@ -45,8 +45,8 @@ cat >"$fake_bin/ghtkn" <<'EOS'
 set -euo pipefail
 printf '%s\n' "$*" >>"${GHTKN_LOG:?}"
 [[ "${GHTKN_MODE:-success}" == "no-token" ]] && exit 111
-# Mirror `ghtkn exec -e GH_TOKEN -- cmd args...`: the token reaches the child env only.
-shift 3
+# Mirror `ghtkn exec -e GH_TOKEN:<app> -- cmd args...`: the token reaches the child env only.
+shift 4
 GH_TOKEN="fake-ghtkn-token" exec "$@"
 EOS
 
@@ -89,8 +89,8 @@ run_wrapper "$fake_bin" zsh -f -c '
   gh api "/repos/o/r" --jq ".name | length"
   [[ ! -v GH_TOKEN ]]
 ' 2>"$stderr_log"
-grep -Fxq "exec -e GH_TOKEN -- gh api /repos/o/r --jq .name | length" "$ghtkn_log" ||
-  fail "wrapper did not call ghtkn exec -e GH_TOKEN -- gh <args>"
+grep -Fxq "exec -e GH_TOKEN:C-FO/write -- gh api /repos/o/r --jq .name | length" "$ghtkn_log" ||
+  fail "wrapper did not call ghtkn exec -e GH_TOKEN:C-FO/write -- gh <args>"
 grep -Fxq "argc=4" "$gh_log" || fail "gh received the wrong argument count"
 grep -Fxq "arg=.name | length" "$gh_log" ||
   fail "wrapper did not preserve an argument containing spaces"
@@ -155,6 +155,8 @@ chezmoi_config="$test_root/chezmoi.json"
 mkdir -p "$render_root"
 printf '{}\n' >"$chezmoi_config"
 
+client_ids_json='{"none":"Iv1.none","read":"Iv1.read","git":"Iv1.git","write":"Iv1.write"}'
+
 chezmoi_isolated() {
   local business_use="$1"
   shift
@@ -164,7 +166,7 @@ chezmoi_isolated() {
     --config-format json \
     --source "$repo_root" \
     --destination "$test_root/destination" \
-    --override-data "{\"business_use\":$business_use,\"auto_tmux\":false,\"homebrew_prefix\":\"/opt/homebrew\",\"ghtkn_client_id\":\"Iv1.test\"}" \
+    --override-data "{\"business_use\":$business_use,\"auto_tmux\":false,\"homebrew_prefix\":\"/opt/homebrew\",\"ghtkn_client_ids\":$client_ids_json}" \
     "$@"
 }
 
@@ -181,11 +183,32 @@ grep -Fq "gh: ghtkn is required" "$render_root/business.zshrc" ||
 pass "wrapper is rendered only for the business profile"
 
 chezmoi_isolated true execute-template --file "$repo_root/home/dot_config/ghtkn/ghtkn.yaml.tmpl" >"$render_root/ghtkn.yaml"
-grep -Fxq '    client_id: "Iv1.test"' "$render_root/ghtkn.yaml" ||
-  fail "ghtkn.yaml did not render the client id"
-grep -Fxq "  type: agent" "$render_root/ghtkn.yaml" ||
+grep -Fxq "  type: agent # access token の更新を自動化したい場合" "$render_root/ghtkn.yaml" ||
   fail "ghtkn.yaml does not select the agent backend"
-pass "ghtkn.yaml renders the client id with the agent backend"
+for app in none read git write; do
+  grep -Fxq "    client_id: \"Iv1.$app\"" "$render_root/ghtkn.yaml" ||
+    fail "ghtkn.yaml did not render the $app client id"
+  grep -Fq "  - name: C-FO/$app " "$render_root/ghtkn.yaml" ||
+    fail "ghtkn.yaml did not render the C-FO/$app app"
+done
+[[ "$(grep -c '^  - name:' "$render_root/ghtkn.yaml")" -eq 4 ]] ||
+  fail "ghtkn.yaml did not render exactly four apps"
+grep -Fxq "    git_owner: C-FO # Git Credential Helper により、 C-FO 配下のリポジトリに push/pull する際はこれが使用される" "$render_root/ghtkn.yaml" ||
+  fail "ghtkn.yaml did not render git_owner for the git app"
+pass "ghtkn.yaml renders every app with the agent backend"
+
+client_ids_json='{"read":"Iv1.read"}'
+chezmoi_isolated true execute-template --file "$repo_root/home/dot_config/ghtkn/ghtkn.yaml.tmpl" >"$render_root/ghtkn-partial.yaml"
+[[ "$(grep -c '^  - name:' "$render_root/ghtkn-partial.yaml")" -eq 1 ]] ||
+  fail "ghtkn.yaml rendered an app without a client id"
+grep -Fq "  - name: C-FO/read " "$render_root/ghtkn-partial.yaml" ||
+  fail "ghtkn.yaml dropped the app that has a client id"
+client_ids_json='{}'
+chezmoi_isolated true execute-template --file "$repo_root/home/dot_config/ghtkn/ghtkn.yaml.tmpl" >"$render_root/ghtkn-empty.yaml"
+grep -Fxq "apps: []" "$render_root/ghtkn-empty.yaml" ||
+  fail "ghtkn.yaml without client ids did not render apps: []"
+pass "ghtkn.yaml renders only apps that have a client id"
+client_ids_json='{"none":"Iv1.none","read":"Iv1.read","git":"Iv1.git","write":"Iv1.write"}'
 
 chezmoi_isolated false managed >"$render_root/managed-personal.txt"
 chezmoi_isolated true managed >"$render_root/managed-business.txt"

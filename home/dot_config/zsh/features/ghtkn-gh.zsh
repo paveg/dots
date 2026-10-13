@@ -21,7 +21,7 @@ function gh {
     return 127
   fi
 
-  command ghtkn exec -e GH_TOKEN -- gh "$@"
+  command ghtkn exec -e GH_TOKEN:C-FO/write -- gh "$@"
   local exit_status=$?
   if (( exit_status == 111 )); then
     print -u2 -- "gh: no ghtkn token available — run \`ghtkn agent unlock --enable-refresh\`"

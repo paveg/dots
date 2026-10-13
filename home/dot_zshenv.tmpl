@@ -167,8 +167,10 @@ export COLIMA_HOME="$XDG_CONFIG_HOME/colima"
 # aqua gets its GitHub token from the ghtkn agent (some C-FO repos resolve a
 # private aqua-registry). The agent must be unlocked after each login with
 # `ghtkn agent unlock --enable-refresh`. GITHUB_TOKEN, AQUA_GITHUB_TOKEN and
-# AQUA_KEYRING_ENABLED must stay unset or aqua ignores ghtkn.
+# AQUA_KEYRING_ENABLED must stay unset or aqua ignores ghtkn. GHTKN_APP picks
+# the read app, since the first app (C-FO/none) cannot read the registry.
 export AQUA_GHTKN_ENABLED=true
+export GHTKN_APP=C-FO/read
 
 # Corporate TLS inspection CA: wire palo-root.pem (in Homebrew's cert store)
 # into common SSL env vars so curl/Node/Python/Ruby-OpenSSL trust certificates

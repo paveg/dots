@@ -10,7 +10,7 @@
 {{- $email := "" -}}
 {{- $workEmail := "" -}}
 {{- $signingKey := "" -}}
-{{- $ghtknClientId := "" -}}
+{{- $ghtknClientIds := dict -}}
 
 {{- if and (not $businessUse) $hasOp -}}
 {{-   $name = onepasswordRead "op://Dotfiles/Git/name" -}}
@@ -23,8 +23,8 @@
 {{-   end -}}
 {{- end -}}
 
-{{- if $businessUse -}}
-{{-   $ghtknClientId = promptStringOnce . "ghtkn_client_id" "ghtkn GitHub App client ID (C-FO shared app)" -}}
+{{- if hasKey . "ghtkn_client_ids" -}}
+{{-   $ghtknClientIds = .ghtkn_client_ids -}}
 {{- end -}}
 
 {{- if and $hasOp (eq .chezmoi.os "darwin") -}}
@@ -41,7 +41,9 @@ data:
   email: {{ $email | quote }}
   work_email: {{ $workEmail | quote }}
   signing_key: {{ $signingKey | quote }}
-  ghtkn_client_id: {{ $ghtknClientId | quote }}
+
+  # ghtkn GitHub App client IDs (none/read/git/write), filled by hand in the local chezmoi.yaml
+  ghtkn_client_ids: {{ $ghtknClientIds | toJson }}
 
   # Auto tmux on terminal startup
   auto_tmux: true

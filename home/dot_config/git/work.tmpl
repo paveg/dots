@@ -6,4 +6,11 @@
   hooksPath = {{ .chezmoi.homeDir }}/.fdev-git-hooks
 [url "git@github.com:"]
   insteadOf = https://github.com/
+[url "https://github.com/C-FO/"]
+  insteadOf = https://github.com/C-FO/
+[credential "https://github.com"]
+  useHttpPath = true
+[credential "https://github.com/C-FO"]
+  helper =
+  helper = !ghtkn git-credential
 {{- end }}

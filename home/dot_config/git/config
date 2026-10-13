@@ -2,10 +2,6 @@
 [include]
   path = ~/.config/git/main
 
-# Work-specific config for C-FO repositories
-[includeIf "gitdir:~/repos/github.com/C-FO/"]
-  path = ~/.config/git/work
-
 # GitHub credential helper (gh auth)
 # Use env to find gh in PATH (works with devbox, homebrew, etc.)
 [credential "https://github.com"]
@@ -15,6 +11,12 @@
 [credential "https://gist.github.com"]
   helper =
   helper = !/usr/bin/env gh auth git-credential
+
+# Work-specific config for C-FO repositories. Keep it below the credential
+# sections: helper lists accumulate in file order, so work's `helper =` reset
+# must come last to replace the gh helper.
+[includeIf "gitdir:~/repos/github.com/C-FO/"]
+  path = ~/.config/git/work
 
 # Secret detection: Use gitleaks (not configured in git config)
 # Usage: gitleaks detect --source . --verbose

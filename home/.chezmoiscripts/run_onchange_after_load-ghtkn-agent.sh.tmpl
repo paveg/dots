@@ -1,0 +1,16 @@
+{{- if and .business_use (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
+# plist hash: {{ include "Library/LaunchAgents/local.ghtkn-agent.plist.tmpl" | sha256sum }}
+# ghtkn version: {{ include "dot_config/aquaproj-aqua/aqua.yaml.tmpl" | regexFind "suzuki-shunsuke/ghtkn@v[0-9.]+" }}
+set -euo pipefail
+
+if ! command -v aqua >/dev/null 2>&1; then
+  echo "aqua not found — skipping ghtkn agent load" >&2
+  exit 0
+fi
+
+label="local.ghtkn-agent"
+launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/$label.plist"
+echo "ghtkn agent restarted locked — run: ghtkn agent unlock --enable-refresh"
+{{- end }}

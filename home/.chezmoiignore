@@ -31,6 +31,8 @@ homebrew/
 .config/git/freee
 .config/colima/
 .config/ghtkn/
+Library/LaunchAgents/local.ghtkn-agent.plist
+.chezmoiscripts/load-ghtkn-agent.sh
 homebrew/Brewfile.work
 .claude/skills/acli/
 {{ end }}

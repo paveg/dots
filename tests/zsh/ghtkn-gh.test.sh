@@ -196,4 +196,19 @@ grep -Fxq ".config/ghtkn/ghtkn.yaml" "$render_root/managed-business.txt" ||
   fail "business profile does not manage .config/ghtkn/ghtkn.yaml"
 pass "ghtkn config is managed only for the business profile"
 
+chezmoi_isolated false ignored >"$render_root/ignored-personal.txt"
+ghtkn_ignored_targets=(".config/ghtkn" ".chezmoiscripts/load-ghtkn-agent.sh")
+# Non-darwin hosts ignore the whole Library/ tree, so the plist is not listed on its own there.
+grep -Fxq "Library" "$render_root/ignored-personal.txt" ||
+  ghtkn_ignored_targets+=("Library/LaunchAgents/local.ghtkn-agent.plist")
+for ghtkn_target in "${ghtkn_ignored_targets[@]}"; do
+  grep -Fxq "$ghtkn_target" "$render_root/ignored-personal.txt" ||
+    fail "personal profile does not ignore $ghtkn_target"
+done
+chezmoi_isolated true ignored >"$render_root/ignored-business.txt"
+if grep -Fq "ghtkn" "$render_root/ignored-business.txt"; then
+  fail "business profile ignores a ghtkn target"
+fi
+pass "ghtkn agent targets are ignored only for the personal profile"
+
 echo "All ghtkn gh wrapper tests passed."

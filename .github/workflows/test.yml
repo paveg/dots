@@ -226,6 +226,8 @@ jobs:
             name: "Test User"
             email: "test@example.com"
             work_email: "test@work.example.com"
+            ghtkn_client_ids:
+              read: "Iv1.test"
           EOF
 
       - name: Test chezmoi init (dry-run)

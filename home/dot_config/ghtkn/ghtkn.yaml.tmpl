@@ -1,0 +1,34 @@
+{{- $ids := dict -}}
+{{- if hasKey . "ghtkn_client_ids" -}}
+{{-   $ids = .ghtkn_client_ids -}}
+{{- end -}}
+{{- $none := get $ids "none" -}}
+{{- $read := get $ids "read" -}}
+{{- $git := get $ids "git" -}}
+{{- $write := get $ids "write" -}}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/suzuki-shunsuke/ghtkn/main/json-schema/ghtkn.json
+# ghtkn - https://github.com/suzuki-shunsuke/ghtkn
+min_expiration: 30m # 有効期限が 30m 以下になったら更新される
+clipboard:
+  enable: true # device flow で one-time code が clipboard にコピーされて便利
+backend:
+  type: agent # access token の更新を自動化したい場合
+apps:
+{{- if not (or $none $read $git $write) }} []{{ end }}
+{{- if $none }}
+  - name: C-FO/none # 先頭にこの App を持ってくることでデフォルトで secure にする
+    client_id: {{ $none | quote }}
+{{- end }}
+{{- if $read }}
+  - name: C-FO/read # read 権限のみ
+    client_id: {{ $read | quote }}
+{{- end }}
+{{- if $git }}
+  - name: C-FO/git # Git Credential Helper 用
+    client_id: {{ $git | quote }}
+    git_owner: C-FO # Git Credential Helper により、 C-FO 配下のリポジトリに push/pull する際はこれが使用される
+{{- end }}
+{{- if $write }}
+  - name: C-FO/write # 開発に必要な基本的な権限
+    client_id: {{ $write | quote }}
+{{- end }}

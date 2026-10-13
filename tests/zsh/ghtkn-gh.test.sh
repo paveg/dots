@@ -182,6 +182,17 @@ grep -Fq "gh: ghtkn is required" "$render_root/business.zshrc" ||
   fail "business zshrc is missing the ghtkn gh wrapper"
 pass "wrapper is rendered only for the business profile"
 
+chezmoi_isolated true execute-template --file "$repo_root/home/dot_zshenv.tmpl" >"$render_root/business.zshenv"
+mkdir -p "$test_root/home"
+aqua_auth_env="$(
+  env -i HOME="$test_root/home" PATH="/usr/bin:/bin" AQUA_KEYRING_ENABLED=true \
+    zsh -f -c 'source "$1" >/dev/null 2>&1; print -r -- "keyring=${AQUA_KEYRING_ENABLED-unset} ghtkn=${AQUA_GHTKN_ENABLED-unset}"' \
+    zsh "$render_root/business.zshenv"
+)"
+[[ "$aqua_auth_env" == "keyring=unset ghtkn=true" ]] ||
+  fail "business zshenv must drop an inherited AQUA_KEYRING_ENABLED and enable ghtkn (got: $aqua_auth_env)"
+pass "business zshenv clears an inherited AQUA_KEYRING_ENABLED"
+
 chezmoi_isolated true execute-template --file "$repo_root/home/dot_config/ghtkn/ghtkn.yaml.tmpl" >"$render_root/ghtkn.yaml"
 grep -Fxq "  type: agent # access token の更新を自動化したい場合" "$render_root/ghtkn.yaml" ||
   fail "ghtkn.yaml does not select the agent backend"

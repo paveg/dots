@@ -169,6 +169,7 @@ export COLIMA_HOME="$XDG_CONFIG_HOME/colima"
 # `ghtkn agent unlock --enable-refresh`. GITHUB_TOKEN, AQUA_GITHUB_TOKEN and
 # AQUA_KEYRING_ENABLED must stay unset or aqua ignores ghtkn. GHTKN_APP picks
 # the read app, since the first app (C-FO/none) cannot read the registry.
+unset AQUA_KEYRING_ENABLED # shells under a long-lived multiplexer still inherit it, and aqua checks keyring first
 export AQUA_GHTKN_ENABLED=true
 export GHTKN_APP=C-FO/read
 

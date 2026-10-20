@@ -74,7 +74,7 @@ One line per category, including the ones that returned nothing or were skipped,
 - **Error tracking**: {issues, events, or releases searched}. Or "Not searched. No matching tool in this session."
 - **Product analytics**: {tables queried, time windows, and the numeric summaries that bore on the question}. Or "Not searched. No matching tool in this session."
 
-A category skipped as provably irrelevant states that reason instead.
+A category skipped as provably irrelevant, or because its scope cannot contain records about the target, states that reason instead.
 
 ### Confidence Summary
 

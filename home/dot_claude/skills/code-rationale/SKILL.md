@@ -48,6 +48,8 @@ List the MCP servers available in this session. Map each to one evidence categor
 6. Error tracking
 7. Product analytics
 
+Then check each mapped source's scope against the target. If its scope cannot contain records about the target (for example, a personal repository against a work-organization workspace: chat, tracker, docs, drive), do not query it at all.
+
 ## Step 4. Guardrails for non-code sources
 
 - If an information-flow or data-handling guardrails skill is available in this session, load it before the first non-code read and follow it.
@@ -58,10 +60,11 @@ List the MCP servers available in this session. Map each to one evidence categor
 
 ## Step 5. Query each category in turn
 
-Go through all seven categories, inline, one at a time. Document the null, don't skip the search. A category may be skipped only for one of two reasons, each recorded in Sources Consulted:
+Go through the categories listed in Step 3, inline, one at a time. Document the null, don't skip the search. A category may be skipped only for one of three reasons, each recorded in Sources Consulted:
 
 - No matching tool exists in this session. This is a gap, not a choice.
 - The source is provably irrelevant, not merely probably irrelevant (for example, error tracking for a build-time script with no runtime path).
+- The source's scope cannot contain records about the target, as decided in Step 3.
 
 If the target looks defensive (null checks, retries, timeouts, rate limits, feature flags, guards), search error tracking and incident records for what it defends against.
 
@@ -73,7 +76,7 @@ Write the answer per `references/output-template.md`, following `references/epis
 
 ## Step 7. Check with a separate evaluator
 
-Before presenting, dispatch the `skeptic` agent with the load-bearing claims (every Direct and Supported claim the answer rests on) and their citations. Ask it to refute each against the primary source. The skeptic reads git and the repo only, so for a claim cited to a non-code source, quote the cited passage in the brief and verify that source yourself. Downgrade or drop any claim it refutes, and note the check in the Confidence Summary. Skip this only when the answer has no Direct or Supported claim.
+Before presenting, dispatch the `skeptic` agent with the load-bearing claims (every Direct and Supported claim the answer rests on) and their citations. Ask it to refute each against the primary source. The skeptic has no MCP tools, so it cannot query non-code sources; for a claim cited to a non-code source, quote the cited passage in the brief and verify that source yourself. Downgrade or drop any claim it refutes, and note the check in the Confidence Summary. Skip this only when the answer has no Direct or Supported claim.
 
 ## Step 8. Present
 

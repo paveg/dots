@@ -34,7 +34,7 @@ Phrasing: "One possibility is X, but we have no direct evidence." Usually lives 
 
 ### 5. Unknown
 
-You looked and couldn't find out. A valid, important outcome. Document it.
+You looked and couldn't find out. A valid, important outcome. Document it. A search that returned nothing is evidence for Unknown, never a Direct claim ("no record explains X" is not Direct): it belongs in What We Don't Know, not What We Found.
 
 Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about _what_ you searched. "We couldn't find out" is less useful than "We searched the ticket tracker with keywords A and B, scanned the PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold. None surfaced a rationale."
 

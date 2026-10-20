@@ -4,7 +4,7 @@
 
 - Non-trivial tasks (3+ steps or an architectural decision): **brainstorm → design → plan**, in that order. Brainstorm asks one question at a time and offers 2-3 approaches with tradeoffs; design gets each section approved before the next; plan breaks the agreed design into checkable items
 - If something goes sideways, stop and re-plan before continuing
-- After any correction from the user, capture the pattern in persistent memory so it survives the session
+- After any correction from the user, capture the pattern in persistent memory so it survives the session; if memory already holds the same pattern, it is a recurring class: suggest `/prevent-recurrence`
 
 ## Delegation
 

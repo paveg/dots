@@ -51,13 +51,14 @@ Dispatch the `implementer` agent with `isolation: "worktree"`. The brief must in
 
 When it returns:
 
-- Review the diff yourself as the evaluator (behavior over implementation).
-- Verify placement: `git worktree list` + `git branch -v` show the main tree untouched and the feature branch at the agent's commits.
-- Run the `adversarial-review` skill on the branch with the implementer's report as a claim source. `ADVERSARIAL: FAIL` sends the refuted claims and their evidence back to a fresh `implementer` dispatch; repeat until PASS, at most 5 rounds (the oscillation guard in `harness-engineering.md`) — then stop and present the remaining refuted rows to the user. A fix that reverts an earlier round's fix stops the loop immediately. Step 5 never starts on FAIL.
+- Verify placement: `git worktree list` + `git branch -v` show the main tree untouched and the feature branch at the agent's commits. `<base>` below is the repo's default branch; `<branch>` is the feature branch.
+- Reviewer stage, once per issue: dispatch `spec-reviewer` (brief = the issue spec), `comment-reviewer`, and `prose-reviewer` in parallel, each given `<base>` and `<branch>` and told to run inside the implementer's worktree path. While they run, review the diff yourself as the evaluator (behavior over implementation). Adjudicate their findings: accept a finding only after confirming its evidence in the diff; LOW findings are noted, not fixed.
+- Run the `adversarial-review` skill on the branch with the implementer's report as a claim source.
+- Fix loop: accepted CRITICAL/IMPORTANT reviewer findings and adversarial-review's REFUTED rows go back together to one fresh `implementer` dispatch; afterwards rerun `adversarial-review` only (the reviewer stage does not rerun). Repeat until `ADVERSARIAL: PASS`, at most 5 dispatches counting the first fix (the oscillation guard in `harness-engineering.md`, which also applies its 3-attempts-on-one-issue re-plan rule) — then stop and present the remaining rows to the user. A fix that reverts an earlier fix stops the loop immediately. Step 5 never starts on FAIL.
 
 ### 5. Open the PR (confirmation gate)
 
-Present the diff summary and proposed PR title/body to the user and **wait for explicit approval before pushing or creating the PR**. The PR body must contain `Closes #$issue` so the merge auto-closes the issue.
+Present the diff summary and proposed PR title/body to the user and **wait for explicit approval before pushing or creating the PR**. The PR body must contain `Closes #$issue` so the merge auto-closes the issue, and an `## Encodable findings` section: one line per accepted CRITICAL/IMPORTANT reviewer finding, row refuted in any adversarial-review round, and Note, as `<encodable> — <class> — <file:line>` (omit the section when there are none), so recurring classes stay visible as CI-check candidates.
 
 ### 6. Watch CI through merge
 

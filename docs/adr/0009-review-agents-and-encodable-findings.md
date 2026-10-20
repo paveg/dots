@@ -26,7 +26,7 @@ The user wanted the strengths of [cursor/plugins pstack](https://github.com/curs
 
 ## Consequences
 
-- Each extra agent costs a spawn (narrow-tool agents measured around 27K tokens against 176–193K for `general-purpose`, `references/model-profiles/opus-5-5.md`). Whether `issue-ship` dispatches them by default is a separate decision; `workflow.md` still has the main session review implementer output itself.
+- `issue-ship` dispatches the three agents in parallel on every implementer branch, and `workflow.md` makes them the coverage stage for implementer output. This reopens the 2026-10-08 "no extra review rounds" decision by the user's choice. The evidence is narrower than that decision asked for: on a planted fixture, the old single reviewer prompt missed a 1000-line crossing, a workaround confession, and a non-atomic update that the revised and split prompts caught. That compares prompts, not main-session self-review against separate agents; the fixture (a retry change with seven planted defects, judged by a sonnet agent reading each prompt) was a throwaway and is not kept in the repo's tests. The agents run once per issue as one parallel stage, not a round; each spawn costs about 27K tokens for a narrow-tool agent against 176–193K for `general-purpose` (`references/model-profiles/opus-5-5.md`).
 - Two Japanese linters overlap on several categories; `prose-reviewer` merges same-line hits rather than either linter being trimmed.
 - The yomiyasu regression check downloads the pinned archive, so it runs under `test-skills` (non-hermetic) rather than the CI quality gate; its pinned counts live in `tests/skills/writing-proofread/run-yomiyasu-tests.sh`.
 - The bump workflow needs the repository setting that lets GitHub Actions create pull requests.

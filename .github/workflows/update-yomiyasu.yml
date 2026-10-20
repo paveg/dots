@@ -1,0 +1,106 @@
+name: Update yomiyasu
+
+on:
+  schedule:
+    - cron: "17 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-yomiyasu
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      EXTERNAL_TOML: home/.chezmoiexternal.toml
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare pinned and latest tags
+        id: tags
+        run: |
+          current=$(grep -oE 'yomiyasu/archive/refs/tags/v[0-9]+\.[0-9]+\.[0-9]+' "$EXTERNAL_TOML" | sed 's|.*/||')
+          latest=$(git ls-remote --tags --refs https://github.com/nanaism/yomiyasu.git 'v*' \
+            | sed 's|.*refs/tags/||' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          [ -n "$current" ] && [ -n "$latest" ] || { echo "could not read tags (current=$current latest=$latest)"; exit 1; }
+          {
+            echo "current=$current"
+            echo "latest=$latest"
+            echo "branch=bump/yomiyasu-$latest"
+          } >> "$GITHUB_OUTPUT"
+          echo "pinned $current, upstream latest $latest"
+
+      - name: Skip when up to date or already proposed
+        id: gate
+        env:
+          CURRENT: ${{ steps.tags.outputs.current }}
+          LATEST: ${{ steps.tags.outputs.latest }}
+          BRANCH: ${{ steps.tags.outputs.branch }}
+        run: |
+          newest=$(printf '%s\n%s\n' "$CURRENT" "$LATEST" | sort -V | tail -1)
+          if [ "$LATEST" = "$CURRENT" ] || [ "$newest" != "$LATEST" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "up to date"; exit 0
+          fi
+          open=$(gh pr list --repo "${{ github.repository }}" --head "$BRANCH" --state open --json number --jq length)
+          if [ "$open" -gt 0 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "an open PR for $BRANCH already exists"; exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+      - name: Bump the pinned tag and run the regression check
+        if: steps.gate.outputs.run == 'true'
+        id: check
+        env:
+          CURRENT: ${{ steps.tags.outputs.current }}
+          LATEST: ${{ steps.tags.outputs.latest }}
+        run: |
+          sed -i "s|/refs/tags/$CURRENT.tar.gz|/refs/tags/$LATEST.tar.gz|" "$EXTERNAL_TOML"
+          grep -q "/refs/tags/$LATEST.tar.gz" "$EXTERNAL_TOML" || { echo "tag replacement failed"; exit 1; }
+          set +e
+          bash tests/skills/writing-proofread/run-yomiyasu-tests.sh > "$RUNNER_TEMP/check.log" 2>&1
+          status=$?
+          set -e
+          cat "$RUNNER_TEMP/check.log"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Open the bump PR with a GitHub-signed commit
+        if: steps.gate.outputs.run == 'true'
+        env:
+          CURRENT: ${{ steps.tags.outputs.current }}
+          LATEST: ${{ steps.tags.outputs.latest }}
+          BRANCH: ${{ steps.tags.outputs.branch }}
+          STATUS: ${{ steps.check.outputs.status }}
+          REPO: ${{ github.repository }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          if gh api "repos/$REPO/git/ref/heads/$BRANCH" >/dev/null 2>&1; then
+            gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH"
+          fi
+          gh api "repos/$REPO/git/refs" -f ref="refs/heads/$BRANCH" -f sha="$GITHUB_SHA" >/dev/null
+          blob_sha=$(gh api "repos/$REPO/contents/$EXTERNAL_TOML?ref=$BRANCH" --jq .sha)
+          gh api -X PUT "repos/$REPO/contents/$EXTERNAL_TOML" \
+            -f message="chore(writing-proofread): bump yomiyasu from $CURRENT to $LATEST" \
+            -f content="$(base64 -w0 "$EXTERNAL_TOML")" \
+            -f sha="$blob_sha" -f branch="$BRANCH" >/dev/null
+          if [ "$STATUS" = 0 ]; then verdict="PASSED"; else verdict="FAILED (exit $STATUS): update the pinned counts in run-yomiyasu-tests.sh or hold the bump"; fi
+          {
+            echo "Bumps yomiyasu from \`$CURRENT\` to \`$LATEST\` ([compare](https://github.com/nanaism/yomiyasu/compare/$CURRENT...$LATEST))."
+            echo
+            echo "Regression check run by this workflow: **$verdict**."
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/check.log"
+            echo '```'
+            echo
+            echo "Before merging, read the upstream diff of the three fetched scripts: they run locally under the agent."
+          } > "$RUNNER_TEMP/body.md"
+          gh pr create --repo "$REPO" --base "$BASE" --head "$BRANCH" \
+            --title "chore(writing-proofread): bump yomiyasu from $CURRENT to $LATEST" \
+            --body-file "$RUNNER_TEMP/body.md"

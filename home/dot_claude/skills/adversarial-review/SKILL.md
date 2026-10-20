@@ -35,13 +35,14 @@ Rank by blast radius — what is wrong downstream if this claim is false — and
 
 The stated claims were chosen by the author, so the author's blind spots never appear in them. Switch stance: you are trying to break this change, and you get to pick where. For each angle below, ask "what would I do to make this fail?", then write the answer as a claim the change is implicitly making, with `source: implicit`, and give it a `kind` so it rides the same routing:
 
-| angle           | the implicit claim                                                                                         |
-| --------------- | ---------------------------------------------------------------------------------------------------------- |
-| trust boundary  | inputs crossing it (user data, env, external responses) are validated; malformed or empty ones are handled |
-| error paths     | a failure, retry, or partial completion leaves no lost data and no half-applied state                      |
-| ordering        | the result does not depend on call order, timing, or concurrent runs                                       |
-| touched callers | every caller of a changed or removed function was updated — "nothing else changed" made concrete           |
-| removal         | what was deleted or replaced is gone everywhere, and what replaced it covers every prior use               |
+| angle           | the implicit claim                                                                                                                                                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| trust boundary  | inputs crossing it (user data, env, external responses) are validated; malformed or empty ones are handled                                                                                                                          |
+| error paths     | a failure, retry, or partial completion leaves no lost data and no half-applied state                                                                                                                                               |
+| ordering        | the result does not depend on call order, timing, or concurrent runs                                                                                                                                                                |
+| touched callers | every caller of a changed or removed function was updated — "nothing else changed" made concrete — including readers grep misses: serialized JSON, DB columns, wire formats, feature flags, another language reading the same bytes |
+| safety fact     | the change is safe because of one named fact (e.g. "this only drops entries that are already dead"); prove that fact and most risk rows clear at once                                                                               |
+| removal         | what was deleted or replaced is gone everywhere, and what replaced it covers every prior use                                                                                                                                        |
 
 Bound it: the six-skeptic cap in step 2 covers stated and implicit rows together, so an implicit claim earns a slot only when its blast radius beats a stated one. Security attack surface (injection, authz, secrets) belongs to `pentest-parallel-prs`; hand it there rather than folding it in here.
 
@@ -50,25 +51,33 @@ A hypothetical is not a finding. Every implicit claim still has to reach a verdi
 ### 2. Route each claim to its check
 
 - **doc** → invoke the `verify-doc-claims` skill on the touched md paths and take its table as these rows' verdicts. Do not re-derive it.
-- **behavior** → dispatch one `skeptic` agent per claim, in parallel, at most 6; when there are more, the blast-radius ranking decides which six. Each brief carries the claim verbatim, the files it concerns, a hint at the decisive experiment (the command that would contradict it), and the instruction to look first for the smallest input or state that makes the claim false — an attacker's opening move, not a reader's. The skeptic is read-only; it cannot run a check that mutates state.
-- **test** → break one condition of the subject at a time and confirm the suite goes red. This mutates, so do it in a throwaway worktree (`git worktree add` on the branch, never the working tree), restore after each mutation, and remove the worktree when done. A suite that stays green with the condition broken refutes the claim, whatever the coverage report says.
+- **behavior** → dispatch one `skeptic` agent per claim, in parallel, at most 6; when there are more, the blast-radius ranking decides which six. Each brief carries the claim verbatim, the files it concerns, a hint at the decisive experiment (the command that would contradict it), and the instruction to look first for the smallest input or state that makes the claim false — an attacker's opening move, not a reader's — plus the rung its evidence must reach (step 3): `ran` where a read-only command can exercise the claim, otherwise `walked`. The skeptic is read-only; it cannot run a check that mutates state.
+- **test** → break one condition of the subject at a time and confirm the suite goes red. This mutates, so do it in a throwaway worktree (`git worktree add` on the branch, never the working tree), restore after each mutation, and remove the worktree when done. A suite that stays green with the condition broken refutes the claim, whatever the coverage report says. When a test asserts on internals (a private helper, internal call order, an exact message), also run the opposite edit: restructure the internals while keeping every observable result. A suite that goes red there is pinned to implementation: the test row's verdict stands, and the pinning goes under **Notes** in step 4.
 - **count** → enumerate before and after (`git show main:<path>` against the branch) and account for every item by name. A summary that adds up is not evidence; the list is.
 
 ### 3. Adjudicate
 
-Subagent verdicts are hypotheses. Before accepting a REFUTED, open the evidence the skeptic cited (the file:line, the command output) and confirm it says what the verdict says. Before accepting a CONFIRMED on a load-bearing claim, check that the decisive test the skeptic names actually exercises the claim rather than a neighbor of it.
+Subagent verdicts are hypotheses. Before accepting a REFUTED, open the evidence the skeptic cited (the file:line, the command output) and confirm it says what the verdict says. Before accepting a CONFIRMED on a load-bearing claim, check that the decisive test the skeptic names actually exercises the claim rather than a neighbor of it. Before accepting an UNVERIFIABLE, check its reason against the brief: a `ran` brief already named a read-only command, so "needs mutation" does not hold there, and the row follows the below-rung path in the next paragraph.
 
-UNVERIFIABLE is allowed only with a stated reason (the check would need mutation the skeptic cannot do, the primary source is unreachable). An UNVERIFIABLE without a reason is an unfinished row.
+Grade each row's evidence by the rung it reached: `said` (asserted), `pointed` (a real file:line), `walked` (the failure path written out step by step and shown not to reach), `ran` (a command or test exercised the real code), `reproduced` (seen in the running app). A CONFIRMED or REFUTED on a load-bearing row below the rung its brief required goes back to a fresh skeptic once with that requirement restated; if it still falls short, the row is UNVERIFIABLE with the reason `evidence stopped at <rung>`.
+
+A REFUTED backed by a run is a concrete failure; never dismiss it by reading. When its failing input looks unreachable from every real caller, that is itself a behavior claim: dispatch a fresh skeptic on "the failing input is unreachable from any real caller" with rung `ran` (or `walked` when no command can exercise it). Only that skeptic's CONFIRMED re-records the row as CONFIRMED, citing its evidence and held to that skeptic's brief rung from then on; the defect then goes under Notes as latent.
+
+UNVERIFIABLE is allowed only with a stated reason (the check would need mutation the skeptic cannot do, the primary source is unreachable, evidence stopped at `<rung>`). An UNVERIFIABLE without a reason is an unfinished row.
 
 ### 4. Report
 
 ```
-| claim | kind | verdict | evidence | decisive test |
+| claim | kind | verdict | evidence (rung) | decisive test | encodable |
 ```
+
+`encodable` is filled on REFUTED rows and Notes with the scale `spec-reviewer` defines (`architecture | type | lint | test | hook | rule | none`): the highest level that would stop the class from recurring. A class a command can decide without false positives is never `rule`.
+
+Below the table, **Notes** lists defects found that refute no claim (a test pinned to implementation, a latent defect behind an unreachable input), each with its evidence and `encodable`. Drop a Note that is a preference with no concrete failure ("I would have done it differently") or that concerns code the change neither touched nor interacts with. Notes do not affect the verdict line.
 
 then one line: `ADVERSARIAL: PASS` or `ADVERSARIAL: FAIL (<n> refuted, <m> unverifiable)`.
 
-PASS requires zero REFUTED rows and a reason on every UNVERIFIABLE row. Anything else is FAIL, and the refuted rows go back to whoever made the change — with the evidence, so the fix targets the claim that broke rather than the wording of it.
+PASS requires zero REFUTED rows and a reason on every UNVERIFIABLE row; `evidence stopped at <rung>` on a load-bearing row is not a reason that permits PASS. Anything else is FAIL, and the refuted rows go back to whoever made the change — with the evidence, so the fix targets the claim that broke rather than the wording of it.
 
 ## Discipline
 

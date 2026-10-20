@@ -57,7 +57,7 @@ A hypothetical is not a finding. Every implicit claim still has to reach a verdi
 
 ### 3. Adjudicate
 
-Subagent verdicts are hypotheses. Before accepting a REFUTED, open the evidence the skeptic cited (the file:line, the command output) and confirm it says what the verdict says. Before accepting a CONFIRMED on a load-bearing claim, check that the decisive test the skeptic names actually exercises the claim rather than a neighbor of it.
+Subagent verdicts are hypotheses. Before accepting a REFUTED, open the evidence the skeptic cited (the file:line, the command output) and confirm it says what the verdict says. Before accepting a CONFIRMED on a load-bearing claim, check that the decisive test the skeptic names actually exercises the claim rather than a neighbor of it. Before accepting an UNVERIFIABLE, check its reason against the brief: a `ran` brief already named a read-only command, so "needs mutation" does not hold there, and the row follows the below-rung path in the next paragraph.
 
 Grade each row's evidence by the rung it reached: `said` (asserted), `pointed` (a real file:line), `walked` (the failure path written out step by step and shown not to reach), `ran` (a command or test exercised the real code), `reproduced` (seen in the running app). A CONFIRMED or REFUTED on a load-bearing row below the rung its brief required goes back to a fresh skeptic once with that requirement restated; if it still falls short, the row is UNVERIFIABLE with the reason `evidence stopped at <rung>`.
 

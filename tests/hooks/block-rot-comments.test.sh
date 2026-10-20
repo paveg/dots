@@ -228,6 +228,23 @@ git -C "$repo" add notes.md
 out=$(run "$(bash_payload "$repo" 'git commit -m x')")
 [[ -z $out ]] || fail "commit gate blocked a .md file: $out"
 
+# Staged file marked linguist-vendored in .gitattributes → ALLOW
+repo=$(new_repo staged_vendored)
+mkdir -p "$repo/third_party"
+printf 'third_party/** linguist-vendored\n' >"$repo/.gitattributes"
+printf '%s\ndef f(): pass\n' "$rot_jp" >"$repo/third_party/upstream.py"
+git -C "$repo" add .gitattributes third_party/upstream.py
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+[[ -z $out ]] || fail "commit gate blocked a linguist-vendored file: $out"
+
+# Vendored and own rot in one commit → BLOCK, reason names only the own file
+printf '%s\ndef g(): pass\n' "$rot_jp" >"$repo/own.py"
+git -C "$repo" add own.py
+out=$(run "$(bash_payload "$repo" 'git commit -m x')")
+is_block "$out" || fail "commit gate let own rot through beside a vendored file: $out"
+reason_has "$out" "own.py" || fail "mixed-commit reason missing own file: $out"
+if reason_has "$out" "upstream.py"; then fail "mixed-commit reason named the vendored file: $out"; fi
+
 # Non-commit Bash commands → ALLOW
 repo=$(new_repo non_commit)
 printf '%s\ndef f(): pass\n' "$rot_jp" >"$repo/rotten.py"

@@ -133,7 +133,7 @@ jobs:
           echo "Checking shell format..."
 
           # Check .sh scripts (shfmt does not support zsh; zsh syntax is checked by zsh -n in lint job)
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | \
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/chezmoi/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | \
             xargs -0 shfmt -d -i 2 -ci
 
       - name: Check lua format (stylua)
@@ -173,7 +173,7 @@ jobs:
           fi
           
           # Check install.sh, chezmoi scripts, CI helpers, and Bash regression tests
-          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | xargs -0 shellcheck
+          find . -type f \( -name "install.sh" -o -path "./home/.chezmoiscripts/*.sh" -o -path "./home/dot_config/direnv/direnvrc" -o -path "./.github/scripts/install-chezmoi.sh" -o -path "./tests/devbox/*.sh" -o -path "./tests/chezmoi/*.sh" -o -path "./tests/zsh/*.test.sh" \) -print0 | xargs -0 shellcheck
 
   zsh-darwin:
     name: Zsh Syntax (macOS)

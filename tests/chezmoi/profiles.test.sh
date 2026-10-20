@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Renders the whole source tree for each profile and asserts which scripts
-# survive .chezmoiignore. CI's other chezmoi steps render one file, so a
-# dangling include or a script ignore that matches nothing reaches main.
+# survive .chezmoiignore.
 set -euo pipefail
 
 repo_root=${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}

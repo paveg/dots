@@ -13,6 +13,18 @@ head=${2:-HEAD}
 source_root=${SOURCE_ROOT-home}
 prefix=${source_root:+$source_root/}
 
+for ref in "$base" "$head"; do
+  git rev-parse --verify --quiet "$ref^{commit}" >/dev/null || {
+    echo "✗ cannot resolve $ref: run 'git fetch origin main' (CI checkout needs fetch-depth: 0)" >&2
+    exit 1
+  }
+done
+git merge-base "$base" "$head" >/dev/null || {
+  echo "✗ $base and $head share no merge base: fetch full history (fetch-depth: 0)" >&2
+  exit 1
+}
+
+# Ceiling: literal_, remove_, .age, and exact_-directory deletion are not modelled; none exist here yet.
 target_path() {
   local source_path="$1" component result="" stripped
   local IFS=/

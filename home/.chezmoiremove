@@ -13,7 +13,7 @@
 # copy kept billing 1.7K chars on every turn on machines that applied before.
 .claude/rules/zero-cost-scaling.md
 #
-# Sources deleted before the removal check existed; nothing reads these copies.
+# Sources are gone; chezmoi leaves the deployed copies in place, so delete them.
 .claude/rules/mermaid-diagrams.md
 .claude/hooks/rules-inject.sh
 .claude/hooks/mermaid-render.sh

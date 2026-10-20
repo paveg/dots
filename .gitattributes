@@ -1,0 +1,3 @@
+home/dot_claude/skills/writing-proofread/scripts/lint.py linguist-vendored
+home/dot_claude/skills/writing-proofread/scripts/textcore.py linguist-vendored
+home/dot_claude/skills/writing-proofread/scripts/fixtures/** linguist-vendored

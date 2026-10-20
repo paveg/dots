@@ -30,6 +30,8 @@
 # Skipped:
 #   - Prose extensions (.md, .mdx, .txt, .rst, .adoc) — issue refs and
 #     temporal language are legitimate there.
+#   - At commit time, files marked `linguist-vendored` in .gitattributes:
+#     third-party code is vendored unmodified, so its comments are not ours.
 #   - For Edit / MultiEdit, only lines present in new_string but not in
 #     old_string are scanned, so touching code near an existing rot
 #     comment does not retroactively block the edit.
@@ -248,6 +250,28 @@ def added_lines_by_file(diff: str) -> dict[str, list[str]]:
     return by_file
 
 
+def vendored_paths(repo_dir: str, paths: list[str]) -> set[str]:
+    if not paths:
+        return set()
+    try:
+        result = subprocess.run(
+            ["git", "-C", repo_dir, "check-attr", "-z", "linguist-vendored", "--", *paths],
+            capture_output=True,
+            timeout=GIT_TIMEOUT_SECONDS,
+            env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"},
+        )
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    if result.returncode != 0:
+        return set()
+    fields = result.stdout.decode("utf-8", errors="replace").split("\0")
+    return {
+        fields[i]
+        for i in range(0, len(fields) - 2, 3)
+        if fields[i + 2] in ("set", "true")
+    }
+
+
 def commit_violations(command: str, cwd: str) -> list[tuple[str, str]]:
     target = commit_target(command, cwd)
     if target is None:
@@ -255,9 +279,11 @@ def commit_violations(command: str, cwd: str) -> list[tuple[str, str]]:
     diff = commit_diff(*target)
     if diff is None:
         return []
+    by_file = added_lines_by_file(diff)
+    vendored = vendored_paths(target[0], list(by_file))
     hits: list[tuple[str, str]] = []
-    for path, lines in added_lines_by_file(diff).items():
-        if path.lower().endswith(PROSE_EXTENSIONS):
+    for path, lines in by_file.items():
+        if path.lower().endswith(PROSE_EXTENSIONS) or path in vendored:
             continue
         hits.extend((f"{path}: {line}", label) for line, label in find_violations(lines))
     return hits

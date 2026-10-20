@@ -120,8 +120,12 @@ lint-headers:
     done
     @echo "✓ Headers OK!"
 
+# Every source removed since origin/main needs a home/.chezmoiremove entry
+check-removed-targets:
+    @bash .github/scripts/check-chezmoiremove.sh
+
 # Fast, hermetic checks that run unconditionally in CI.
-quality-gate: lint lint-headers test-devbox test-hooks test-zsh-features test-skill-scripts
+quality-gate: lint lint-headers check-removed-targets test-devbox test-chezmoi-profiles test-hooks test-zsh-features test-skill-scripts
     @echo "✓ Fast quality gate passed!"
 
 # Run all checks
@@ -154,6 +158,11 @@ test-zsh-features:
 test-devbox:
     @echo "Validating rendered Devbox profiles..."
     @bash tests/devbox/render-and-assert.sh
+
+# Render the whole source tree for each OS and business_use profile
+test-chezmoi-profiles:
+    @echo "Rendering chezmoi profiles..."
+    @bash tests/chezmoi/profiles.test.sh
 
 # Run hermetic skill script tests (no network)
 test-skill-scripts:

@@ -12,3 +12,18 @@
 # Moved to home/dot_claude/skills/zero-cost-scaling (identical body); the rule
 # copy kept billing 1.7K chars on every turn on machines that applied before.
 .claude/rules/zero-cost-scaling.md
+#
+# Sources are gone; chezmoi leaves the deployed copies in place, so delete them.
+.claude/rules/mermaid-diagrams.md
+.claude/hooks/rules-inject.sh
+.claude/hooks/mermaid-render.sh
+.claude/statusline-command.sh
+.config/zsh/features/aqua-token-sync.zsh
+.config/zsh/features/dotenv-auto.zsh
+.config/workmux/config.yaml
+.config/starship.toml
+.config/grafana/dashboards/claude-code-cost.json
+#
+# Still read by git from its XDG default; it points every repo at the removed
+# mergiraf merge driver.
+.config/git/attributes

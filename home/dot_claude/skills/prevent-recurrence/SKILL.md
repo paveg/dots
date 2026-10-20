@@ -14,13 +14,13 @@ Assume every contributor is an agent that sees only the files it opened, copies 
 
 Read these sources and list every mistake you find, each with a pointer to where it happened:
 
-| Source | What it shows | How |
-| --- | --- | --- |
-| git history | reverts, and fixes that repair a recent commit | `git log --oneline -200`, `git log --grep='^Revert'`, `git show <sha>` |
-| PR review comments | what reviewers had to point out | `gh api repos/<owner>/<repo>/pulls/comments --paginate` |
-| PR bodies | `## Encodable findings` lines left by the review stage | `gh pr list --state merged --limit 100 --json number,body` |
-| agent memory | corrections the user gave about how agents work | `feedback`-type files in the project's memory directory |
-| instruction files and comments | workarounds and "do not do X" notes that exist because X happened | CLAUDE.md, rules, comments with `IMPORTANT` / `do not` |
+| Source                         | What it shows                                                     | How                                                                    |
+| ------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| git history                    | reverts, and fixes that repair a recent commit                    | `git log --oneline -200`, `git log --grep='^Revert'`, `git show <sha>` |
+| PR review comments             | what reviewers had to point out                                   | `gh api repos/<owner>/<repo>/pulls/comments --paginate`                |
+| PR bodies                      | `## Encodable findings` lines left by the review stage            | `gh pr list --state merged --limit 100 --json number,body`             |
+| agent memory                   | corrections the user gave about how agents work                   | `feedback`-type files in the project's memory directory                |
+| instruction files and comments | workarounds and "do not do X" notes that exist because X happened | CLAUDE.md, rules, comments with `IMPORTANT` / `do not`                 |
 
 ## 2. Group into classes
 

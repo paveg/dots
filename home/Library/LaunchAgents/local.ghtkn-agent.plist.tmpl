@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>local.ghtkn-agent</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/aqua</string>
+    <string>exec</string>
+    <string>--</string>
+    <string>ghtkn</string>
+    <string>agent</string>
+    <string>start</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>AQUA_GLOBAL_CONFIG</key>
+    <string>{{ .chezmoi.homeDir }}/.config/aquaproj-aqua/aqua.yaml</string>
+    <key>XDG_CONFIG_HOME</key>
+    <string>{{ .chezmoi.homeDir }}/.config</string>
+    <key>XDG_DATA_HOME</key>
+    <string>{{ .chezmoi.homeDir }}/.local/share</string>
+    <key>XDG_CACHE_HOME</key>
+    <string>{{ .chezmoi.homeDir }}/.cache</string>
+    <key>PATH</key>
+    <string>{{ .chezmoi.homeDir }}/.local/share/aquaproj-aqua/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>{{ .chezmoi.homeDir }}/Library/Logs/ghtkn-agent.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{ .chezmoi.homeDir }}/Library/Logs/ghtkn-agent.log</string>
+</dict>
+</plist>

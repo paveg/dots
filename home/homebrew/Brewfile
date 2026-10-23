@@ -35,6 +35,8 @@ brew "icu4c@76"
 brew "istioctl"
 # Mac App Store command-line interface
 brew "mas"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node@24"
 # Object-relational database system
 brew "postgresql@15", link: true
 # Rsync for cloud storage

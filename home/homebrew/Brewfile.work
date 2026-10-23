@@ -23,6 +23,7 @@ brew "librsvg"
 brew "libyaml"
 brew "mas"
 brew "mysql-client@8.0", link: true
+brew "node@24"
 brew "pinentry-mac"
 brew "pkgconf"
 brew "protobuf"

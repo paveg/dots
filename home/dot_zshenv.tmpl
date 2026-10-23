@@ -143,12 +143,24 @@ unset \
 # User tool paths (after devbox to avoid being overwritten)
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$BUN_INSTALL/bin:$HOME/.moon/bin:${PATH}:${HOME}/go/bin"
+{{- if eq .chezmoi.os "darwin" }}
+
+# devbox's nodejs@24 predates 24.22.1, which distrusts the compromised eMudhra
+# CAs. Shadow it with keg-only Homebrew node@24 until devbox resolves 24.22.1+.
+if [[ -d "{{ .homebrew_prefix }}/opt/node@24/bin" ]]; then
+  export PATH="{{ .homebrew_prefix }}/opt/node@24/bin:$PATH"
+fi
+{{- end }}
 
 # ghq root
 export GHQ_ROOT="$HOME/repos"
 
 # gitleaks global config
 export GITLEAKS_CONFIG="$XDG_CONFIG_HOME/gitleaks/config.toml"
+
+# Deno's bundled Mozilla roots before 2.9.8 still trust the compromised eMudhra
+# CAs. Verify against the OS store until devbox resolves deno to 2.9.8+.
+export DENO_TLS_CA_STORE=system
 
 # aqua must outrank Homebrew and devbox: a repository's .aqua.yaml pins the
 # versions its CI runs, and the same binary has to resolve here. This prepend

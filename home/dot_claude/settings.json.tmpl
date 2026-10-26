@@ -100,7 +100,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bunx -y ccstatusline@latest",
+    "command": "$HOME/.claude/statusline.sh",
     "padding": 0
   },
   "enabledPlugins": {
@@ -208,27 +208,6 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/browser-inject.sh"
-          }
-        ]
-      },
-      {
-        "_tag": "ccstatusline-managed",
-        "matcher": "Skill",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bunx -y ccstatusline@latest --hook"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "_tag": "ccstatusline-managed",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bunx -y ccstatusline@latest --hook"
           }
         ]
       }

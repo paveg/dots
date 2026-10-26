@@ -18,7 +18,7 @@ FIXTURES="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures
 SMELLY_FIXTURE="${FIXTURES}/ai-smelly.md"
 NATURAL_FIXTURE="${FIXTURES}/natural.md"
 
-EXPECTED_SMELLY_FINDINGS=11
+EXPECTED_SMELLY_FINDINGS=13
 EXPECTED_NATURAL_FINDINGS=0
 
 tmpdir="$(mktemp -d)"

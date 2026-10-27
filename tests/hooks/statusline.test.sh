@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Tests for executable_statusline.sh: the statusLine command that renders the
-# session JSON from stdin into two lines without network or package managers.
+# session JSON from stdin into one or two lines without network or package managers.
 set -uo pipefail
+unset COLUMNS
+export LC_ALL=C.UTF-8
 
 script="$HOOKS_DIR/../executable_statusline.sh"
 [[ -f $script ]] || { echo "statusline not found: $script"; exit 1; }
@@ -43,3 +45,15 @@ plain_dir="$repo/not-a-repo-$$"
 mkdir -p "$plain_dir"
 out=$(GIT_CEILING_DIRECTORIES="$repo" run "$(jq -n --arg dir "$plain_dir" '{session_id: "statusline-test-nogit", workspace: {current_dir: $dir}}')")
 [[ $(sed -n 1p <<<"$out") == "${plain_dir##*/}" ]] || { echo "non-git line 1 wrong: $out"; exit 1; }
+
+# With $COLUMNS wide enough (notification margin included), both lines join into one.
+out=$(COLUMNS=200 run "$full_input")
+[[ $(wc -l <<<"$out") -eq 1 && $out == "$line1 | $line2" ]] || { echo "wide terminal should print one line: $out"; exit 1; }
+# One column short of fitting falls back to two lines; ▓░↻ must count as one column each even without a UTF-8 locale.
+fit_columns=$(( ${#line1} + 3 + ${#line2} + 20 ))
+out=$(COLUMNS=$fit_columns run "$full_input")
+[[ $(wc -l <<<"$out") -eq 1 ]] || { echo "exact fit should print one line: $out"; exit 1; }
+out=$(printf '%s' "$full_input" | env -u LANG -u LC_ALL -u LC_CTYPE COLUMNS=$((fit_columns - 1)) bash "$script" | sed $'s/\033\\[[0-9;]*m//g')
+[[ $(wc -l <<<"$out") -eq 2 ]] || { echo "one column short should print two lines: $out"; exit 1; }
+out=$(printf '%s' "$full_input" | env -u LANG -u LC_ALL -u LC_CTYPE COLUMNS=$fit_columns bash "$script" | sed $'s/\033\\[[0-9;]*m//g')
+[[ $(wc -l <<<"$out") -eq 1 ]] || { echo "exact fit without a UTF-8 locale should print one line: $out"; exit 1; }

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Claude Code statusLine: reads the session JSON on stdin and prints two lines.
+# Claude Code statusLine: reads the session JSON on stdin and prints one line
+# when it fits $COLUMNS (set by Claude Code), otherwise two.
 # Everything except git branch/changes comes from that JSON, so the only
 # subprocess besides jq is one cached `git status`.
 set -uo pipefail
@@ -89,7 +90,20 @@ join_with_separator() {
   local separator=" | " output="$1"
   shift
   for part in "$@"; do output+="${separator}${part}"; done
-  printf '%s\n' "$output"
+  printf '%s' "$output"
 }
-join_with_separator "${line1[@]}"
-join_with_separator "${line2[@]}"
+first_line=$(join_with_separator "${line1[@]}")
+second_line=$(join_with_separator "${line2[@]}")
+single_line="${first_line} | ${second_line}"
+
+LC_ALL=C.UTF-8
+shopt -s extglob
+visible_single_line=${single_line//$'\033['*([0-9;])m/}
+# Outside fullscreen rendering, Claude Code draws notifications on the right end of this row.
+notification_margin=20
+terminal_columns=${COLUMNS:-0}
+if ((terminal_columns > 0 && ${#visible_single_line} <= terminal_columns - notification_margin)); then
+  printf '%s\n' "$single_line"
+else
+  printf '%s\n%s\n' "$first_line" "$second_line"
+fi

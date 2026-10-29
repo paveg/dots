@@ -34,7 +34,6 @@ homebrew/
 Library/LaunchAgents/local.ghtkn-agent.plist
 .chezmoiscripts/load-ghtkn-agent.sh
 homebrew/Brewfile.work
-.claude/skills/acli/
 {{ end }}
 
 # Personal-only skills (excluded on work machines)
@@ -45,6 +44,7 @@ homebrew/Brewfile.work
 .claude/skills/x-post-craft/
 .claude/skills/zero-cost-scaling/
 .claude/skills/ios-submission-review/
+.claude/skills/excalidraw-diagram/
 {{ end }}
 
 # Personal-only AtCoder tooling (excluded on work machines)

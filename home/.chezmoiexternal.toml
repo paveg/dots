@@ -8,3 +8,8 @@
         "*/skills/yomiyasu/scripts/yomiyasu_diff.py",
         "*/skills/yomiyasu/scripts/markdown_visibility.py",
     ]
+
+[".claude/skills/excalidraw-diagram"]
+    type = "archive"
+    url = "https://github.com/coleam00/excalidraw-diagram-skill/archive/13f47228aee9f8ff8788e32d1f15679753bb237c.tar.gz"
+    stripComponents = 1

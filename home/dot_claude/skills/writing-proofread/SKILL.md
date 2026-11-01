@@ -8,11 +8,11 @@ argument-hint: <file or text to proofread>
 
 # Japanese AI-Writing Proofreader
 
-Four passes, mechanical first. The textlint and rhythm-lint passes exist because deterministic checks beat LLM judgment where both can do the job — run them before reading the text yourself, so your review starts from machine-verified ground.
+Five passes, mechanical first. The textlint and rhythm-lint passes exist because deterministic checks beat LLM judgment where both can do the job — run them before reading the text yourself, so your review starts from machine-verified ground.
 
 ## Scale
 
-Scale by size, not artifact type. Short utilitarian prose — commit messages, changelog entries, a few-line PR body or README tweak — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and a few lines leave Pass 4 nothing to check. But a long PR/issue body (目安: 40 行超, or more than one heading) is document-sized — run the full pipeline on it; routing PR bodies around Pass 4 (情報の出し順, buried conclusions, 整合性) by artifact type is what let 「読みづらい」 re-requests through minutes after a clean proofread. Articles and standalone documents get all four passes regardless of length. When in doubt, run the full pipeline.
+Scale by size, not artifact type. Short utilitarian prose — commit messages, changelog entries, a few-line PR body or README tweak — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and a few lines leave Pass 4 nothing to check. But a long PR/issue body (目安: 40 行超, or more than one heading) is document-sized — run the full pipeline on it; routing PR bodies around Pass 4 (情報の出し順, buried conclusions, 整合性) by artifact type is what let 「読みづらい」 re-requests through minutes after a clean proofread. Articles and standalone documents get all five passes regardless of length. When in doubt, run the full pipeline.
 
 ## Mode
 
@@ -119,6 +119,15 @@ This is where text that passes Pass 1-3 still reads AI-written. The dimensions P
 - **自分が持ち込んだ不整合**: in fix mode, re-read the passages you changed against their neighbours. Rewriting one sentence for 文末の変化 can leave a paragraph mixing 過去 and 現在（「向上しました」と「減っています」）, which is a defect you introduced, not one you found
 - **初出の専門用語の導入**: don't start using a term in the body before its alias/definition appears — a VLAN labeled Default in a table, then called Trusted in prose with no bridge, reads as 唐突 → introduce on first use as「A（＝B、その役割）」. In fix mode, insert the introduction only when the definition already appears elsewhere in the text; otherwise report it as a finding for the author — inventing a definition violates the say-only-what-the-source-says guard
 
+## Pass 5: Wording review (word-level, separate context)
+
+Passes 1-4 read sentences; word-level unnaturalness (literal translation, stiff kanji compounds, skewed collocation, ambiguous subject-predicate) survives them because the writer reads its own words by intent. A separate context finds it.
+
+- Runs once, in fix mode, only on articles and standalone documents, after Passes 1-4 are applied. PR bodies, commit messages, and short text never get it. It also runs when the user explicitly asks for a word-choice review（「語彙も見て」「ワーディングを見て」), in either mode
+- Dispatch the `wording-reviewer` agent with the file path, the targeted sections if any, and the active style profile path. Do not run `calques.py` or read the slop catalog in the main session: keeping their output out of main context is the point
+- The agent returns candidates only. Adjudicate each one here under the same scope guards (say only what the source says, voice preservation), apply the accepted fixes, and do not re-dispatch. A candidate marked `ask author` goes to the author as a question
+- Maintenance: a word the user flags as unnatural goes in `assets/yomiyasu-words/flag.txt`, or `assets/prh.yml` if it has one context-free replacement; a word confirmed as a legitimate term goes in `assets/yomiyasu-words/allow.txt`
+
 ## Output
 
 Findings table (report mode) or applied-fix summary (fix mode):
@@ -129,4 +138,4 @@ Findings table (report mode) or applied-fix summary (fix mode):
 
 - 重要度: CRITICAL（意味が壊れている・事実が変わる）/ IMPORTANT（誤字・誤用・文法ミス、および明確なAI臭）/ LOW（表記の好み）。Present CRITICAL and IMPORTANT in the table. LOW: one aggregate line — count plus rule/kind names only（「ほか LOW 2件（訳→わけ等の表記）」), no Before→After. This keeps Pass 1 evidence visible without itemizing
 - In fix mode, LOW findings are applied to the text like any other; the aggregate line reports them, it does not withhold them. Pass 1's orthography guard decides whether something is a finding at all — this rule governs only accepted findings and does not resurrect rewrites the guard excluded
-- In fix mode, end with counts grouped by pass（textlint / リズム・統計 / AI臭 / 自然さ）and anything intentionally left alone (voice devices, quoted text)
+- In fix mode, end with counts grouped by pass（textlint / リズム・統計 / AI臭 / 自然さ / 語彙）and anything intentionally left alone (voice devices, quoted text)

@@ -1,16 +1,17 @@
 # Vendored files
 
-`lint.py`, `textcore.py`, `fixtures/ai-smelly.md`, and `fixtures/natural.md` in
-this directory are vendored **unmodified** from
+`lint.py`, `textcore.py`, `paragraphs.py`, `fixtures/ai-smelly.md`, and
+`fixtures/natural.md` in this directory are vendored **unmodified** from
 [coji/natural-japanese](https://github.com/coji/natural-japanese)
 (`skills/natural-japanese/scripts/`), commit
-`0f1cc1c5a4e2aa7590598c88a15c213a60d9545a` (2026-08-17, v1.4.0), under the MIT license
+`25a8638b780037a2012e2bb3f624a0b1710666fb` (2026-10-28, v1.6.4), under the MIT license
 reproduced below.
 
 ## Update procedure
 
-1. Re-copy the four files above from the upstream repo at the new commit,
-   byte-for-byte (no reformatting, no local patches).
+1. Re-copy the files above from the upstream repo at the new commit,
+   byte-for-byte (no reformatting, no local patches). `lint.py` imports its
+   siblings at runtime, so check its imports for new ones and vendor those too.
 2. Run `tests/skills/writing-proofread/run-tests.sh` from the
    repo root; if the pinned finding counts no longer match, update the
    fixtures' expected counts in that script to the new output (cross-check

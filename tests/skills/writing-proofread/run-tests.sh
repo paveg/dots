@@ -22,8 +22,8 @@ NATURAL_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/f
 
 # Expected finding counts. Update these if you deliberately re-vendor
 # lint.py/textcore.py or edit the fixtures.
-EXPECTED_SMELLY_DEFAULT=25
-EXPECTED_SMELLY_EXPERIMENTAL=33
+EXPECTED_SMELLY_DEFAULT=22
+EXPECTED_SMELLY_EXPERIMENTAL=29
 EXPECTED_NATURAL_DEFAULT=0
 EXPECTED_NATURAL_EXPERIMENTAL=0
 

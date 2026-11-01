@@ -24,7 +24,13 @@ Format every question like this:
 ❓ **Q1** - **<question title>**: <question body — may be several paragraphs, may list options>
 
 ➡️ <your recommended answer, with a one-clause reason>
+
+---
+
+❓ **Q2** - ...
 ```
+
+Word each question so "yes" accepts your recommended answer.
 
 Each round of answers reshapes the tree — settled decisions push the frontier outward and unblock what depended on them. Recompute the frontier and ask the next round. Count rounds, not questions: many questions in few rounds is the intended shape.
 

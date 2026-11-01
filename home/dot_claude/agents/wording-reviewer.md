@@ -23,7 +23,7 @@ The brief gives the target file, and optionally line ranges or sections, a style
    P=~/.claude/skills/writing-proofread/scripts
    uv run "$P/calques.py" --json <file> | jq -r '.[] | "L\(.line) \(.kind) \(.word)"'
    python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words "$P/../assets/yomiyasu-words" <file> \
-     | jq -r '.findings[] | select(.rule | IN("calque","metaphor_verb","metaphor_label","slop_vocabulary","translated_term","renyo_noun","project_term","katakana_term")) | "L\(.line) \(.rule) \(.message)"'
+     | jq -r '.findings[] | select(.rule | IN("calque","ai_phrase","metaphor_verb","metaphor_label","slop_vocabulary","translated_term","renyo_noun","project_term","katakana_term")) | "L\(.line) \(.rule) \(.message)"'
    ```
 
    `calques.py` has no allow option: read `"$P/../assets/yomiyasu-words/allow.txt"` and drop its hits whose word is listed there. Never print the `text` field of a calques hit; it is the whole paragraph.

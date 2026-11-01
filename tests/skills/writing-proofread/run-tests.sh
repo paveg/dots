@@ -17,13 +17,14 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 LINT="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/lint.py"
+CALQUES="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/calques.py"
 SMELLY_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures/ai-smelly.md"
 NATURAL_FIXTURE="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures/natural.md"
 
 # Expected finding counts. Update these if you deliberately re-vendor
 # lint.py/textcore.py or edit the fixtures.
-EXPECTED_SMELLY_DEFAULT=25
-EXPECTED_SMELLY_EXPERIMENTAL=33
+EXPECTED_SMELLY_DEFAULT=22
+EXPECTED_SMELLY_EXPERIMENTAL=29
 EXPECTED_NATURAL_DEFAULT=0
 EXPECTED_NATURAL_EXPERIMENTAL=0
 
@@ -85,6 +86,31 @@ check "ai-smelly.md (default)" "${EXPECTED_SMELLY_DEFAULT}" "$(count_findings "$
 check "ai-smelly.md (--experimental)" "${EXPECTED_SMELLY_EXPERIMENTAL}" "$(count_findings "${SMELLY_FIXTURE}" --experimental)"
 check "natural.md (default)" "${EXPECTED_NATURAL_DEFAULT}" "$(count_findings "${NATURAL_FIXTURE}")"
 check "natural.md (--experimental)" "${EXPECTED_NATURAL_EXPERIMENTAL}" "$(count_findings "${NATURAL_FIXTURE}" --experimental)"
+
+calques_words() {
+  local text="$1" input
+  input="$(mktemp)"
+  printf '%s\n' "${text}" >"${input}"
+  uv run "${CALQUES}" --json "${input}" | python3 -c '
+import json, sys
+print(" ".join(hit["word"] for hit in json.load(sys.stdin)))
+'
+  rm -f "${input}"
+}
+
+check_calques() {
+  local label="$1" text="$2" expected="$3" actual
+  actual="$(calques_words "${text}")"
+  if [ "${actual}" != "${expected}" ]; then
+    echo "FAIL: ${label}: expected calques '${expected}', got '${actual}'" >&2
+    fail=1
+  else
+    echo "OK: ${label}: calques '${actual}'"
+  fi
+}
+
+check_calques "calques.py flags a motion verb" "人間が握る。" "握る"
+check_calques "calques.py stays quiet on plain prose" "今日は天気が良いので散歩に行く。" ""
 
 if [ "${fail}" -ne 0 ]; then
   echo "Fixture regression check FAILED." >&2

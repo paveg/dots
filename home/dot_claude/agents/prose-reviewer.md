@@ -20,7 +20,7 @@ You review the Japanese prose a diff adds or changes: Markdown files only; PR bo
   P=~/.claude/skills/writing-proofread/scripts
   after="$(mktemp -d)/after.md" && git show <branch>:<file> > "$after"
   uv run "$P/lint.py" --json "$after"
-  python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json "$after"
+  python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words ~/.claude/skills/writing-proofread/assets/yomiyasu-words "$after"
   ```
 
 - Meaning check, for every target that existed at `<base>` (a rewrite):

@@ -1,16 +1,17 @@
 # Vendored files
 
-`lint.py`, `textcore.py`, `fixtures/ai-smelly.md`, and `fixtures/natural.md` in
-this directory are vendored **unmodified** from
+`lint.py`, `calques.py`, `textcore.py`, `paragraphs.py`, `fixtures/ai-smelly.md`, and
+`fixtures/natural.md` in this directory are vendored **unmodified** from
 [coji/natural-japanese](https://github.com/coji/natural-japanese)
 (`skills/natural-japanese/scripts/`), commit
-`0f1cc1c5a4e2aa7590598c88a15c213a60d9545a` (2026-08-17, v1.4.0), under the MIT license
+`25a8638b780037a2012e2bb3f624a0b1710666fb` (2026-10-28, v1.6.4), under the MIT license
 reproduced below.
 
 ## Update procedure
 
-1. Re-copy the four files above from the upstream repo at the new commit,
-   byte-for-byte (no reformatting, no local patches).
+1. Re-copy the files above from the upstream repo at the new commit,
+   byte-for-byte (no reformatting, no local patches). `lint.py` imports its
+   siblings at runtime, so check its imports for new ones and vendor those too.
 2. Run `tests/skills/writing-proofread/run-tests.sh` from the
    repo root; if the pinned finding counts no longer match, update the
    fixtures' expected counts in that script to the new output (cross-check
@@ -43,11 +44,12 @@ SOFTWARE.
 
 # Fetched files (yomiyasu)
 
-`yomiyasu/yomiyasu_lint.py`, `yomiyasu/yomiyasu_diff.py`, and
-`yomiyasu/markdown_visibility.py` are not stored in this repository. chezmoi
+`yomiyasu/yomiyasu_lint.py`, `yomiyasu/yomiyasu_diff.py`,
+`yomiyasu/markdown_visibility.py`, and `yomiyasu/slop-catalog.md` (from
+`skills/yomiyasu/references/`) are not stored in this repository. chezmoi
 fetches them unmodified at `apply` time from a pinned release of
 [nanaism/yomiyasu](https://github.com/nanaism/yomiyasu)
-(`skills/yomiyasu/scripts/`), as declared in `home/.chezmoiexternal.toml`,
+(`skills/yomiyasu/scripts/`, plus the catalog above), as declared in `home/.chezmoiexternal.toml`,
 under the MIT license reproduced below.
 
 `yomiyasu_check.py` and `yomiyasu_hook.py` from the same upstream directory are

@@ -70,7 +70,7 @@ Detectable post-hoc; the mechanical-lint safety net beneath the structural axis 
   - Metaphor verbs: 「地味に効いてくる」「（静かに）壊れる」「〜側に倒す」「時間を溶かす」「静かに／黙って」（"silently" の訳）「〜した瞬間」 → plain words of the same breadth: 「役に立つ」「おかしくなる・使えなくなる」「〜を優先する・〜に統一する」「時間を費やした」「気づかないうちに」「〜した時点で」. Literal uses stay（お腹を壊す、植木鉢が倒れる）. Carry over the nuance the metaphor held（「地味に」= small but real、「溶かす」= regret）in plain words. Write 「通知なく」「エラーを出さずに」 only when the source makes clear that no notification or error occurs
   - Pseudo-concrete words: 「解像度を上げる」「腹落ち」「手触り」「肌感」「温度感」, and 「本質的な」 as an empty modifier → state what was examined or learned, taken from the source only; when the source doesn't say, ask the author rather than invent it
   - Framing fillers: 「重要なのは〜」「結論から言うと」「〜に他なりません」「〜というわけです」「いかがでしたでしょうか」 → start from the main clause. When 「重要なのは」 carries the actual evaluation, move it into the predicate（「〜が重要です」）instead of deleting it
-  - Not targets: 既定・照合・要点・定番・実測・突き合わせる・入口・土台・担保・核心・潰す（バグを潰す）are long-standing terms in Japanese technical writing — never flag them
+  - Not targets: long-standing technical terms listed in `writing-proofread/assets/yomiyasu-words/allow.txt` are never flagged
 - **Particle omission and padding**: dropped 助詞（「ファイル作成」→「ファイルを作成する」), passive where active reads plainer（「〜される」→「〜する」）, and padding like 「〜することができる」→「〜できる」、「〜を行う」→ the verb itself
 
 Metaphor-verb and pseudo-concrete-word item distilled from nanaism/yomiyasu `references/slop-catalog.md` (MIT, commit f03aecd9c4c4a69e229f3848ecba66c3871f734c), restated in house style — not a verbatim copy.

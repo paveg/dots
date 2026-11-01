@@ -14,34 +14,47 @@ Create high-engagement X/Twitter posts based on insights from X's public algorit
 
 ### Scoring Signals (by importance)
 
-X's algorithm predicts engagement probabilities and weights them into a final score:
+X's algorithm predicts engagement probabilities and weights them into a final score: `Final Score = Σ (weight × P(action))`.
 
-| Positive Signal                        | Description               | Weight      |
-| -------------------------------------- | ------------------------- | ----------- |
-| `dwell_time`                           | Time spent reading        | Very High   |
-| `favorite`                             | Like                      | High        |
-| `retweet`                              | Repost                    | High        |
-| `reply`                                | Reply                     | High        |
-| `quote`                                | Quote post                | High        |
-| `share` / `share_via_dm` / `copy_link` | Share actions             | Medium-High |
-| `follow_author`                        | Follow                    | Medium      |
-| `profile_click`                        | Profile visit             | Medium      |
-| `vqv`                                  | Video quality view (30s+) | Video only  |
+Weights below are the published defaults in [`home-mixer/params/param.rs`](https://github.com/xai-org/x-algorithm/blob/main/home-mixer/params/param.rs), read at commit `9106e9f` (2026-10-31). They multiply the viewer's _predicted probability_ of each action (or a predicted continuous value such as dwell time), not raw counts, so the upstream README warns against reading a weight ratio as "1 report cancels out N likes".
 
-| Negative Signal  | Description    | Impact          |
-| ---------------- | -------------- | --------------- |
-| `not_interested` | Not interested | Negative        |
-| `block_author`   | Block          | Strong Negative |
-| `mute_author`    | Mute           | Strong Negative |
-| `report`         | Report         | Strong Negative |
+| Positive Signal       | Description     | Weight |
+| --------------------- | --------------- | ------ |
+| `share_via_copy_link` | Copy link       | 20.0   |
+| `reply`               | Reply           | 5.0    |
+| `quote`               | Quote post      | 5.0    |
+| `share_via_dm`        | Share via DM    | 5.0    |
+| `follow_author`       | Follow          | 4.0    |
+| `share`               | Share           | 2.0    |
+| `retweet`             | Repost          | 1.0    |
+| `favorite`            | Like            | 0.66   |
+| `click`               | Post click      | 0.3    |
+| `open_link`           | Link click      | 0.2    |
+| `dwell`               | Stopped to read | 0.05   |
+| `photo_expand`        | Image expand    | 0.05   |
+| `video_open`          | Video open      | 0.02   |
+
+`profile_click` and `vqv` are published at 0.0.
+
+| Negative Signal  | Description    | Weight  |
+| ---------------- | -------------- | ------- |
+| `report`         | Report         | -234.0  |
+| `mute_author`    | Mute           | -58.8   |
+| `not_interested` | Not interested | -52.272 |
+| `block_author`   | Block          | -31.2   |
+| `not_dwelled`    | Scrolled past  | -0.02   |
 
 ### Author Diversity Penalty
 
-Same author's consecutive posts get score decay. → **Quality over quantity** - one great post beats multiple mediocre ones
+Each post after an author's first is multiplied by a decaying factor, down to a floor. → **Quality over quantity** - one great post beats multiple mediocre ones
 
 ### In-Network vs Out-of-Network
 
-Reaching non-followers requires higher scores. → **Universal value** spreads better than niche content
+Posts from accounts the viewer does not follow are multiplied by a factor below 1, as are replies and reposts from accounts they do follow. → **Universal value** spreads better than niche content
+
+### New-Author Boost
+
+Posts from authors below an impressions threshold are lifted toward a target position.
 
 ---
 
@@ -132,9 +145,9 @@ Collect user preference, refine final version
 
 | Asset Type     | Algorithm Effect         |
 | -------------- | ------------------------ |
-| Infographic    | dwell_time+, share+      |
+| Infographic    | dwell+, share+           |
 | Screenshot     | Credibility, specificity |
-| Video (30s+)   | vqv_score activation     |
+| Video          | video_open+, watch time  |
 | Image carousel | photo_expand+            |
 
 ---
@@ -213,7 +226,7 @@ For improving existing drafts:
 
 ```
 **Algorithm Analysis**: [why this structure scores well]
-**Target Signals**: favorite, retweet, dwell_time
+**Target Signals**: reply, favorite, dwell
 **Characters**: XXX
 
 ### B: Hook-Heavy
@@ -228,7 +241,7 @@ For improving existing drafts:
 
 ### Image Option 1: [title]
 - Content: [description]
-- Expected effect: dwell_time+, share+
+- Expected effect: dwell+, share+
 - Creation difficulty: Low/Medium/High
 
 ---
@@ -267,7 +280,7 @@ For improving existing drafts:
 | Post | Role | Target Signals |
 |------|------|---------------|
 | 1/5 | Hook | click, dwell |
-| 2/5 | Context | dwell_time |
+| 2/5 | Context | dwell |
 | ... | ... | ... |
 ```
 

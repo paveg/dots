@@ -19,12 +19,9 @@ A July measurement rejected delegating the whole proofread to sonnet-5: 65 point
 - The `allow.txt` and `flag.txt` word lists live in `writing-proofread/assets/yomiyasu-words/` and reuse yomiyasu's `--words` format, so one editable file drives the linter. The allow list moved out of the norms prose into `allow.txt`; the norms point to it. `prose-reviewer` passes the same directory.
 - yomiyasu's `slop-catalog.md` is fetched by the existing chezmoi external instead of distilled into this repo. The agent reads it once, only to judge a borderline candidate, so a version bump refreshes it with the scripts.
 - `calques.py` is vendored byte-for-byte from natural-japanese v1.6.4 under the existing no-local-patch policy. Its lack of an allow option is handled by the agent reading `allow.txt`.
-
-## Rejected or deferred
-
-- Extending `prose-reviewer`: it runs on every `issue-ship`, and word-level review is a heavier, document-level pass that most diffs do not need.
-- A BCCWJ frequency detector for stiff words: add it when the agent demonstrably misses stiff words and the corpus licensing is checked.
-- A surprisal lint: no significant correlation with fluency in Japanese was found ([Tamura 2023](https://www.anlp.jp/proceedings/annual_meeting/2023/pdf_dir/A9-4.pdf)).
+- Rejected: extending `prose-reviewer`, because it runs on every `issue-ship`, and word-level review is a heavier, document-level pass that most diffs do not need.
+- Deferred: a BCCWJ frequency detector for stiff words; add it when the agent demonstrably misses stiff words and the corpus licensing is checked.
+- Rejected: a surprisal lint, since no significant correlation with fluency in Japanese was found ([Tamura 2023](https://www.anlp.jp/proceedings/annual_meeting/2023/pdf_dir/A9-4.pdf)).
 
 ## Consequences
 

@@ -12,7 +12,7 @@ Five passes, mechanical first. The textlint and rhythm-lint passes exist because
 
 ## Scale
 
-Scale by size, not artifact type. Short utilitarian prose — commit messages, changelog entries, a few-line PR body or README tweak — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and a few lines leave Pass 4 nothing to check. But a long PR/issue body (目安: 40 行超, or more than one heading) is document-sized — run the full pipeline on it; routing PR bodies around Pass 4 (情報の出し順, buried conclusions, 整合性) by artifact type is what let 「読みづらい」 re-requests through minutes after a clean proofread. Articles and standalone documents get all five passes regardless of length. When in doubt, run the full pipeline.
+Scale by size, not artifact type. Short utilitarian prose — commit messages, changelog entries, a few-line PR body or README tweak — gets Pass 1 and Pass 3 only: Pass 2's statistics are calibrated on full documents and mean nothing at that size, and a few lines leave Pass 4 nothing to check. But a long PR/issue body (目安: 40 行超, or more than one heading) is document-sized — run Passes 1-4 on it; routing PR bodies around Pass 4 (情報の出し順, buried conclusions, 整合性) by artifact type is what let 「読みづらい」 re-requests through minutes after a clean proofread. Articles and standalone documents get Passes 1-4 regardless of length, plus Pass 5 in fix mode. When in doubt, run Passes 1-4.
 
 ## Mode
 

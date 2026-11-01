@@ -1,0 +1,3 @@
+# Translationese compounds to flag in every document
+正本
+正典

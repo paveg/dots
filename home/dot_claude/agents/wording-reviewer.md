@@ -26,14 +26,14 @@ The brief gives the target file, and optionally line ranges or sections, a style
      | jq -r '.findings[] | select(.rule | IN("calque","ai_phrase","metaphor_verb","metaphor_label","slop_vocabulary","translated_term","renyo_noun","project_term","katakana_term")) | "L\(.line) \(.rule) \(.message)"'
    ```
 
-   `calques.py` has no allow option: read `"$P/../assets/yomiyasu-words/allow.txt"` and drop its hits whose word is listed there. Never print the `text` field of a calques hit; it is the whole paragraph.
+   Read `"$P/../assets/yomiyasu-words/allow.txt"` and never report a word listed there, whether it comes from `calques.py`, which has no allow option, or from the tests below. Never print the `text` field of a calques hit; it is the whole paragraph.
 
 2. Read the prose paragraph by paragraph, skipping code blocks, frontmatter, and quoted `>` text. Impression reading does not find these problems, so do the concrete operation for each test:
    - Back-translate: render kanji compounds and technical phrasings into English. If the result is an English set phrase replaced word by word and not a settled Japanese term, it is a calque.
    - Noun to verb: rewrite 「〜の対応」「〜は未着手」-style nominalizations as who does what. If that is clearer, flag it.
-   - Collocation: would a person say this noun and verb pairing aloud? Check 和語→漢語 and the reverse.
+   - Collocation: would a person say this noun and verb pairing aloud? Check 和語→漢語 and the reverse. Phrases established in business or engineering speech count as said.
    - Stiff compounds: a kanji compound rarely used in ordinary Japanese prose where a common word says the same thing.
-   - Subject and predicate: extract only the subject and predicate of each sentence. Flag when they do not hold together, or when the subject changes or is missing so the reader cannot tell who or what acts.
+   - Subject and predicate: extract only the subject and predicate of each sentence, then read the neighbouring sentences and heading; a subject they settle is not a finding. Flag when they do not hold together, or when the subject changes or is missing so the reader cannot tell who or what acts.
    - Vague wording: can the referent be named from facts in the document? If the text says something broader than an available name, flag it. Personification of files, data, or code counts unless the action is obvious at a glance.
 
    Read `"$P/yomiyasu/slop-catalog.md"` once, and only when a borderline candidate needs a judgment reference.

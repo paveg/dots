@@ -1,6 +1,6 @@
 # Vendored files
 
-`lint.py`, `textcore.py`, `paragraphs.py`, `fixtures/ai-smelly.md`, and
+`lint.py`, `calques.py`, `textcore.py`, `paragraphs.py`, `fixtures/ai-smelly.md`, and
 `fixtures/natural.md` in this directory are vendored **unmodified** from
 [coji/natural-japanese](https://github.com/coji/natural-japanese)
 (`skills/natural-japanese/scripts/`), commit
@@ -44,11 +44,12 @@ SOFTWARE.
 
 # Fetched files (yomiyasu)
 
-`yomiyasu/yomiyasu_lint.py`, `yomiyasu/yomiyasu_diff.py`, and
-`yomiyasu/markdown_visibility.py` are not stored in this repository. chezmoi
+`yomiyasu/yomiyasu_lint.py`, `yomiyasu/yomiyasu_diff.py`,
+`yomiyasu/markdown_visibility.py`, and `yomiyasu/slop-catalog.md` (from
+`skills/yomiyasu/references/`) are not stored in this repository. chezmoi
 fetches them unmodified at `apply` time from a pinned release of
 [nanaism/yomiyasu](https://github.com/nanaism/yomiyasu)
-(`skills/yomiyasu/scripts/`), as declared in `home/.chezmoiexternal.toml`,
+(`skills/yomiyasu/scripts/`, plus the catalog above), as declared in `home/.chezmoiexternal.toml`,
 under the MIT license reproduced below.
 
 `yomiyasu_check.py` and `yomiyasu_hook.py` from the same upstream directory are

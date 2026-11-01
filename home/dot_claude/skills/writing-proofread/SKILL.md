@@ -125,7 +125,7 @@ Passes 1-4 read sentences; word-level unnaturalness (literal translation, stiff 
 
 - Runs once, in fix mode, only on articles and standalone documents, after Passes 1-4 are applied. PR bodies, commit messages, and short text never get it. It also runs when the user explicitly asks for a word-choice review（「語彙も見て」「ワーディングを見て」), in either mode
 - Dispatch the `wording-reviewer` agent with the file path, the targeted sections if any, and the active style profile path. Do not run `calques.py` or read the slop catalog in the main session: keeping their output out of main context is the point
-- The agent returns candidates only. Adjudicate each one here under the same scope guards (say only what the source says, voice preservation), apply the accepted fixes, and do not re-dispatch. A candidate marked `ask author` goes to the author as a question
+- The agent returns candidates only. Adjudicate each one here under the same scope guards (say only what the source says, voice preservation) and do not re-dispatch. Fix mode applies the accepted fixes; report mode lists them as Pass 5 rows and changes nothing. A candidate marked `ask author` goes to the author as a question
 - Maintenance: a word the user flags as unnatural goes in `assets/yomiyasu-words/flag.txt`, or `assets/prh.yml` if it has one context-free replacement; a word confirmed as a legitimate term goes in `assets/yomiyasu-words/allow.txt`
 
 ## Output

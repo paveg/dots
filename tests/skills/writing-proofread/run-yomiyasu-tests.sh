@@ -102,8 +102,6 @@ check_diff() {
   pass_count=$((pass_count + 1))
 }
 
-# Lints one sentence and compares its candidate count and the count of one rule.
-# $4.. are extra lint arguments (--words DIR or --no-words).
 check_words() {
   local label="$1" text="$2" rule="$3" expected_candidates="$4" expected_rule="$5"
   shift 5

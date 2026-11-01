@@ -1,4 +1,4 @@
-# Long-standing technical terms: yomiyasu must not flag these
+# 潰す is meant as バグを潰す; a bare entry also lets 時間を潰す through, since the format holds no qualifier
 既定
 照合
 要点

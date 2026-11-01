@@ -99,7 +99,7 @@ jobs:
             cat "$RUNNER_TEMP/check.log"
             echo '```'
             echo
-            echo "Before merging, read the upstream diff of the three fetched scripts: they run locally under the agent."
+            echo "Before merging, read the upstream diff of the fetched files: the scripts run locally under the agent."
           } > "$RUNNER_TEMP/body.md"
           gh pr create --repo "$REPO" --base "$BASE" --head "$BRANCH" \
             --title "chore(writing-proofread): bump yomiyasu from $CURRENT to $LATEST" \

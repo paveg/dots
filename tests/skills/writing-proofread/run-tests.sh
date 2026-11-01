@@ -87,7 +87,6 @@ check "ai-smelly.md (--experimental)" "${EXPECTED_SMELLY_EXPERIMENTAL}" "$(count
 check "natural.md (default)" "${EXPECTED_NATURAL_DEFAULT}" "$(count_findings "${NATURAL_FIXTURE}")"
 check "natural.md (--experimental)" "${EXPECTED_NATURAL_EXPERIMENTAL}" "$(count_findings "${NATURAL_FIXTURE}" --experimental)"
 
-# Prints the words calques.py reports for one sentence, space-separated.
 calques_words() {
   local text="$1" input
   input="$(mktemp)"

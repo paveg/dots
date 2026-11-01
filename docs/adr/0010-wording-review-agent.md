@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted — 2026-11-01. Effectiveness is not yet measured.
+Accepted — 2026-11-01. Whether accepted candidates improve articles is not yet measured.
 
 ## Context
 
@@ -25,7 +25,8 @@ A July measurement rejected delegating the whole proofread to sonnet-5: 65 point
 
 ## Consequences
 
-- One more Sonnet spawn per article proofread, outside the `issue-ship` coverage stage.
-- Effectiveness is not measured: no run has compared drafts with and without Pass 5. Revisit after real articles show whether candidates are accepted or mostly dropped.
+- One more Sonnet spawn per article proofread, outside the `issue-ship` coverage stage. `workflow.md`'s Roles line does not name the agent, because the user chose not to grow the always-loaded set; `writing-proofread` is its only dispatcher.
+- The agent protects main-session context and gives a second reader; it does not reduce total tokens. On 2026-11-01, two funailog articles (about 7,000 characters each) produced 8-14 KB of raw detector output, while a trial run of the prompt as a `general-purpose` Sonnet agent used about 74K tokens. Narrow read-only reviewers in the same session used 34-40K, so the deployed agent is expected near that. If cost matters more than the separate reader, run the detectors inline instead.
+- In those runs nearly all candidates came from the reading tests, not the detectors: 6 and 10 candidates reported, from 12 and 13 detector hits of which about one per article survived. The author's acceptance of them is not yet recorded, and no run has compared drafts with and without Pass 5. Revisit after real articles show whether candidates are accepted or mostly dropped.
 - The agent's tests are distilled from natural-japanese SKILL.md v1.6.4, so a later upstream change does not reach them without a manual update.
 - `tests/skills/writing-proofread/` pins the word lists (`正本` flagged, `土台` allowed) and the `calques.py` detector; the agent's judgment itself has no deterministic check.

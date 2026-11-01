@@ -145,7 +145,7 @@ Collect user preference, refine final version
 
 | Asset Type     | Algorithm Effect         |
 | -------------- | ------------------------ |
-| Infographic    | dwell_time+, share+      |
+| Infographic    | dwell+, share+           |
 | Screenshot     | Credibility, specificity |
 | Video          | video_open+, watch time  |
 | Image carousel | photo_expand+            |
@@ -226,7 +226,7 @@ For improving existing drafts:
 
 ```
 **Algorithm Analysis**: [why this structure scores well]
-**Target Signals**: favorite, retweet, dwell_time
+**Target Signals**: reply, favorite, dwell
 **Characters**: XXX
 
 ### B: Hook-Heavy
@@ -241,7 +241,7 @@ For improving existing drafts:
 
 ### Image Option 1: [title]
 - Content: [description]
-- Expected effect: dwell_time+, share+
+- Expected effect: dwell+, share+
 - Creation difficulty: Low/Medium/High
 
 ---
@@ -280,7 +280,7 @@ For improving existing drafts:
 | Post | Role | Target Signals |
 |------|------|---------------|
 | 1/5 | Hook | click, dwell |
-| 2/5 | Context | dwell_time |
+| 2/5 | Context | dwell |
 | ... | ... | ... |
 ```
 

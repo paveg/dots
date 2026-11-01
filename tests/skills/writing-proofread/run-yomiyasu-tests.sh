@@ -17,6 +17,7 @@ EXTERNAL_TOML="${REPO_ROOT}/home/.chezmoiexternal.toml"
 FIXTURES="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/scripts/fixtures"
 SMELLY_FIXTURE="${FIXTURES}/ai-smelly.md"
 NATURAL_FIXTURE="${FIXTURES}/natural.md"
+WORDS_DIR="${REPO_ROOT}/home/dot_claude/skills/writing-proofread/assets/yomiyasu-words"
 
 EXPECTED_SMELLY_FINDINGS=13
 EXPECTED_NATURAL_FINDINGS=0
@@ -101,8 +102,39 @@ check_diff() {
   pass_count=$((pass_count + 1))
 }
 
+# Lints one sentence and compares its candidate count and the count of one rule.
+# $4.. are extra lint arguments (--words DIR or --no-words).
+check_words() {
+  local label="$1" text="$2" rule="$3" expected_candidates="$4" expected_rule="$5"
+  shift 5
+  local out="${tmpdir}/words.json" status=0
+  printf '%s\n' "${text}" >"${tmpdir}/words.md"
+  python3 -I "${LINT}" "${tmpdir}/words.md" --json "$@" >"${out}" || status=$?
+  [ "${status}" -eq 0 ] || fail "${label}: lint exited ${status}, expected 0"
+
+  local candidates rule_count
+  candidates="$(json_field "${out}" candidate_count)"
+  rule_count="$(python3 -I -c '
+import json, sys
+print(sum(1 for f in json.load(open(sys.argv[1], encoding="utf-8"))["findings"] if f["rule"] == sys.argv[2]))
+' "${out}" "${rule}")"
+  [ "${candidates}" = "${expected_candidates}" ] || fail "${label}: expected ${expected_candidates} candidates, got ${candidates}"
+  [ "${rule_count}" = "${expected_rule}" ] || fail "${label}: expected ${expected_rule} ${rule} findings, got ${rule_count}"
+  echo "PASS: ${label}: ${candidates} candidates, ${rule_count} ${rule}"
+  pass_count=$((pass_count + 1))
+}
+
 check_lint "lint ai-smelly.md" "${SMELLY_FIXTURE}" "${EXPECTED_SMELLY_FINDINGS}"
 check_lint "lint natural.md" "${NATURAL_FIXTURE}" "${EXPECTED_NATURAL_FINDINGS}"
+
+check_words "flag.txt: 正本 is flagged as project_term" \
+  '正本を更新する。' project_term 2 1 --words "${WORDS_DIR}"
+check_words "no word list: 正本 is not a project_term" \
+  '正本を更新する。' project_term 1 0 --no-words
+check_words "allow.txt: 土台 is not flagged" \
+  'この設計を土台にして実装を進める。' slop_vocabulary 0 0 --words "${WORDS_DIR}"
+check_words "no word list: 土台 is flagged as slop_vocabulary" \
+  'この設計を土台にして実装を進める。' slop_vocabulary 1 1 --no-words
 
 check_diff "diff dropped number" \
   'この機能は3つの設定を使用できる。' 'この機能は設定を使用できる。' yes

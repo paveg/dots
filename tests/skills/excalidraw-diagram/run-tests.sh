@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Hermetic tests for the excalidraw-diagram renderer: input validation and the
-# asset path guard. No browser, no network, no node_modules.
+# Hermetic tests for the excalidraw-diagram renderer: input validation and the asset path guard.
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 

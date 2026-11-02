@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { after, describe, test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 const rendererDir = resolve(fileURLToPath(import.meta.url), "../../../../home/dot_claude/skills/excalidraw-diagram/renderer");
-const { parseDiagram, resolveAsset } = await import(join(rendererDir, "lib.mjs"));
+const { locateAsset, parseDiagram, resolveAsset } = await import(join(rendererDir, "lib.mjs"));
 
 const workdir = mkdtempSync(join(tmpdir(), "excalidraw-guards-"));
 after(() => rmSync(workdir, { recursive: true, force: true }));
@@ -59,6 +59,33 @@ describe("resolveAsset", () => {
   });
 });
 
+describe("locateAsset", () => {
+  const fontsDir = join(workdir, "fonts");
+  mkdirSync(join(fontsDir, "Family"), { recursive: true });
+  writeFileSync(join(fontsDir, "Family", "a.woff2"), "font");
+  const assets = { pageFile: join(workdir, "page.html"), bundleFile: join(workdir, "bundle.mjs"), fontsDir };
+  writeFileSync(assets.pageFile, "<html>");
+
+  test("returns regular files that exist", () => {
+    assert.equal(locateAsset("/fonts/Family/a.woff2", assets), join(fontsDir, "Family", "a.woff2"));
+    assert.equal(locateAsset("/page.html", assets), assets.pageFile);
+  });
+
+  test("refuses directories", () => {
+    assert.equal(locateAsset("/fonts/Family", assets), null);
+    assert.equal(locateAsset("/fonts/Family/", assets), null);
+  });
+
+  test("refuses files that do not exist", () => {
+    assert.equal(locateAsset("/fonts/Family/missing.woff2", assets), null);
+    assert.equal(locateAsset("/excalidraw.mjs", assets), null);
+  });
+
+  test("refuses traversal", () => {
+    assert.equal(locateAsset("/fonts/../page.html", assets), null);
+  });
+});
+
 describe("render.mjs input validation", () => {
   const run = (...args) => spawnSync("node", [join(rendererDir, "render.mjs"), ...args], { encoding: "utf8" });
   const write = (name, content) => {
@@ -89,6 +116,13 @@ describe("render.mjs input validation", () => {
     const result = run(write("empty.excalidraw", '{"type":"excalidraw","elements":[]}'));
     assert.equal(result.status, 1);
     assert.match(result.stderr, /non-empty array/);
+  });
+
+  test("reports an unknown option with usage instead of a stack trace", () => {
+    const result = run("--bogus", write("ok.excalidraw", "{}"));
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /usage/);
+    assert.doesNotMatch(result.stderr, /node:internal/);
   });
 
   test("fails without an input argument", () => {

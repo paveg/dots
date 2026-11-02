@@ -3,7 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
-import { CONTENT_TYPES, ORIGIN, parseDiagram, resolveAsset } from "./lib.mjs";
+import { CONTENT_TYPES, ORIGIN, locateAsset, parseDiagram } from "./lib.mjs";
 
 const usage = "usage: render.mjs <file.excalidraw> [--output out.png] [--scale 2] [--width 1920] [--svg out.svg]";
 
@@ -12,15 +12,21 @@ function fail(message) {
   process.exit(1);
 }
 
-const { values, positionals } = parseArgs({
-  allowPositionals: true,
-  options: {
-    output: { type: "string", short: "o" },
-    scale: { type: "string", short: "s", default: "2" },
-    width: { type: "string", short: "w", default: "1920" },
-    svg: { type: "string" },
-  },
-});
+let values;
+let positionals;
+try {
+  ({ values, positionals } = parseArgs({
+    allowPositionals: true,
+    options: {
+      output: { type: "string", short: "o" },
+      scale: { type: "string", short: "s", default: "2" },
+      width: { type: "string", short: "w", default: "1920" },
+      svg: { type: "string" },
+    },
+  }));
+} catch (error) {
+  fail(`${error.message}\n${usage}`);
+}
 if (positionals.length !== 1) fail(usage);
 
 const inputFile = resolve(positionals[0]);
@@ -65,8 +71,8 @@ try {
   });
   await page.route("**/*", (route) => {
     const url = new URL(route.request().url());
-    const file = url.origin === ORIGIN ? resolveAsset(url.pathname, assets) : null;
-    if (!file || !existsSync(file)) {
+    const file = url.origin === ORIGIN ? locateAsset(url.pathname, assets) : null;
+    if (!file) {
       blockedUrls.add(url.href);
       return route.abort("blockedbyclient");
     }
@@ -93,6 +99,10 @@ if (blockedUrls.size > 0) {
   fail(`blocked ${blockedUrls.size} outbound request(s), nothing written:\n${[...blockedUrls].join("\n")}`);
 }
 
-writeFileSync(outputFile, png);
-if (values.svg) writeFileSync(resolve(values.svg), svg);
+try {
+  if (values.svg) writeFileSync(resolve(values.svg), svg);
+  writeFileSync(outputFile, png);
+} catch (error) {
+  fail(`could not write output: ${error.message}`);
+}
 console.log(outputFile);

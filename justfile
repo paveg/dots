@@ -173,7 +173,7 @@ test-skill-scripts:
     @bash tests/skills/writing-bench/run-tests.sh
     @bash tests/skills/excalidraw-diagram/run-tests.sh
 
-# Render fixtures through the real excalidraw-diagram renderer (needs Chrome and a built renderer; not in quality-gate)
+# Render fixtures through the real excalidraw-diagram renderer (needs Chrome and a built renderer)
 test-excalidraw-render:
     @bash tests/skills/excalidraw-diagram/render-e2e.sh
 

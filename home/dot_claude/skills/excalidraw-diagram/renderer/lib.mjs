@@ -1,3 +1,4 @@
+import { statSync } from "node:fs";
 import { resolve, sep } from "node:path";
 
 export const ORIGIN = "http://excalidraw.local";
@@ -37,4 +38,9 @@ export function resolveAsset(urlPath, { pageFile, bundleFile, fontsDir }) {
   const root = resolve(fontsDir);
   const file = resolve(root, path.slice("/fonts/".length));
   return file.startsWith(root + sep) ? file : null;
+}
+
+export function locateAsset(urlPath, assets) {
+  const file = resolveAsset(urlPath, assets);
+  return file && statSync(file, { throwIfNoEntry: false })?.isFile() ? file : null;
 }

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Opt-in end-to-end check of the excalidraw-diagram renderer. Needs Google
-# Chrome and a built renderer (pnpm install --frozen-lockfile && node build.mjs
-# in ~/.claude/skills/excalidraw-diagram/renderer, or in the source copy).
+# End-to-end check of the excalidraw-diagram renderer; needs Chrome and a built renderer.
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 RENDER="${EXCALIDRAW_RENDER:-$(cd ../../.. && pwd)/home/dot_claude/skills/excalidraw-diagram/renderer/render.mjs}"
@@ -26,6 +24,14 @@ node "$RENDER" fixtures/outbound-request.excalidraw --output "$workdir/outbound.
 check "outbound request exits 1" 1 $?
 check "outbound request is reported" 1 "$(grep -c 'https://example.invalid/pixel.png' "$workdir/outbound.err")"
 check "outbound request writes nothing" "no" "$([[ -e $workdir/outbound.png ]] && echo yes || echo no)"
+
+node "$RENDER" fixtures/minimal.excalidraw --output "$workdir/missing-dir/x.png" >/dev/null 2>"$workdir/write.err"
+check "unwritable output exits 1" 1 $?
+check "unwritable output is reported without a stack trace" "1:0" "$(grep -c 'could not write output' "$workdir/write.err"):$(grep -c 'node:internal' "$workdir/write.err")"
+
+node "$RENDER" fixtures/minimal.excalidraw --output "$workdir/kept.png" --svg "$workdir/missing-dir/x.svg" >/dev/null 2>&1
+check "unwritable SVG exits 1" 1 $?
+check "unwritable SVG leaves no PNG behind" "no" "$([[ -e $workdir/kept.png ]] && echo yes || echo no)"
 
 if ((fail == 0)); then
   echo "✓ excalidraw render checks passed"

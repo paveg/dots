@@ -18,7 +18,7 @@ Write a `.excalidraw` file by hand, render it, look at the PNG, and fix it until
 
 1. **Decide the depth.**
    - Simple or conceptual: few elements, labels only, no research.
-   - Comprehensive or technical (architecture, protocol, pipeline): look up the real component names, event and API names, and data formats first (read the code, docs, or config at hand), then include concrete evidence: code or JSON snippets on dark blocks, real names, sample data.
+   - Comprehensive or technical (architecture, protocol, pipeline): look up the real component names, event and API names, and data formats first (read the code, docs, or config at hand; use docs or web search if the session has them, otherwise stick to facts you know and do not invent specifics you are unsure of), then include concrete evidence: code or JSON snippets on dark blocks, real names, sample data.
 2. **Plan the composition.** Write down the sections, the main flow, and the visual pattern for each concept before any JSON.
 3. **Build the file.** Use `references/element-templates.md` for the JSON and `references/color-palette.md` for every color.
 4. **Render and review.** Mandatory, every time.
@@ -27,7 +27,7 @@ Write a `.excalidraw` file by hand, render it, look at the PNG, and fix it until
 ## Layout
 
 - Comprehensive diagrams have levels: a summary flow across the top, labeled sections below it, details inside each section.
-- Prefer free-floating text with a typographic hierarchy (title, section heading, label, annotation). Use a container only when it means something: a component, a boundary, a grouped state. Keep well under a third of the text inside containers.
+- Prefer free-floating text with a typographic hierarchy (title, section heading, label, annotation). Use a container only when it means something: a component, a boundary, a grouped state. Keep well under a third of the text elements inside containers.
 - Leave generous, even gaps between elements, and a larger gap between sections. Balance the composition; do not pile everything into one corner.
 
 ## Visual patterns
@@ -49,6 +49,7 @@ Choose the pattern that matches the idea, and vary patterns across the concepts 
 ## Shapes and color
 
 - Ellipse: start, end, or an external actor. Diamond: decision. Rectangle: a process or component. No shape: a label or annotation.
+- Arrows into a diamond target its vertices (top, bottom, left, right), not the middle of an edge.
 - Colors are semantic. Take them from `references/color-palette.md`, one role per color throughout the diagram, and do not introduce others.
 
 ## Defaults
@@ -56,6 +57,7 @@ Choose the pattern that matches the idea, and vary patterns across the concepts 
 - `roughness: 0`, `opacity: 100`, `strokeWidth` 1 to 3 by emphasis (1 for structure, 2 for normal, 3 for the one thing that matters most).
 - Text: `fontSize: 16`, `fontFamily: 3`, `textAlign: "center"` and `verticalAlign: "middle"` inside containers. A text element's `text` holds only the words a reader should see, never ids or notes.
 - Wrapper: `type: "excalidraw"`, `version: 2`, `source`, `elements`, `appState` with a white `viewBackgroundColor`, and `files`.
+- A text element has one `strokeColor`. An evidence block with several colors needs one text element per color run, for example a comment line separate from the code lines.
 - Change a default only when the user asks. A project may deliberately override these (for example `roughness: 1` and `fontFamily: 5` for a hand-drawn look); follow the project when it says so.
 
 ## Large diagrams
@@ -65,7 +67,8 @@ Build the file section by section across several edits instead of one giant writ
 - Name ids by meaning (`ingest_box`, `arrow_ingest_queue`), never `el_37`.
 - Give each section its own `seed` range.
 - When an arrow crosses sections, set `startBinding` and `endBinding` on the arrow and add the arrow to both shapes' `boundElements`. Check both ends whenever either section changes.
-- Write the elements directly. Do not write a generator script.
+- Write the diagram as hand-written JSON, not a generator script. A throwaway script that shifts the coordinates of existing elements during the fix loop is fine.
+- Rendering between sections is optional; rendering after the last section is mandatory.
 
 ## Render and review
 

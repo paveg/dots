@@ -52,7 +52,7 @@ Typographic hierarchy replaces boxes: titles `fontSize` 28 to 36, section headin
 
 ## Text inside a container
 
-Put the text id in the container's `boundElements` and the container id in `containerId`. Position the text so it is centered in the container (`x + (containerWidth - textWidth) / 2`).
+Put the text id in the container's `boundElements` and the container id in `containerId`. Position the text so it is centered in the container (`containerX + (containerWidth - textWidth) / 2`, and the same with heights for y). The example text has two lines, so its height is 2 \* 16 \* 1.25 = 40 and its y is 40 + (70 - 40) / 2 = 55.
 
 ```json
 {
@@ -79,9 +79,9 @@ Put the text id in the container's `boundElements` and the container id in `cont
   "id": "ingest_label",
   "type": "text",
   "x": 20,
-  "y": 62.5,
+  "y": 55,
   "width": 140,
-  "height": 25,
+  "height": 40,
   "text": "Ingest\nvalidate + queue",
   "originalText": "Ingest\nvalidate + queue",
   "fontSize": 16,

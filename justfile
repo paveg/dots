@@ -171,6 +171,11 @@ test-skill-scripts:
     @bash tests/skills/context-diet/run-tests.sh
     @bash tests/skills/codex-subagent/run-tests.sh
     @bash tests/skills/writing-bench/run-tests.sh
+    @bash tests/skills/excalidraw-diagram/run-tests.sh
+
+# Render fixtures through the real excalidraw-diagram renderer (needs Chrome and a built renderer; not in quality-gate)
+test-excalidraw-render:
+    @bash tests/skills/excalidraw-diagram/render-e2e.sh
 
 # Run skill fetcher tests
 test-skills:

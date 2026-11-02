@@ -18,3 +18,7 @@ __pycache__/
 home/dot_config/colima/default/
 home/dot_config/colima/certs/
 home/dot_config/colima/_lima/
+
+# excalidraw-diagram renderer build products
+home/dot_claude/skills/excalidraw-diagram/renderer/node_modules/
+home/dot_claude/skills/excalidraw-diagram/renderer/dist/

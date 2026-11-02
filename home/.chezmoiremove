@@ -27,3 +27,14 @@
 # Still read by git from its XDG default; it points every repo at the removed
 # mergiraf merge driver.
 .config/git/attributes
+#
+# Files of the third-party excalidraw-diagram skill (formerly a chezmoi external)
+# that the self-authored skill does not provide; .venv and uv.lock came from `uv sync`.
+.claude/skills/excalidraw-diagram/.gitignore
+.claude/skills/excalidraw-diagram/README.md
+.claude/skills/excalidraw-diagram/references/json-schema.md
+.claude/skills/excalidraw-diagram/references/pyproject.toml
+.claude/skills/excalidraw-diagram/references/render_excalidraw.py
+.claude/skills/excalidraw-diagram/references/render_template.html
+.claude/skills/excalidraw-diagram/references/uv.lock
+.claude/skills/excalidraw-diagram/references/.venv

@@ -1,0 +1,23 @@
+#!/bin/bash
+# Build the offline renderer behind the excalidraw-diagram skill: install the
+# pinned dependencies, then bundle Excalidraw and its fonts into dist/ so
+# rendering needs no network. Runs after the skill files are applied.
+#
+# Triggered on chezmoi apply when the lockfile, package.json, pnpm-workspace.yaml, or build.mjs change.
+# pnpm-lock.yaml hash: {{ include "dot_claude/skills/excalidraw-diagram/renderer/pnpm-lock.yaml" | sha256sum }}
+# pnpm-workspace.yaml hash: {{ include "dot_claude/skills/excalidraw-diagram/renderer/pnpm-workspace.yaml" | sha256sum }}
+# package.json hash: {{ include "dot_claude/skills/excalidraw-diagram/renderer/package.json" | sha256sum }}
+# build.mjs hash: {{ include "dot_claude/skills/excalidraw-diagram/renderer/build.mjs" | sha256sum }}
+
+set -euo pipefail
+
+for command in node pnpm; do
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "$command not found — skipping excalidraw renderer build" >&2
+    exit 0
+  fi
+done
+
+cd "$HOME/.claude/skills/excalidraw-diagram/renderer"
+pnpm install --frozen-lockfile
+node build.mjs

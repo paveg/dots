@@ -27,3 +27,13 @@
 # Still read by git from its XDG default; it points every repo at the removed
 # mergiraf merge driver.
 .config/git/attributes
+#
+# Left over from the replaced excalidraw-diagram skill; the new skill does not provide them.
+.claude/skills/excalidraw-diagram/.gitignore
+.claude/skills/excalidraw-diagram/README.md
+.claude/skills/excalidraw-diagram/references/json-schema.md
+.claude/skills/excalidraw-diagram/references/pyproject.toml
+.claude/skills/excalidraw-diagram/references/render_excalidraw.py
+.claude/skills/excalidraw-diagram/references/render_template.html
+.claude/skills/excalidraw-diagram/references/uv.lock
+.claude/skills/excalidraw-diagram/references/.venv

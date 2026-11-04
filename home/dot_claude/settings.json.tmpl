@@ -88,7 +88,24 @@
       "Edit(**/secrets/**)",
       "Edit(**/.ssh/*)",
       "Edit(**/authorized_keys)",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql"{{- if .business_use }},
+      "Bash(*aws *)",
+      "Bash(*gcloud *)",
+      "Bash(*kubectl *)",
+      "Bash(*helmfile *)",
+      "Bash(*helm *install *)",
+      "Bash(*helm *upgrade *)",
+      "Bash(*helm *uninstall *)",
+      "Bash(*helm *delete *)",
+      "Bash(*helm *rollback *)",
+      "Bash(*helm *test *)",
+      "Bash(*helm *get *)",
+      "Bash(*terraform *)",
+      "Bash(*sops *)",
+      "Bash(*saml2aws *)",
+      "Bash(*gh auth *)",
+      "Bash(*sudo *)"
+{{- end }}
     ],
     "defaultMode": "auto"
   },

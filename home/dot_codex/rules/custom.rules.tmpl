@@ -231,3 +231,32 @@ prefix_rule(
     match = ["dropdb app_dev", "dropdb --if-exists app_dev"],
     not_match = ["createdb app_dev"],
 )
+{{- if .business_use }}
+
+# ------------------------------------------------- business: cloud CLIs ------
+# Business machines reach cloud and cluster state through MCP servers only;
+# forbidden here overrides the narrower prompt rules above.
+prefix_rule(
+    pattern = [["aws", "gcloud", "kubectl", "helmfile", "terraform", "sops", "saml2aws", "sudo"]],
+    decision = "forbidden",
+    justification = "Cloud, cluster, secret, and privileged CLIs are off-limits to agents on business machines; use the MCP servers or run by hand.",
+    match = ["aws s3 ls", "gcloud auth list", "kubectl get pods", "helmfile diff", "terraform plan", "sops -d s.yaml", "saml2aws login", "sudo ls"],
+    not_match = ["git status", "helm list"],
+)
+
+prefix_rule(
+    pattern = ["helm", ["install", "upgrade", "uninstall", "delete", "rollback", "test", "get"]],
+    decision = "forbidden",
+    justification = "helm commands that mutate releases or read release values are off-limits to agents on business machines.",
+    match = ["helm install r c", "helm upgrade r c", "helm get values r", "helm rollback r 1"],
+    not_match = ["helm list", "helm template c"],
+)
+
+prefix_rule(
+    pattern = ["gh", "auth"],
+    decision = "forbidden",
+    justification = "gh auth can print or replace GitHub credentials.",
+    match = ["gh auth status", "gh auth token"],
+    not_match = ["gh pr list"],
+)
+{{- end }}

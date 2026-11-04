@@ -88,7 +88,24 @@
       "Edit(**/secrets/**)",
       "Edit(**/.ssh/*)",
       "Edit(**/authorized_keys)",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql"{{- if .business_use }},
+      "Bash(*aws *)",
+      "Bash(*gcloud *)",
+      "Bash(*kubectl *)",
+      "Bash(*helmfile *)",
+      "Bash(*helm *install *)",
+      "Bash(*helm *upgrade *)",
+      "Bash(*helm *uninstall *)",
+      "Bash(*helm *delete *)",
+      "Bash(*helm *rollback *)",
+      "Bash(*helm *test *)",
+      "Bash(*helm *get *)",
+      "Bash(*terraform *)",
+      "Bash(*sops *)",
+      "Bash(*saml2aws *)",
+      "Bash(*gh auth *)",
+      "Bash(*sudo *)"
+{{- end }}
     ],
     "defaultMode": "auto"
   },
@@ -107,7 +124,8 @@
     "explanatory-output-style@claude-plugins-official": true,
     "document-skills@anthropic-agent-skills": false,
     "example-skills@anthropic-agent-skills": false{{- if .business_use }},
-    "code-flow@freee-ccplugins-marketplace": true
+    "code-flow@freee-ccplugins-marketplace": true,
+    "brucke@freee-ccplugins-marketplace": true
 {{- else }},
     "frontend-design@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,

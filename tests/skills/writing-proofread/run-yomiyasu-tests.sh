@@ -9,6 +9,10 @@
 # below in the same PR.
 #
 # Non-hermetic: downloads the archive. Wired into `test-skills`.
+#
+# Invocations mirror the agents: the scripts refuse paths outside the cwd or
+# under a dot directory, so lint reads stdin and diff runs inside the directory
+# holding both files.
 
 set -euo pipefail
 
@@ -64,7 +68,7 @@ print(json.load(open(sys.argv[1], encoding="utf-8"))[sys.argv[2]])
 check_lint() {
   local label="$1" fixture="$2" expected="$3"
   local out="${tmpdir}/lint.json" status=0
-  python3 -I "${LINT}" "${fixture}" --json >"${out}" || status=$?
+  python3 -I "${LINT}" --json - <"${fixture}" >"${out}" || status=$?
   [ "${status}" -eq 0 ] || fail "${label}: lint exited ${status}, expected 0"
 
   local findings candidates
@@ -87,7 +91,7 @@ check_diff() {
   local out="${tmpdir}/diff.json" status=0
   printf '%s\n' "${old}" >"${tmpdir}/old.md"
   printf '%s\n' "${new}" >"${tmpdir}/new.md"
-  python3 -I "${DIFF}" "${tmpdir}/old.md" "${tmpdir}/new.md" --json --fail-on meaning-risk "$@" >"${out}" || status=$?
+  (cd "${tmpdir}" && python3 -I "${DIFF}" old.md new.md --json --fail-on meaning-risk "$@") >"${out}" || status=$?
 
   local risk_count
   risk_count="$(json_field "${out}" fail_on_meaning_risk_count)"
@@ -107,7 +111,7 @@ check_words() {
   shift 5
   local out="${tmpdir}/words.json" status=0
   printf '%s\n' "${text}" >"${tmpdir}/words.md"
-  python3 -I "${LINT}" "${tmpdir}/words.md" --json "$@" >"${out}" || status=$?
+  python3 -I "${LINT}" --json "$@" - <"${tmpdir}/words.md" >"${out}" || status=$?
   [ "${status}" -eq 0 ] || fail "${label}: lint exited ${status}, expected 0"
 
   local candidates rule_count

@@ -14,20 +14,21 @@ You review the Japanese prose a diff adds or changes: Markdown files only; PR bo
 ## Method
 
 - Targets: `git diff --name-only --diff-filter=AM <base>...<branch> -- '*.md'`, kept only when the file contains Japanese. Read each target's changed hunks first (`git diff <base>...<branch> -- <file>`); findings outside them are out of scope. Report line numbers from the `<branch>` version.
-- Read every version through git, never through the working tree, and never check out or switch branches:
+- Read every version through git, never through the working tree, and never check out or switch branches. The yomiyasu scripts refuse a path outside the cwd or under a dot directory (exit 2), so lint reads stdin and diff runs inside the temp directory:
 
   ```bash
   P=~/.claude/skills/writing-proofread/scripts
-  after="$(mktemp -d)/after.md" && git show <branch>:<file> > "$after"
-  uv run "$P/lint.py" --json "$after"
-  python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words ~/.claude/skills/writing-proofread/assets/yomiyasu-words "$after"
+  dir="$(mktemp -d)" && git show <branch>:<file> > "$dir/after.md" && echo "$dir"
+  uv run "$P/lint.py" --json "$dir/after.md"
+  python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words ~/.claude/skills/writing-proofread/assets/yomiyasu-words - < "$dir/after.md"
   ```
 
-- Meaning check, for every target that existed at `<base>` (a rewrite):
+- Meaning check, for every target that existed at `<base>` (a rewrite). `$dir` does not survive into a new shell call; use the literal path the first block echoed:
 
   ```bash
-  before="$(mktemp -d)/before.md" && git show <base>:<file> > "$before"
-  python3 -I "$P/yomiyasu/yomiyasu_diff.py" "$before" "$after" --json --fail-on meaning-risk --doc-type <type>
+  P=~/.claude/skills/writing-proofread/scripts
+  git show <base>:<file> > "<dir>/before.md"
+  (cd "<dir>" && python3 -I "$P/yomiyasu/yomiyasu_diff.py" before.md after.md --json --fail-on meaning-risk --doc-type <type>)
   ```
 
   `<type>` is `article` for a blog or tech article, `manual` for READMEs, runbooks, and guides; without it, a strengthened guarantee (「できる」→「必ずできる」) is not counted.

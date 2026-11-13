@@ -4,7 +4,7 @@
 `fixtures/natural.md` in this directory are vendored **unmodified** from
 [coji/natural-japanese](https://github.com/coji/natural-japanese)
 (`skills/natural-japanese/scripts/`), commit
-`25a8638b780037a2012e2bb3f624a0b1710666fb` (2026-10-28, v1.6.4), under the MIT license
+`1fb57128a2f0d160e61320154226fdc86343ee2a` (tag v2.0.0), under the MIT license
 reproduced below.
 
 ## Update procedure

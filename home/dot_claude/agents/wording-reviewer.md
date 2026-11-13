@@ -22,9 +22,11 @@ The brief gives the target file, and optionally line ranges or sections, a style
    ```bash
    P=~/.claude/skills/writing-proofread/scripts
    uv run "$P/calques.py" --json <file> | jq -r '.[] | "L\(.line) \(.kind) \(.word)"'
-   python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words "$P/../assets/yomiyasu-words" <file> \
+   python3 -I "$P/yomiyasu/yomiyasu_lint.py" --json --words "$P/../assets/yomiyasu-words" - < <file> \
      | jq -r '.findings[] | select(.rule | IN("calque","ai_phrase","metaphor_verb","metaphor_label","slop_vocabulary","translated_term","renyo_noun","project_term","katakana_term")) | "L\(.line) \(.rule) \(.message)"'
    ```
+
+   `yomiyasu_lint.py` reads the file from stdin because it refuses a path outside the cwd or under a dot directory such as `.ai/`; line numbers are the same.
 
    Read `"$P/../assets/yomiyasu-words/allow.txt"` and never report a word listed there, whether it comes from `calques.py`, which has no allow option, or from the tests below. Never print the `text` field of a calques hit; it is the whole paragraph.
 

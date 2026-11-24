@@ -4,7 +4,7 @@ description: |
   Research a repo/docs in parallel for a given topic and generate a disposable
   GFM+mermaid learning primer (Markdown). Triggers (Japanese): 「〜の学習資料を作って」
   「オンボーディング資料がほしい」「〜をキャッチアップしたい」「primer 作って」.
-  Output is not committed (defaults to repo-local `.ai/`, globally git-ignored);
+  Output is not committed (defaults to `~/.local/share/agent-notes/primers/`, outside every repo);
   view with mo or any GFM+mermaid viewer.
 argument-hint: <topic> <audience> [sources] [out]
 ---
@@ -27,14 +27,14 @@ Diagrams are the centerpiece. Use mermaid aggressively to maximize the reader's 
 
 ## Inputs
 
-| Arg        | Required | Default                      | Description                                             |
-| ---------- | -------- | ---------------------------- | ------------------------------------------------------- |
-| `topic`    | ✓        | —                            | Subject to learn                                        |
-| `audience` | ✓        | —                            | Reader profile; frame as "current state → target state" |
-| `sources`  | optional | cwd                          | Repos/dirs to research (multiple allowed)               |
-| `out`      | optional | `.ai/<topic-slug>-primer.md` | Output path                                             |
+| Arg        | Required | Default                                                     | Description                                             |
+| ---------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------- |
+| `topic`    | ✓        | —                                                           | Subject to learn                                        |
+| `audience` | ✓        | —                                                           | Reader profile; frame as "current state → target state" |
+| `sources`  | optional | cwd                                                         | Repos/dirs to research (multiple allowed)               |
+| `out`      | optional | `~/.local/share/agent-notes/primers/<topic-slug>-primer.md` | Output path                                             |
 
-The default `out` lives in `.ai/`, which is **globally git-ignored** (`~/.config/git/ignore`), so it is never committed. Override with `out=/tmp/...` to write outside the repo. Outside a git repo where `.ai/` is not ignored, set `out` explicitly.
+The default `out` lives outside every repo (see `repo-notes.md`), so it is never committed. Override with `out=/tmp/...` for a throwaway copy.
 
 **Early return**: if `topic` or `audience` is missing, ask for it. Do not guess.
 
@@ -47,7 +47,7 @@ The default `out` lives in `.ai/`, which is **globally git-ignored** (`~/.config
 4. **Parallel fan-out**: assign each sub-area to an Explore subagent; have it return **only "conclusion + evidence `path(:line)`"** (no long quotations — preserve main context)
 5. **Synthesize**: pour into the skeleton below. Open with the `audience` before → after to create the perspective shift
 6. Pass the **quality gates** (below)
-7. **Write** to `out` (create `.ai/` if absent). If the output dir already holds an index/README, add a one-line pointer to the new primer (reading-order position + freshness). Finish by presenting the viewer command `mo <out>`. Installs (brew/npm/gh ext, etc.) need network — delegate to the user; automate only generation (file write) and localhost viewing
+7. **Write** to `out` (create its directory if absent). If the output dir already holds an index/README, add a one-line pointer to the new primer (reading-order position + freshness). Finish by presenting the viewer command `mo <out>`. Installs (brew/npm/gh ext, etc.) need network — delegate to the user; automate only generation (file write) and localhost viewing
 
 ## Output skeleton (fixed)
 

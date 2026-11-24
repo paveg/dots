@@ -22,7 +22,7 @@ A loop's conversation is volatile; the repo is not. Persist what a run needs to 
 - Holds **what's done** and **what's next**, plus open questions and the load-bearing decisions of THIS run.
 - Keep it distinct from the other memory layers, and do not mix them:
   - persistent memory (`~/.claude/.../memory/`) — cross-session facts Claude recalls.
-  - `.ai/` — the user's learning notes (see `repo-notes.md`).
+  - `~/.local/share/agent-notes/` — the user's notes (see `repo-notes.md`).
   - STATE.md — one autonomous run's working state, disposable once the loop ends.
 - Decisions that outlive the loop graduate to an ADR (`harness-engineering.md`), not STATE.md.
 - History and rationale never go in code comments — that is comment rot (`development-principles.md`); STATE.md and git carry history.

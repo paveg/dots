@@ -1,18 +1,12 @@
-# Repository Notes (.ai/)
+# User Notes (~/.local/share/agent-notes/)
 
-`.ai/` at the repo root is the USER's local note pile, written as Markdown (globally git-ignored; never committed). It is not Claude's memory.
+`~/.local/share/agent-notes/` is the USER's local Markdown note pile, kept outside every repo so it is never committed or scattered across repos. It is not Claude's memory, and other agents do not read it: knowledge meant for any agent goes in committed CLAUDE.md / AGENTS.md or an ADR, and Claude's own lessons go in persistent memory.
 
-- At the start of work on a repo, skim the relevant `.ai/*.md` for context
-- What goes there:
-  - Material FOR the user's learning (learning-primer output, requested study notes, glossary) — one topic per file, kebab-case names
-  - Work logs under `.ai/worklog/YYYYMMDD.md` (e.g. daily-kickoff skill output)
-  - Detailed write-ups of non-trivial investigations Claude performed (sources checked, commands run, findings, dead ends) — one topic per file, kebab-case names. Write these proactively when an investigation took multiple sources or produced conclusions worth re-reading
-- Division of labor with persistent memory: memory holds the compact durable fact (one file, one fact); `.ai/` holds the detail behind it. Link the memory to the `.ai/` file path when both exist
+- Write there only when the user asks (requested study notes, an investigation write-up, learning-primer output)
+- Layout (one topic per file, kebab-case names):
+  - learning-primer output: `primers/<topic>-primer.md`, whatever repo it covers
+  - Other notes about the current repo's code or history: `<host>/<owner>/<repo>/<topic>.md`, taken from the `origin` URL (`github.com/paveg/dots/`); without an `origin` remote, use `local/<main checkout's directory name>/`
+  - Everything else: `topics/<topic>.md`
+- Read the repo's folder when the user points to it or when tracing past decisions (code-rationale)
 - No secrets, no facts the code/git already records
-
-## Index (README.md)
-
-Every `.ai/` keeps a `README.md` index so the user can find docs later — one line per topical doc: `- [title](file.md) — hook`. `worklog/` is exempt (chronological, self-indexing).
-
-- When writing, renaming, or deleting a topical `.ai/` doc, update the index in the same action
-- When skimming `.ai/` at the start of work, read `README.md` first; if docs exist unindexed, offer a one-time backfill
+- Legacy `.ai/` directories still exist at the root of a repo's main checkout (git-ignored, so absent from linked worktrees). Read them on request or when tracing past decisions; never add to them

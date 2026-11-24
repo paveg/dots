@@ -33,7 +33,7 @@ Add techniques as the target needs them:
 
 - Pickaxe: `git log -S '<exact text>' -- <file>` finds commits that added or removed a string; `-G '<regex>'` does the same for a pattern.
 - Read the PR review thread, not only the description: rationale often sits in review comments.
-- Read the repo's own decision records: ADRs in its ADR directory, and the session's persistent memory and `.ai/` notes when they exist. They count as source control and long-form documents.
+- Read the repo's own decision records: ADRs in its ADR directory, and the session's persistent memory, and the user's notes for this repo (`repo-notes.md`) when they exist. They count as source control and long-form documents.
 - Check comments and TODOs near the target, and the tests that exercise it: test names and assertions often encode the edge case that motivated the code.
 
 ## Step 3. Discover sources

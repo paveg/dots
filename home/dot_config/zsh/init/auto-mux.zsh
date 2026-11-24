@@ -14,7 +14,7 @@ auto_mux() {
   # Skip if not interactive
   [[ ! -o interactive ]] && return 0
   # `zsh -ic <cmd>` is interactive too; GUI apps probe their PATH that way
-  [[ -n "$ZSH_EXECUTION_STRING" ]] && return 0
+  (( ${+ZSH_EXECUTION_STRING} )) && return 0
   # Skip if explicitly disabled
   [[ "${DISABLE_AUTO_TMUX:-0}" = "1" ]] && return 0
   # Skip in CI/Docker

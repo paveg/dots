@@ -4,6 +4,15 @@
 {{- end }}
   "advisorModel": "fable",
   "autoMode": {
+    "environment": [
+      "**Primary use of Claude Code**: personal development and dotfiles across many repositories under github.com/paveg; work happens on a separate work machine",
+      "**Repository visibility**: many repositories under github.com/paveg are public; anything committed or pushed there is public, so secrets and company information never go into them",
+      "**Secrets management**: 1Password (`op`) for personal secrets, SSH, and signing; Keeper (`ksm`) for the work profile on the work machine; GitHub tokens come from ghtkn",
+      "**Sensitive data locations & audiences**: credentials, tokens, and personal or confidential data, for example under `~/.ssh`, `~/.aws`, `~/.kube`, `~/.config/dots-work`, and `.env` files; share them with no one",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "**Host containment**: an ordinary developer machine with open internet; no sandbox is enabled yet"
+    ],
     "soft_deny": [
       "$defaults",
       "Bash(chezmoi init:*) without XDG_CONFIG_HOME pointing at a temp dir — rewrites the real ~/.config/chezmoi/chezmoi.yaml even with --dry-run, and can poison shell env via BUSINESS_USE"
